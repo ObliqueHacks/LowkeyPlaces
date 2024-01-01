@@ -32,6 +32,6 @@ export default {
 ## Instructions for running the app 
 - Clone rep
 - Make sure Node.js is installed
-- Make sure all libraries are installed (use <code> npm install <code> )
-- Run <code> npm run dev <code>
+- Make sure all libraries are installed (use ``` npm install ``` )
+- Run ``` npm run dev ```
 - Click link
