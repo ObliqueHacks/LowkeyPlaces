@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-//@ts-ignore
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 class Nav {
