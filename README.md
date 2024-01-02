@@ -31,3 +31,6 @@ The project aims to create a map for people to upload paths and locations of pla
     - Implement a reporting system for inappropriate content or behaviour.
     - Have a moderation system to review and take action on reported content.* 
 
+# Project Structure
+## Website Flowchart
+![FlowChart](FlowChart.png)
