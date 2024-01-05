@@ -1,9 +1,18 @@
-// @import "bootstrap/scss/bootstrap";
-.App {
-  text-align: center;
-}
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;1,400&display=swap");
 
 .leaflet-container {
   width: 100vw;
   height: 100vh;
+}
+
+.map {
+  scale: 90%;
+}
+
+.hidden {
+  opacity: 0%;
+}
+
+#navbar-name {
+  color: rgb(238, 116, 9);
 }
