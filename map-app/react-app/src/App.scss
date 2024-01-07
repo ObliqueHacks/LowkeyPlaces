@@ -1,4 +1,29 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;1,400&display=swap");
+$background-color-primary: rgb(30, 28, 28);
+$color-primary: #f9920c;
+$color-secondary: rgb(31, 30, 30);
+$gradient-primary: linear-gradient(to top left, #f6ce08, #f97704);
+$gradient-secondary: linear-gradient(to top left, #ffb003, #ff9603);
+
+body {
+  --bs-body-font-family: "Poppins", sans-serif;
+  --bs-body-bg: rgb(30, 28, 28);
+  box-shadow: inset 0 0 5rem rgba(0, 0, 0, 0.5);
+  line-height: 1.9;
+  display: flex;
+}
+
+html {
+  font-size: 95.5%;
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+/* MAP STYLING */
 
 .leaflet-container {
   width: 100vw;
@@ -10,9 +35,369 @@
 }
 
 .hidden {
+  visibility: hidden;
   opacity: 0%;
 }
 
-#navbar-name {
-  color: rgb(238, 116, 9);
+
+
+/* NAVIGATION */
+.navbar {
+  background-color: $color-secondary;
+  box-shadow: inset 0 0 1rem rgba(0, 0, 0, 0.5);
+  border-color: black;
+}
+
+.navbar-logo {
+  max-width: 40px; // Set the maximum width for the logo
+  margin-right: 10px; // Adjust margin as needed
+}
+
+.navbar .navbar-brand {
+  font-size: 1.5rem; // Set the font size for the brand
+  color: $color-primary; // Set the color for the brand
+}
+.navbar .navbar-brand:hover {
+  color: $color-primary;
+}
+
+.navbar .navbar-toggler {
+  --bs-navbar-toggler-focus-width: none;
+  border: none; // Remove border from the toggler button
+}
+
+.navbar-toggle-image {
+  height: 30px;
+  transition: filter 0.3s;
+}
+
+.navbar-toggle-image:hover {
+  filter: invert(50%);
+}
+
+.nav-item {
+  .nav-link {
+    color: white; // Set the color for the navbar links
+    text-decoration: none; // Remove underline from the links
+    transition: $color-primary 1s;
+    max-width: 100px;
+    padding: 10px;
+    margin-right: 30px;
+    transition: all 0.4s;
+
+    &:hover {
+      color: $color-primary;
+      transform: translateY(-1px);
+      text-shadow: inset 0 0 10rem;
+    }
+
+    &.nav-link-button {
+      border-radius: 5rem;
+      background-color: $color-primary;
+      padding: 9.5px;
+      margin-right: 20px;
+      max-width: 61px;
+      max-height: 40px;
+      transition: all 0.4s;
+    }
+
+    &.nav-link-button:hover {
+      background-color: $color-secondary;
+      color: $color-primary;
+    }
+  }
+}
+
+.navbar-collapse.collapsing,
+.navbar-collapse.collapse.show {
+  .nav-item {
+    .nav-link-button {
+      background-color: $color-secondary;
+      border-radius: 0;
+    }
+  }
+}
+
+/* HEADER */
+
+h1 {
+  font-size: 5.5rem;
+  line-height: 1.35;
+}
+
+h4 {
+  font-size: 2.4rem;
+  font-weight: 500;
+}
+
+.header {
+  flex: 1;
+  padding: 0 3rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header_title {
+  flex: 1;
+  color: white;
+
+  max-width: 115rem;
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  row-gap: 1rem;
+  align-content: center;
+  justify-content: center;
+  padding-left: 10rem;
+
+  align-items: start;
+  justify-items: start;
+}
+
+.header_title .highlight {
+  position: relative;
+}
+
+.header_title .highlight::after {
+  display: block;
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  opacity: 0.7;
+  transform: scale(0.9, 0.85) skewX(-15deg);
+  background-image: $gradient-primary;
+}
+
+.header-img {
+  width: 100%;
+  grid-column: 2 / 3;
+  grid-row: 1 / span 4;
+  transform: translateY(-6rem);
+  padding-top: 100px;
+  padding-right: 100px;
+}
+
+.btn-text {
+  display: inline-block;
+  background: none;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 500;
+  color: white;
+  border: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+  &:hover {
+    color: $color-primary;
+    transform: translateY(-1px);
+    text-shadow: inset 0 0 10rem;
+  }
+}
+
+/* MODAL WINDOW */
+.app .modal-box {
+  transition: opacity 0.2s ease;
+  &.inactive {
+    opacity: 0;
+  }
+  .modal-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 460px;
+    height: 640px;
+    padding: 20px 30px 120px;
+    box-shadow: 0 5px 10px rba(0, 0, 0, 0.1);
+    z-index: 1000;
+    border-radius: 12px;
+    background: $color-secondary;
+    transition: all 0.4s ease;
+    overflow: hidden;
+
+    .close-modal-btn {
+      position: absolute;
+      color: $color-primary;
+      background: $color-secondary;
+      top: 10px;
+      right: 10px;
+      font-size: 30px;
+      border: none;
+      outline: none;
+      opacity: 0.6;
+      transition: all 0.3s ease;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    &.active .login-section {
+      bottom: -12%;
+      border-radius: 220px;
+      box-shadow: 0 -5px 10px rba(0, 0, 0, 0.1);
+      h3 {
+        opacity: 1;
+      }
+    }
+
+    &.active .signup-section h3 {
+      opacity: 0.6;
+      transition: all 0.2s ease;
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .login-section {
+      position: absolute;
+      left: 50%;
+      bottom: -88%;
+      transform: translate(-50%);
+      width: calc(100% + 180px);
+      padding: 20px 140px;
+      background: $color-primary;
+      border-radius: 290px;
+      height: 100%;
+      transition: all 0.3s ease;
+      color: $color-secondary;
+    }
+
+    .signup-section {
+      color: white;
+    }
+    .login-section h3,
+    .signup-section h3 {
+      font-size: 30px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .login-section h3 {
+      opacity: 0.6;
+      transition: all 0.2s ease;
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .social-buttons {
+      margin-top: 40px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      button {
+        width: 100%;
+        padding: 10px;
+        background: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+    }
+
+    .login-section .social-buttons button {
+      border: 1px solid #000;
+    }
+
+    .separator {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      .line {
+        width: 100%;
+        height: 2px;
+        background-color: #ccc;
+      }
+    }
+    .login-section .separator .line {
+      background: black;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .signup-section .modal-btn {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      padding: 10px 20px;
+      border: none;
+      outline: none;
+      border-radius: 10px;
+      background-color: $color-primary;
+      transition: all 0.3s ease;
+      &:hover {
+        background-color: $color-secondary;
+        color: $color-primary;
+      }
+    }
+
+    .login-section .modal-btn {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      padding: 10px 20px;
+      border: none;
+      outline: none;
+      border-radius: 10px;
+      color: $color-primary;
+      background-color: $color-secondary;
+      transition: all 0.3s ease;
+      &:hover {
+        background-color: $color-primary;
+        color: $color-secondary;
+      }
+    }
+
+    form input {
+      outline: none;
+      border: none;
+      padding: 10px 10px;
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    .signup-section form input {
+      color: $color-secondary;
+      background: white;
+    }
+
+    .login-section input {
+      color: $color-primary;
+      border: 1px solid $color-secondary;
+      &::placeholder {
+        color: $color-primary;
+      }
+    }
+
+    form .modal-btn {
+      margin-top: 15px;
+    }
+  }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  transition: all 0.5s;
 }
