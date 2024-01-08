@@ -11,6 +11,7 @@ USER
 {
 	*name[string] 
 	psswd[string]
+	email[string]
 	date_created[DateTime object]
 	account_deleted[bool]
 	map_count[int]
@@ -30,7 +31,7 @@ USERS_RELATION
 {
 	*user_1[USER.name]
 	*user_2[USER.name]
-	status[int -> 0: nothing | 1: friend | 2: block]
+	status[int -> 0: nothing | 1: friend | 2: blocked]
 }
 
 
