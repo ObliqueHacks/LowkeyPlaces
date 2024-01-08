@@ -1,7 +1,8 @@
 import React from "react";
 import Menu from "../assets/Menu.png";
 import Logo from "../assets/NinjaHead.png";
-import Hiking from "../assets/hiking.jpg";
+import MarkerImage from "../assets/hiking.jpg";
+
 import { useState } from "react";
 function HomePage() {
   const [modalActive, setModal] = useState(false);
@@ -79,7 +80,7 @@ function HomePage() {
           </h1>
           <h5>A social platform for adventures</h5>
           <button className="btn-text btn-scroll-to">Learn more &darr;</button>
-          <img src={Hiking} className="header-img" alt="" />
+          <img src={MarkerImage} className="header-img" alt="" />
         </div>
       </div>
 
@@ -114,19 +115,25 @@ function HomePage() {
                 placeholder="name@example.com"
                 required
               />
-              <label htmlFor="usernameUser" className="form-label"></label>
+              <label
+                htmlFor="usernameUserSignup"
+                className="form-label"
+              ></label>
               <input
                 type="username"
                 className="form-control"
-                id="usernameUser"
+                id="usernameUserSignup"
                 placeholder="Username"
                 required
               />
-              <label htmlFor="passwordUser" className="form-label"></label>
+              <label
+                htmlFor="passwordUserSignup"
+                className="form-label"
+              ></label>
               <input
                 type="password"
                 className="form-control"
-                id="passwordUser"
+                id="passwordUserSignup"
                 aria-describedby="passwordHelpBlock"
                 placeholder="Password"
                 required
@@ -151,19 +158,19 @@ function HomePage() {
               <div className="line"></div>
             </div>
             <form>
-              <label htmlFor="usernameUser" className="form-label"></label>
+              <label htmlFor="usernameUserLogin" className="form-label"></label>
               <input
                 type="username"
                 className="form-control"
-                id="usernameUser"
+                id="usernameUserLogin"
                 placeholder="Username"
                 required
               />
-              <label htmlFor="passwordUser" className="form-label"></label>
+              <label htmlFor="passwordUserLogin" className="form-label"></label>
               <input
                 type="password"
                 className="form-control"
-                id="passwordUser"
+                id="passwordUserLogin"
                 aria-describedby="passwordHelpBlock"
                 placeholder="Password"
                 required
