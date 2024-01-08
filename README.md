@@ -34,3 +34,6 @@ The project aims to create a map for people to upload paths and locations of pla
 # Project Structure
 ## Website Flowchart
 ![FlowChart](FlowChart.png)
+
+## Website Demos
+https://drive.google.com/drive/folders/1gS8rGF8E800ZelistKDFH2fldJ0onFzv?usp=drive_link
