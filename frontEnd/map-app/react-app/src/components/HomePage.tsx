@@ -1,7 +1,7 @@
 import React from "react";
-import Menu from "../assets/Menu.png";
-import Logo from "../assets/NinjaHead.png";
 import MarkerImage from "../assets/hiking.jpg";
+import Modal from "./Modal.tsx";
+import Navbar from "./Navbar.tsx";
 
 import { useState } from "react";
 function HomePage() {
@@ -24,52 +24,7 @@ function HomePage() {
   return (
     <React.Fragment>
       <div className="header">
-        <nav className="navbar fixed-top navbar-expand-lg">
-          <div className="container">
-            <img className="navbar-logo" src={Logo} alt="" />
-            <a className="navbar-brand" href="#">
-              Lowkey Spots
-            </a>
-            <button
-              className="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarOpen"
-            >
-              <img className="navbar-toggle-image" src={Menu} alt="" />
-            </button>
-
-            <div className="collapse navbar-collapse" id="navbarOpen">
-              <ul className="navbar-nav ms-auto">
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    Home
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    About
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    Contact
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link nav-link-button"
-                    href="#"
-                    onClick={toggleModal}
-                  >
-                    Login
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
-
+        <Navbar toggleModal={toggleModal}></Navbar>
         <div className="header_title">
           <h1>
             Discover
@@ -84,105 +39,14 @@ function HomePage() {
         </div>
       </div>
 
-      <div className={modalActive ? "modal-box" : "modal-box inactive"}>
-        <div
-          className={loginActive ? "modal-container active" : "modal-container"}
-        >
-          <div className="signup-section">
-            <button onClick={toggleModal} className="close-modal-btn">
-              &times;
-            </button>
-            <h3 onClick={toggleLogin}>Signup</h3>
-            <div className="social-buttons">
-              <button>
-                <i className="bx bxl-google"></i>Use Google
-              </button>
-            </div>
+      <Modal
+        loginActive={loginActive}
+        modalActive={modalActive}
+        toggleLogin={toggleLogin}
+        toggleModal={toggleModal}
+      ></Modal>
 
-            <div className="separator">
-              <div className="line"></div>
-              <p>Or</p>
-              <div className="line"></div>
-            </div>
-            <form>
-              <label htmlFor="emailUser" className="form-label">
-                Email Address
-              </label>
-              <input
-                type="email"
-                className="form-control"
-                id="emailUser"
-                placeholder="name@example.com"
-                required
-              />
-              <label
-                htmlFor="usernameUserSignup"
-                className="form-label"
-              ></label>
-              <input
-                type="username"
-                className="form-control"
-                id="usernameUserSignup"
-                placeholder="Username"
-                required
-              />
-              <label
-                htmlFor="passwordUserSignup"
-                className="form-label"
-              ></label>
-              <input
-                type="password"
-                className="form-control"
-                id="passwordUserSignup"
-                aria-describedby="passwordHelpBlock"
-                placeholder="Password"
-                required
-              />
-
-              <button type="submit" className="modal-btn">
-                Signup
-              </button>
-            </form>
-          </div>
-          <div className="login-section">
-            <h3 onClick={toggleLogin}>Login</h3>
-            <div className="social-buttons">
-              <button>
-                <i className="bx bxl-google"></i>Use Google
-              </button>
-            </div>
-
-            <div className="separator">
-              <div className="line"></div>
-              <p>Or</p>
-              <div className="line"></div>
-            </div>
-            <form>
-              <label htmlFor="usernameUserLogin" className="form-label"></label>
-              <input
-                type="username"
-                className="form-control"
-                id="usernameUserLogin"
-                placeholder="Username"
-                required
-              />
-              <label htmlFor="passwordUserLogin" className="form-label"></label>
-              <input
-                type="password"
-                className="form-control"
-                id="passwordUserLogin"
-                aria-describedby="passwordHelpBlock"
-                placeholder="Password"
-                required
-              />
-              <button type="submit" className="modal-btn">
-                Login
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-
+      
       <div
         onClick={toggleModal}
         className={modalActive ? "overlay" : "overlay hidden"}
