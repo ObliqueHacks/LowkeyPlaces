@@ -10,6 +10,7 @@ from rest_framework import status
 
 
 # Create your views here.
+@api_view(['Post'])
 def register(request):
     data = request.data
     serializer = registrationSerializer(data=data)
@@ -21,9 +22,6 @@ def register(request):
     else:
         return Response({'user': 'not_created', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         
-@api_view['Post']
+@api_view(['Post'])
 def login(request):
     pass
-
-
-    

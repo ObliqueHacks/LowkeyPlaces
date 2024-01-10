@@ -8,4 +8,4 @@ class registrationSerializer(serializers.ModelSerializer):
 
 class loginSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=20)
-    psswd = serializers.CharField(max_lenth=30)
+    psswd = serializers.CharField(max_length=20)
