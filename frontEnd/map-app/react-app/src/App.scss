@@ -36,6 +36,7 @@ html {
 
 .hidden {
   visibility: hidden;
+  display: none;
   opacity: 0%;
 }
 
@@ -94,7 +95,7 @@ html {
       background-color: $color-primary;
       padding: 9.5px;
       margin-right: 20px;
-      max-width: 61px;
+      max-width: 70px;
       max-height: 40px;
       transition: all 0.4s;
     }
@@ -102,6 +103,7 @@ html {
     &.nav-link-button:hover {
       background-color: $color-secondary;
       color: $color-primary;
+      cursor: pointer;
     }
   }
 }
@@ -270,6 +272,20 @@ h4 {
 
     .signup-section {
       color: white;
+      .signup-ins {
+        font-size: 12px;
+        color: $color-primary;
+        padding: none;
+      }
+
+      .form-label .valid {
+        color: green;
+        padding: none;
+      }
+      .form-label .invalid {
+        color: red;
+        padding: none;
+      }
     }
     .login-section h3,
     .signup-section h3 {
@@ -386,6 +402,10 @@ h4 {
       margin-top: 15px;
     }
   }
+}
+
+.offscreen {
+  display: none;
 }
 
 .overlay {

@@ -1,24 +1,17 @@
 import React from "react";
 import MarkerImage from "../assets/hiking.jpg";
-import Modal from "./Modal.tsx";
+import Modal from "./LoginModal.tsx";
 import Navbar from "./Navbar.tsx";
 
 import { useState } from "react";
 function HomePage() {
   const [modalActive, setModal] = useState(false);
-  const [loginActive, setLogin] = useState(false);
 
   console.log(modalActive);
-  console.log(loginActive);
 
   const toggleModal = () => {
     setModal(!modalActive);
     console.log(modalActive);
-  };
-
-  const toggleLogin = () => {
-    setLogin(!loginActive);
-    console.log(loginActive);
   };
 
   return (
@@ -39,18 +32,7 @@ function HomePage() {
         </div>
       </div>
 
-      <Modal
-        loginActive={loginActive}
-        modalActive={modalActive}
-        toggleLogin={toggleLogin}
-        toggleModal={toggleModal}
-      ></Modal>
-
-      
-      <div
-        onClick={toggleModal}
-        className={modalActive ? "overlay" : "overlay hidden"}
-      ></div>
+      <Modal modalActive={modalActive} toggleModal={toggleModal}></Modal>
     </React.Fragment>
   );
 }
