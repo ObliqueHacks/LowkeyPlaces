@@ -1,14 +1,6 @@
 #return user based on token or return None
 from registrationAndLogin.models import USER
 import jwt
-from django.shortcuts import render
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .serializers import registrationSerializer, loginSerializer 
-from .models import USER
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
-from rest_framework import status
 from datetime import datetime, timedelta
 from django.db.models.query import QuerySet
 from dotenv import load_dotenv
