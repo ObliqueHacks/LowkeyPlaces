@@ -32,3 +32,18 @@ def token_to_user(usrToken: str) -> QuerySet[USER]:
     return None, ''
 
 
+# friend methods
+action_map = {
+0:'sendFriendReq',
+1:'acceptFriendReq',
+2:'rejectFriendReq',
+3:'blockFriendReq',
+4:'removeFriend',
+5:'blockFriend',
+}
+def intToAction(num: int):
+    if -1 < num < len(action_map):
+        return action_map[num]
+    return None
+
+
