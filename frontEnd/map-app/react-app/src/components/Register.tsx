@@ -52,8 +52,6 @@ export const Register = ({
 
   useEffect(() => {
     const result = PWD_REGEX.test(pwd);
-    console.log(result);
-    console.log(pwd);
     setValidPwd(result);
     const match = pwd === matchPwd;
     setValidMatch(match);
@@ -75,7 +73,10 @@ export const Register = ({
     try {
       const response = await axios.post(
         REGISTER_URL,
-        JSON.stringify({ name: user, psswd: pwd }),
+        JSON.stringify({
+          name: user,
+          psswd: pwd,
+        }),
         {
           headers: { "Content-type": "application/json" },
           withCredentials: true,
@@ -84,10 +85,17 @@ export const Register = ({
       console.log(response.data);
       console.log(JSON.stringify(response));
       setSuccess(true);
+      setUser("");
+      setPwd("");
+      setMatchPwd("");
     } catch (err: any) {
+      console.log(err.response);
       if (!err?.response) {
         setErrMsg("No Server Response");
-      } else if (err.response?.status === 409) {
+      } else if (
+        err.response?.status === 400 &&
+        err.response?.data?.user === "Username taken"
+      ) {
         setErrMsg("Username Taken");
       } else {
         setErrMsg("Signup Failed");
@@ -98,13 +106,6 @@ export const Register = ({
 
   return (
     <section className="signup-section">
-      <p
-        ref={errRef}
-        className={errMsg ? "errmsg" : "hidden"}
-        aria-live="assertive"
-      >
-        {errMsg}
-      </p>
       <button onClick={toggleModal} className="close-modal-btn">
         &times;
       </button>
@@ -123,10 +124,10 @@ export const Register = ({
       <form onSubmit={handleSubmit}>
         <label htmlFor="usernameSignup" className="form-label">
           <span className={validName ? "valid" : "hidden"}>
-            <FontAwesomeIcon icon={faCheck} />
+            <FontAwesomeIcon className="checkmark" icon={faCheck} />
           </span>
           <span className={validName || !user ? "hidden" : "invalid"}>
-            <FontAwesomeIcon icon={faTimes} />
+            <FontAwesomeIcon className="times" icon={faTimes} />
           </span>
         </label>
         <input
@@ -136,6 +137,7 @@ export const Register = ({
           ref={userRef}
           autoComplete="off"
           onChange={(e) => setUser(e.target.value)}
+          value={user}
           aria-invalid={validName ? "false" : "true"}
           aria-describedby="uidnote"
           onFocus={() => setUserFocus(true)}
@@ -155,10 +157,10 @@ export const Register = ({
         </p>
         <label htmlFor="pwdSignup" className="form-label">
           <span className={validPwd ? "valid" : "hidden"}>
-            <FontAwesomeIcon icon={faCheck} />
+            <FontAwesomeIcon className="checkmark" icon={faCheck} />
           </span>
           <span className={validPwd || !pwd ? "hidden" : "invalid"}>
-            <FontAwesomeIcon icon={faTimes} />
+            <FontAwesomeIcon className="times" icon={faTimes} />
           </span>
         </label>
         <input
@@ -166,6 +168,7 @@ export const Register = ({
           className="form-control"
           id="pwdSignup"
           onChange={(e) => setPwd(e.target.value)}
+          value={pwd}
           aria-invalid={validPwd ? "false" : "true"}
           aria-describedby="pwdnote"
           placeholder="Password"
@@ -184,10 +187,10 @@ export const Register = ({
 
         <label htmlFor="passwordSignupMatch" className="form-label">
           <span className={validMatch && matchPwd ? "valid" : "hidden"}>
-            <FontAwesomeIcon icon={faCheck} />
+            <FontAwesomeIcon className="checkmark" icon={faCheck} />
           </span>
           <span className={validMatch || !matchPwd ? "hidden" : "invalid"}>
-            <FontAwesomeIcon icon={faTimes} />
+            <FontAwesomeIcon className="times" icon={faTimes} />
           </span>
         </label>
         <input
@@ -195,6 +198,7 @@ export const Register = ({
           className="form-control"
           id="passwordSignupMatch"
           onChange={(e) => setMatchPwd(e.target.value)}
+          value={matchPwd}
           aria-invalid={validMatch ? "false" : "true"}
           aria-describedby="pwdmatchnote"
           placeholder="Retype Password"
@@ -214,8 +218,18 @@ export const Register = ({
           type="submit"
           className="modal-btn"
         >
-          {success ? "Success" : "Signup"}
+          {"Signup"}
         </button>
+        <p
+          ref={errRef}
+          className={errMsg ? "errmsg" : "offscreen"}
+          aria-live="assertive"
+        >
+          {errMsg}
+        </p>
+        <p className={success ? "success" : "offscreen"} aria-live="assertive">
+          Congratulations! You are registered. Please refresh and go to login.
+        </p>
       </form>
     </section>
   );
