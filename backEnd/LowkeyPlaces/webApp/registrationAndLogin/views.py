@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import registrationSerializer, loginSerializer 
@@ -9,21 +8,7 @@ from django.utils import timezone
 from rest_framework import status
 from datetime import datetime, timedelta
 from django.db.models.query import QuerySet
-import jwt
-import secrets
-
-randomKey = secrets.token_hex(32)
-# generate token
-def create_token(elem: QuerySet[USER]):
-    # Define token payload
-    load = {
-        'user_id': elem.first()['USER'],
-        'exp': datetime.utcnow() + timedelta(days=3)  # Token expiration time
-    }
-    # Create and sign the token
-    token = jwt.encode(load, randomKey, algorithm='HS256')
-    return token
-
+from utils import create_token
 # Create your views here.
 @api_view(['Post'])
 def register(request):
