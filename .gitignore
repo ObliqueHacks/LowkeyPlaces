@@ -1,4 +1,4 @@
-backEnd/dependencies/
+backEnd/venv/
 reference.txt
 logs
 *.log

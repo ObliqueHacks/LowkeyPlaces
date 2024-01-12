@@ -10,7 +10,7 @@ export const Modal = ({
   modalActive: boolean;
   toggleModal: () => void;
 }) => {
-  const [loginActive, setLogin] = useState(false);
+  const [loginActive, setLogin] = useState(true);
 
   const toggleLogin = () => {
     setLogin(!loginActive);

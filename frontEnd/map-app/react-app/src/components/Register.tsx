@@ -10,7 +10,7 @@ import axios from "../api/axios";
 
 const REGISTER_URL = "api-auth/homepage/register/";
 
-export const Register = ({
+const Register = ({
   toggleModal,
   toggleLogin,
 }: {
@@ -40,6 +40,17 @@ export const Register = ({
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const resetForm = () => {
+    setUser("");
+    setPwd("");
+    setMatchPwd("");
+  };
+
+  const closeBtn = () => {
+    toggleModal();
+    resetForm();
+  };
 
   useEffect(() => {
     userRef.current.focus();
@@ -85,9 +96,7 @@ export const Register = ({
       console.log(response.data);
       console.log(JSON.stringify(response));
       setSuccess(true);
-      setUser("");
-      setPwd("");
-      setMatchPwd("");
+      resetForm();
     } catch (err: any) {
       console.log(err.response);
       if (!err?.response) {
@@ -106,10 +115,12 @@ export const Register = ({
 
   return (
     <section className="signup-section">
-      <button onClick={toggleModal} className="close-modal-btn">
+      <button onClick={closeBtn} className="close-modal-btn" tabIndex={-1}>
         &times;
       </button>
-      <h3 onClick={toggleLogin}>Signup</h3>
+      <h3 onClick={toggleLogin} tabIndex={-1}>
+        Signup
+      </h3>
       <div className="social-buttons">
         <button>
           <i className="bx bxl-google"></i>Use Google
@@ -143,6 +154,7 @@ export const Register = ({
           onFocus={() => setUserFocus(true)}
           onBlur={() => setUserFocus(false)}
           placeholder="Username"
+          tabIndex={-1}
           required
         />
         <p
@@ -174,6 +186,7 @@ export const Register = ({
           placeholder="Password"
           onFocus={() => setPwdFocus(true)}
           onBlur={() => setPwdFocus(false)}
+          tabIndex={-1}
           required
         />
         <p
@@ -204,6 +217,7 @@ export const Register = ({
           placeholder="Retype Password"
           onFocus={() => setMatchFocus(true)}
           onBlur={() => setMatchFocus(false)}
+          tabIndex={-1}
           required
         />
         <p
@@ -217,6 +231,7 @@ export const Register = ({
           disabled={!validName || !validPwd || !validMatch ? true : false}
           type="submit"
           className="modal-btn"
+          tabIndex={-1}
         >
           {"Signup"}
         </button>
