@@ -7,4 +7,12 @@ from rest_framework import status
 from utils import create_token
 # Create your views here.
 #TODO: add a view for granting friendbased requests. it either grants it or it doesnt.
+@api_view['POST']
+def makeRequest(Request):
+    pass
+
+
 #TODO: create a view to send the current friends, incoming friendrequests, blocked individuals, sent friend requests for a user
+@api_view['POST']
+def getUserInfo(Request):
+    pass
