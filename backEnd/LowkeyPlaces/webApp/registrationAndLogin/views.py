@@ -29,7 +29,7 @@ def login(request):
             found=found.first()
             genToken = create_token(found)
             return Response({'genToken': genToken}, status=status.HTTP_201_CREATED)
-    return Response({'genToken': 'failed'}, status=status.HTTP_201_CREATED)
+    return Response({'error': 'failed'}, status=status.HTTP_400_BAD_REQUEST)
 
 
             
