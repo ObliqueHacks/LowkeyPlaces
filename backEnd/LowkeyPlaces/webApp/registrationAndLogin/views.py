@@ -16,7 +16,7 @@ def register(request):
         instance.save()
         return Response({'user': 'success'}, status=status.HTTP_201_CREATED)
     else:
-        return Response({'user': 'fail'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'fail'}, status=status.HTTP_400_BAD_REQUEST)
         
 @api_view(['Post'])
 def login(request):
@@ -24,7 +24,7 @@ def login(request):
     serializer = loginSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
-        found=USER.objects.filter(field1=serializer.name, field2=serializer.psswd)
+        found=USER.objects.filter(name=serializer.name, psswd=serializer.psswd)
         if found:
             found=found.first()
             genToken = create_token(found)
