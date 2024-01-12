@@ -42,6 +42,7 @@ action_map = {
 3:'blockFriendReq',
 4:'removeFriend',
 5:'blockFriend',
+6:'removePendingFriendReq'
 }
 def intToAction(num: int):
     if -1 < num < len(action_map):
