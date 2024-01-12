@@ -7,11 +7,8 @@ import { useState } from "react";
 function HomePage() {
   const [modalActive, setModal] = useState(false);
 
-  console.log(modalActive);
-
   const toggleModal = () => {
     setModal(!modalActive);
-    console.log(modalActive);
   };
 
   return (
@@ -31,6 +28,20 @@ function HomePage() {
           <img src={MarkerImage} className="header-img" alt="" />
         </div>
       </div>
+
+      <section className="features">
+        <h2>Features</h2>
+        <div className="feature-info">
+          <p className="info-one">
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat."
+          </p>
+          <img src="" alt="" />
+          <p></p>
+        </div>
+      </section>
 
       <Modal modalActive={modalActive} toggleModal={toggleModal}></Modal>
     </React.Fragment>

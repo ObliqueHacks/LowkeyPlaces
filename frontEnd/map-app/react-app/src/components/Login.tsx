@@ -1,11 +1,67 @@
 import React from "react";
+import { useRef, useState, useEffect, useContext } from "react";
+import AuthContext from "../context/AuthProvider.tsx";
+import axios from "../api/axios.ts";
+
+const LOGIN_URL = "api-auth/homepage/login/";
 
 export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
+  const userRef: any = useRef();
+  const errRef: any = useRef();
+
+  const [user, setUser] = useState("");
+  const [pwd, setPwd] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const { setAuth }: any = useContext(AuthContext);
+
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
+
+  useEffect(() => {
+    setErrMsg("");
+  }, [user, pwd]);
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    try {
+      const response: any = await axios.post(
+        LOGIN_URL,
+        JSON.stringify({ user, pwd }),
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      const accessToken = response?.data?.accessToken;
+      const roles = response?.data?.roles;
+      setAuth({ user, pwd, roles, accessToken });
+      setUser("");
+      setPwd("");
+      setSuccess(true);
+    } catch (err: any) {
+      if (!err?.response) {
+        setErrMsg("No Server Response");
+      } else if (err.response?.status === 400) {
+        setErrMsg("Missing Username or Password");
+      } else if (err.response?.status === 401) {
+        setErrMsg("Unauthorized");
+      } else {
+        setErrMsg("Login Failed");
+      }
+      errRef.current.focus();
+    }
+  };
+
   return (
     <section className="login-section">
-      <h3 onClick={toggleLogin}>Login</h3>
+      <h3 onClick={toggleLogin} tabIndex={-1}>
+        Login
+      </h3>
       <div className="social-buttons">
-        <button>
+        <button tabIndex={-1}>
           <i className="bx bxl-google"></i>Use Google
         </button>
       </div>
@@ -15,27 +71,49 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
         <p>Or</p>
         <div className="line"></div>
       </div>
-      <form>
-        <label htmlFor="usernameUserLogin" className="form-label"></label>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="usernameLogin" className="form-label"></label>
         <input
-          type="username"
+          type="text"
           className="form-control"
-          id="usernameUserLogin"
+          ref={userRef}
+          autoComplete="off"
+          id="usernameLogin"
           placeholder="Username"
+          onChange={(e) => setUser(e.target.value)}
+          value={user}
+          tabIndex={-1}
           required
         />
-        <label htmlFor="passwordUserLogin" className="form-label"></label>
+        <label htmlFor="passwordLogin" className="form-label"></label>
         <input
           type="password"
           className="form-control"
-          id="passwordUserLogin"
+          id="passwordLogin"
+          ref={userRef}
+          onChange={(e) => setPwd(e.target.value)}
+          value={pwd}
           aria-describedby="passwordHelpBlock"
           placeholder="Password"
+          tabIndex={-1}
           required
         />
-        <button type="submit" className="modal-btn">
+        <button type="submit" className="modal-btn" tabIndex={-1}>
           Login
         </button>
+        <p
+          ref={errRef}
+          className={errMsg ? "errmsg" : "offscreen"}
+          aria-live="assertive"
+        >
+          {errMsg}
+        </p>
+        <p
+          className={success ? "success-login" : "offscreen"}
+          aria-live="assertive"
+        >
+          You are logged in!
+        </p>
       </form>
     </section>
   );

@@ -44,7 +44,7 @@ export const Navbar = ({ toggleModal }: { toggleModal: () => void }) => {
               </li>
               <li className="nav-item">
                 <a className="nav-link nav-link-button" onClick={toggleModal}>
-                  Signup
+                  Login
                 </a>
               </li>
             </ul>
