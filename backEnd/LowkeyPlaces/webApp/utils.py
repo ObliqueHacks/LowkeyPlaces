@@ -11,16 +11,16 @@ import os
 
 #load Key
 dotenv_path = '/LowkeySpots/' 
-load_dotenv(dotenv_path)
+load_dotenv()
 randomKey=os.getenv('randomKey')
 
 def error_returner(error_message: str) -> Response:
     return Response({'error': error_message}, status=status.HTTP_400_BAD_REQUEST)
 
 # generate token
-def create_token(elem: QuerySet[USER]) -> str:
+def create_token(elem: USER) -> str:
     load = {
-        'name': elem.first().name,
+        'name': elem.name,
         'exp': datetime.utcnow() + timedelta(days=3)  # Token expiration time
     }
     token=jwt.encode(load, randomKey, algorithm='HS256')
