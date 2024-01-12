@@ -29,7 +29,7 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
     try {
       const response: any = await axios.post(
         LOGIN_URL,
-        JSON.stringify({ user, pwd }),
+        JSON.stringify({ name: user, psswd: pwd }),
         {
           headers: { "Content-type": "application/json" },
           withCredentials: true,
@@ -37,11 +37,14 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
       );
       const accessToken = response?.data?.accessToken;
       const roles = response?.data?.roles;
+      console.log(response);
+      console.log(accessToken);
       setAuth({ user, pwd, roles, accessToken });
       setUser("");
       setPwd("");
       setSuccess(true);
     } catch (err: any) {
+      console.log(err.response);
       if (!err?.response) {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 400) {

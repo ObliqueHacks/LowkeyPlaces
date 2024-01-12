@@ -10,7 +10,8 @@ import os
 
 
 #load Key
-load_dotenv()
+dotenv_path = '/LowkeySpots/' 
+load_dotenv(dotenv_path)
 randomKey=os.getenv('randomKey')
 
 def error_returner(error_message: str) -> Response:
@@ -19,7 +20,7 @@ def error_returner(error_message: str) -> Response:
 # generate token
 def create_token(elem: QuerySet[USER]) -> str:
     load = {
-        'name': elem.first()['USER'],
+        'name': elem.first().name,
         'exp': datetime.utcnow() + timedelta(days=3)  # Token expiration time
     }
     token=jwt.encode(load, randomKey, algorithm='HS256')
