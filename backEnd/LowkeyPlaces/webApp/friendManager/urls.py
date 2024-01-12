@@ -1,8 +1,7 @@
 from django.urls import path
-from .views import 
+from .views import getUserInfo, makeRequest
 
 urlpatterns = [
-    path('user/', register, name='user_info'),
-    path('request/', login, name='send_friend_request')
-    
+    path('user-info/', getUserInfo, name='user_info'),
+    path('make-request/', makeRequest, name='send_friend_request'),
 ]
