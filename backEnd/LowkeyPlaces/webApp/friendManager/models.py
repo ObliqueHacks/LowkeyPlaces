@@ -9,6 +9,5 @@ class USER_RELATION(models.Model):
 class FRIEND_REQUEST(models.Model):
     sendId=models.ForeignKey(USER, on_delete=models.CASCADE, related_name='senderToUser')
     recId=models.ForeignKey(USER, on_delete=models.CASCADE, related_name='receiverToUser')
-    dateSent=models.DateTimeField()
-    status=models.IntegerField
+    status=models.IntegerField()
     

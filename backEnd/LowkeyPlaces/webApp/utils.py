@@ -27,7 +27,7 @@ def create_token(elem: USER) -> str:
     return token
 
 #verify token
-def token_to_user(usrToken: str) -> QuerySet[USER]:
+def token_to_user(usrToken: str) -> USER:
     load=jwt.decode(usrToken, randomKey, algorithm='HS256')
     found=USER.objects.filter(name=load['name'])
     exp=datetime.utcfromtimestamp(load['exp'])
