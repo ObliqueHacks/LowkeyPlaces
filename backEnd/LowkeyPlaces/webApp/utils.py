@@ -7,7 +7,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from dotenv import load_dotenv
 import os
+import bcrypt
 
+def hash_password(password):
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed_password.decode('utf-8')
+
+def verify_password(input_password, hashed_password):
+    return bcrypt.checkpw(input_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 #load Key
 dotenv_path = '/LowkeySpots/' 
@@ -43,7 +51,7 @@ action_map = {
 3:'blockFriendReq',
 4:'removeFriend',
 5:'blockFriend',
-6:'removePendingFriendReq'
+6:'unblockUser'
 }
 def intToAction(num: int):
     if -1 < num < len(action_map):
