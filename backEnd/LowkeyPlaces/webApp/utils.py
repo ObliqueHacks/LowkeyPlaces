@@ -43,7 +43,7 @@ def token_to_user(usrToken: str) -> USER:
         return found.first()
     return None
 
-# friend methods
+# friend methodss
 action_map = {
 0:'sendFriendReq',
 1:'acceptFriendReq',

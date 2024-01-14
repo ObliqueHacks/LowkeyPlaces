@@ -63,26 +63,42 @@ class TestRegistrationAndLogin(TestCase):
 
 
 class TestFriendManager(TestRegistrationAndLogin):
-
     def testSendFriendReqest(self):
         #write tokens for the registered users
         user1=create_token(USER.objects.get(name='User1'))
         user2=create_token(USER.objects.get(name='User2'))
         user3=create_token(USER.objects.get(name='User3'))
         user4=create_token(USER.objects.get(name='User4'))
-
-        
         factory = APIRequestFactory()
+
         #testing sending valid friend requests
         request = factory.post("/api-auth/make-request/", {'userToken': user2, 'name':'User1', 'action': 0}, format='json')
         response = makeRequest(request)
-        self.assertEqual(response.status_code, 201, response.data)
-        
+        self.assertEqual(response.status_code, 201)
 
+        request = factory.post("/api-auth/make-request/", {'userToken': user3, 'name':'User1', 'action': 0}, format='json')
+        response = makeRequest(request)
+        self.assertEqual(response.status_code, 201)
+
+        request = factory.post("/api-auth/make-request/", {'userToken': user4, 'name':'User3', 'action': 0}, format='json')
+        response = makeRequest(request)
+        self.assertEqual(response.status_code, 201, response.data)
+
+        #testing self reference error
+        request = factory.post("/api-auth/make-request/", {'userToken': user1, 'name':'User1', 'action': 0}, format='json')
+        response = makeRequest(request)
+        self.assertEqual(response.status_code, 400, response.data)
+
+        #testing friend request already exists
+        request = factory.post("/api-auth/make-request/", {'userToken': user2, 'name':'User1', 'action': 0}, format='json')
+        response = makeRequest(request)
+        self.assertEqual(response.status_code, 400, response.data)
         '''
         try:
             FRIEND_REQUEST.get(sendId = 'User2', recId='User1')
         except ValidationError:
             self.fail("request_not_made")
         '''
+    def testAcceptFriendRequest(self):
+        #TODO: so like basically fill this then fill rejectFriendRequest then start mapManager.
 

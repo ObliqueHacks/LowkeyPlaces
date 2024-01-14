@@ -37,28 +37,25 @@ def makeRequest(request):
 
     #protect against self ref
     rec=rec.first()            
-    if (rec==sender): error_returner('self_reference')
+    if (rec == sender): return error_returner('self_reference')
 
     #handle friend request
     if action == 'sendFriendReq':
-        
         #account for a pending request (resolve the case by changing the reqest type)
         if FRIEND_REQUEST.objects.filter(sendId=rec, recId=sender).first() is not None:
             action='acceptFriendReq'
             rec,sender=sender,rec
-
         #account for already friends or blocked
         elif USER_RELATION.objects.filter(user1=sender, user2=rec).first() is not None:
-            error_returner('already_friends_or_blocked')
-
+            return error_returner('already_friends_or_blocked')
+        #account for request already sent
+        elif FRIEND_REQUEST.objects.filter(sendId=sender,recId=rec).first() is not None:
+            return error_returner('repeating_request')
+        #process valid request
         else:
-            try:
-                #create request (ensure there is only one instance of it)
-                friendRequest=FRIEND_REQUEST(sendId=sender, recId=rec)
-                friendRequest.save()
-                return Response(status=201)
-            except ValidationError:
-                error_returner('request_already_sent')
+            new_instance = FRIEND_REQUEST(sendId=sender, recId=rec)
+            new_instance.save()
+            return Response(status=201)
 
     #if user accepts
     if action == 'acceptFriendReq':
@@ -74,7 +71,7 @@ def makeRequest(request):
             #remove pending requests
             FRIEND_REQUEST.objects.get(sendId=sender, recId=rec).delete().save()
             return Response(status=201)
-        error_returner('no_friend_request_found')
+        return error_returner('no_friend_request_found')
             
     # if user rejects        
     if action == 'rejectFriendReq':
@@ -82,7 +79,7 @@ def makeRequest(request):
         if friend_request is not None:
             friend_request.delete()
             return Response(status=201)
-        error_returner('no_friend_request_found')
+        return error_returner('no_friend_request_found')
 
 
     #TODO: fill in these methods when u have time. the logic above already accounts for their existence
