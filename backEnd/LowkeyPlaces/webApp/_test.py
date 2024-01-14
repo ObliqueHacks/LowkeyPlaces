@@ -100,5 +100,5 @@ class TestFriendManager(TestRegistrationAndLogin):
             self.fail("request_not_made")
         '''
     def testAcceptFriendRequest(self):
-        #TODO: so like basically fill this then fill rejectFriendRequest then start mapManager.
-
+        #TODO: so like basically fill this then fill rejectFriendRequest then start mapManager
+        pass
