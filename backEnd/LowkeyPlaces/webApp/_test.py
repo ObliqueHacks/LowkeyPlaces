@@ -63,34 +63,35 @@ class TestRegistrationAndLogin(TestCase):
 
 
 class TestFriendManager(TestRegistrationAndLogin):
+    def setUp(self):
+        super().setUp()
+        self.factory = APIRequestFactory()
+        self.user1=create_token(USER.objects.get(name='User1'))
+        self.user2=create_token(USER.objects.get(name='User2'))
+        self.user3=create_token(USER.objects.get(name='User3'))
+        self.user4=create_token(USER.objects.get(name='User4'))
+
     def testSendFriendReqest(self):
-        #write tokens for the registered users
-        user1=create_token(USER.objects.get(name='User1'))
-        user2=create_token(USER.objects.get(name='User2'))
-        user3=create_token(USER.objects.get(name='User3'))
-        user4=create_token(USER.objects.get(name='User4'))
-        factory = APIRequestFactory()
-
-        #testing sending valid friend requests
-        request = factory.post("/api-auth/make-request/", {'userToken': user2, 'name':'User1', 'action': 0}, format='json')
+        #sending valid friend requests
+        request = self.factory.post("/api-auth/make-request/", {'userToken': self.user2, 'name':'User1', 'action': 0}, format='json')
         response = makeRequest(request)
         self.assertEqual(response.status_code, 201)
 
-        request = factory.post("/api-auth/make-request/", {'userToken': user3, 'name':'User1', 'action': 0}, format='json')
+        request = self.factory.post("/api-auth/make-request/", {'userToken': self.user3, 'name':'User1', 'action': 0}, format='json')
         response = makeRequest(request)
         self.assertEqual(response.status_code, 201)
 
-        request = factory.post("/api-auth/make-request/", {'userToken': user4, 'name':'User3', 'action': 0}, format='json')
+        request = self.factory.post("/api-auth/make-request/", {'userToken': self.user4, 'name':'User3', 'action': 0}, format='json')
         response = makeRequest(request)
         self.assertEqual(response.status_code, 201, response.data)
 
-        #testing self reference error
-        request = factory.post("/api-auth/make-request/", {'userToken': user1, 'name':'User1', 'action': 0}, format='json')
+        #self reference error
+        request = self.factory.post("/api-auth/make-request/", {'userToken': self.user1, 'name':'User1', 'action': 0}, format='json')
         response = makeRequest(request)
         self.assertEqual(response.status_code, 400, response.data)
 
-        #testing friend request already exists
-        request = factory.post("/api-auth/make-request/", {'userToken': user2, 'name':'User1', 'action': 0}, format='json')
+        #friend request already exists
+        request = self.factory.post("/api-auth/make-request/", {'userToken': self.user2, 'name':'User1', 'action': 0}, format='json')
         response = makeRequest(request)
         self.assertEqual(response.status_code, 400, response.data)
         '''
@@ -99,6 +100,56 @@ class TestFriendManager(TestRegistrationAndLogin):
         except ValidationError:
             self.fail("request_not_made")
         '''
+    
     def testAcceptFriendRequest(self):
-        #TODO: so like basically fill this then fill rejectFriendRequest then start mapManager
-        pass
+        makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user2, 'name':'User1', 'action': 0}, format='json'))
+        makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user3, 'name':'User1', 'action': 0}, format='json'))
+        makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user4, 'name':'User3', 'action': 0}, format='json'))
+        makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user4, 'name':'User2', 'action': 0}, format='json'))
+        
+        #valid accepting FriendRequest
+        request = self.factory.post("/api-auth/make-request/", {'userToken': self.user1, 'name':'User2', 'action': 1}, format='json')
+        response = makeRequest(request)
+        self.assertEqual(response.status_code, 201)
+        self.assertIsNotNone(USER_RELATION.objects.filter(user1=USER.objects.get(name='User1'), user2=USER.objects.get(name='User2')).first())
+        self.assertIsNotNone(USER_RELATION.objects.filter(user1=USER.objects.get(name='User2'), user2=USER.objects.get(name='User1')).first())
+
+        request = self.factory.post("/api-auth/make-request/", {'userToken': self.user1, 'name':'User3', 'action': 1}, format='json')
+        response = makeRequest(request)
+        self.assertEqual(response.status_code, 201)
+
+        #no friend request exists 
+        request = self.factory.post("/api-auth/make-request/", {'userToken': self.user1, 'name':'User3', 'action': 1}, format='json')
+        response = makeRequest(request)
+        self.assertEqual(response.status_code, 400)
+
+        #cross friend request
+        makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user3, 'name':'User4', 'action': 0}, format='json'))
+        self.assertIsNotNone(USER_RELATION.objects.filter(user1=USER.objects.get(name='User4'), user2=USER.objects.get(name='User3')).first())
+        self.assertIsNotNone(USER_RELATION.objects.filter(user1=USER.objects.get(name='User3'), user2=USER.objects.get(name='User4')).first())
+        
+        #already friends
+        response=makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user2, 'name':'User1', 'action': 0}, format='json'))
+        self.assertEqual(response.status_code, 400)
+
+    def testRejectFriendRequest(self):
+        makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user2, 'name':'User1', 'action': 0}, format='json'))
+        makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user3, 'name':'User1', 'action': 0}, format='json'))
+        makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user4, 'name':'User3', 'action': 0}, format='json'))
+        makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user4, 'name':'User2', 'action': 0}, format='json'))
+        
+        #valid rejection
+        response=makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user1, 'name':'User2', 'action': 2}, format='json'))
+        self.assertEqual(response.status_code, 201)
+
+        #no incoming request (invalid user)
+        response=makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user1, 'name':'User20', 'action': 2}, format='json'))
+        self.assertEqual(response.status_code, 400)
+
+        #no incoming request (valid user)
+        response=makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user1, 'name':'User4', 'action': 2}, format='json'))
+        self.assertEqual(response.status_code, 400)
+
+
+
+

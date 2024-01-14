@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import toUserAction
+from .serializers import toUserAction, getUser
 from .models import USER
 from django.utils import timezone
 from rest_framework import status
@@ -30,35 +30,34 @@ def makeRequest(request):
     if action is None:
         return error_returner('invalid_action')
     
-    #authenticate rec
+    #authenticate receiver
     rec=USER.objects.filter(name=user.validated_data['name'])
     if rec.first() is None:
         return error_returner('rec_not_found_or_unkown_action')
 
     #protect against self ref
     rec=rec.first()            
-    if (rec == sender): return error_returner('self_reference')
+    if (rec==sender): return error_returner('self_reference')
 
     #handle friend request
     if action == 'sendFriendReq':
-        #account for a pending request (resolve the case by changing the reqest type)
-        if FRIEND_REQUEST.objects.filter(sendId=rec, recId=sender).first() is not None:
-            action='acceptFriendReq'
-            rec,sender=sender,rec
-        #account for already friends or blocked
-        elif USER_RELATION.objects.filter(user1=sender, user2=rec).first() is not None:
+        #already friends or blocked
+        if USER_RELATION.objects.filter(user1=sender, user2=rec).first() is not None:
             return error_returner('already_friends_or_blocked')
-        #account for request already sent
+        #already pending request (resolve the case by changing the reqest type)
+        elif FRIEND_REQUEST.objects.filter(sendId=rec, recId=sender).first() is not None:
+            action='acceptFriendReq'
+        #request already sent
         elif FRIEND_REQUEST.objects.filter(sendId=sender,recId=rec).first() is not None:
             return error_returner('repeating_request')
         #process valid request
         else:
-            new_instance = FRIEND_REQUEST(sendId=sender, recId=rec)
+            new_instance=FRIEND_REQUEST(sendId=sender, recId=rec)
             new_instance.save()
             return Response(status=201)
 
     #if user accepts
-    if action == 'acceptFriendReq':
+    if action=='acceptFriendReq':
         rec,sender=sender,rec #flip to see if there even is an inconming request
         if FRIEND_REQUEST.objects.filter(sendId=sender, recId=rec).first() is not None:
             #create two way relation
@@ -69,35 +68,49 @@ def makeRequest(request):
             new_relation.save()
 
             #remove pending requests
-            FRIEND_REQUEST.objects.get(sendId=sender, recId=rec).delete().save()
+            FRIEND_REQUEST.objects.get(sendId=sender, recId=rec).delete()
             return Response(status=201)
         return error_returner('no_friend_request_found')
             
     # if user rejects        
-    if action == 'rejectFriendReq':
-        friend_request = FRIEND_REQUEST.objects.filter(sendId=sender, recId=rec).first()
+    if action=='rejectFriendReq':
+        rec,sender=sender,rec #flip to see if there even is an inconming request
+        friend_request=FRIEND_REQUEST.objects.filter(sendId=sender, recId=rec).first()
         if friend_request is not None:
             friend_request.delete()
             return Response(status=201)
         return error_returner('no_friend_request_found')
 
-
-    #TODO: fill in these methods when u have time. the logic above already accounts for their existence
-    if action == 'blockFriendReq':
+    #TODO: fill in these methods when u have time. Logic above already accounts for their existence
+    if action=='blockFriendReq':
         #just add a block relation if you see this
         pass
 
-    if action == 'removeFriend':
+    if action=='removeFriend':
         pass
 
-    if action == 'blockFriend':
+    if action=='blockFriend':
         pass
 
-    if action == 'unblockUser':
+    if action=='unblockUser':
         pass
 
         
 #TODO: create a view to send the current friends, incoming friendrequests, blocked individuals, sent friend requests for a user
 @api_view(['POST'])
 def getUserInfo(request):
-    pass
+
+    user = getUser(data=request.data)
+    if user.is_valid() is False:
+        return error_returner('incorrect_format')
+    
+    #authenitcate user
+    sender=token_to_user(user.validated_data['userToken'])
+    if sender==None:
+        return error_returner('invalid_or_expired')
+    #construct user data (for now include -> incoming friend requests, friends, map_count) 
+    #for getting which maps you are part of it will be done in maps itself
+    #TODO: include users you have blocked
+    #TODO: include 
+
+
