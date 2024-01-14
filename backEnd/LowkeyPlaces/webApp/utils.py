@@ -7,7 +7,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from dotenv import load_dotenv
 import os
+import bcrypt
 
+def hash_password(password):
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed_password.decode('utf-8')
+
+def verify_password(input_password, hashed_password):
+    return bcrypt.checkpw(input_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 #load Key
 dotenv_path = '/LowkeySpots/' 
@@ -27,15 +35,15 @@ def create_token(elem: USER) -> str:
     return token
 
 #verify token
-def token_to_user(usrToken: str) -> QuerySet[USER]:
-    load=jwt.decode(usrToken, randomKey, algorithm='HS256')
+def token_to_user(usrToken: str) -> USER:
+    load=jwt.decode(usrToken, randomKey, 'HS256')
     found=USER.objects.filter(name=load['name'])
     exp=datetime.utcfromtimestamp(load['exp'])
     if found and exp > datetime.utcnow():
         return found.first()
     return None
 
-# friend methods
+# friend methodss
 action_map = {
 0:'sendFriendReq',
 1:'acceptFriendReq',
@@ -43,7 +51,7 @@ action_map = {
 3:'blockFriendReq',
 4:'removeFriend',
 5:'blockFriend',
-6:'removePendingFriendReq'
+6:'unblockUser'
 }
 def intToAction(num: int):
     if -1 < num < len(action_map):
