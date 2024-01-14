@@ -1,7 +1,11 @@
+// LIBRARIES
 import React from "react";
+import { Link as LinkScroll } from "react-scroll";
+import { Outlet, Link } from "react-router-dom";
+
+// IMAGES
 import Menu from "../assets/Menu.png";
 import Logo from "../assets/NinjaHead.png";
-import { Outlet, Link } from "react-router-dom";
 
 export const Navbar = ({ toggleModal }: { toggleModal: () => void }) => {
   return (
@@ -25,21 +29,39 @@ export const Navbar = ({ toggleModal }: { toggleModal: () => void }) => {
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
                 <a>
-                  <Link className="nav-link" to="/">
+                  <LinkScroll
+                    to="home"
+                    smooth={true}
+                    duration={100}
+                    className="nav-link"
+                  >
                     Home
-                  </Link>
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">
-                  About
+                  </LinkScroll>
                 </a>
               </li>
               <li className="nav-item">
                 <a>
-                  <Link className="nav-link" to="/contact">
+                  <LinkScroll
+                    to="section-2"
+                    smooth={true}
+                    duration={100}
+                    offset={-200}
+                    className="nav-link"
+                  >
+                    About
+                  </LinkScroll>
+                </a>
+              </li>
+              <li className="nav-item">
+                <a>
+                  <LinkScroll
+                    to="section-3"
+                    smooth={true}
+                    duration={100}
+                    className="nav-link"
+                  >
                     Contact
-                  </Link>
+                  </LinkScroll>
                 </a>
               </li>
               <li className="nav-item">

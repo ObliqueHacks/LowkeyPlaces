@@ -19,7 +19,10 @@ export const Modal = ({
 
   return (
     <React.Fragment>
-      <div className={modalActive ? "modal-box" : "modal-box inactive"}>
+      <div
+        className={modalActive ? "modal-box" : "modal-box inactive"}
+        id="login"
+      >
         <div
           className={loginActive ? "modal-container active" : "modal-container"}
         >
