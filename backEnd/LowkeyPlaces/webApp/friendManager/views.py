@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import getUser, toUserAction
+from .serializers import toUserAction
 from .models import USER
 from django.utils import timezone
 from rest_framework import status
@@ -15,24 +15,27 @@ from django.core.exceptions import ValidationError
 @api_view(['POST'])
 def makeRequest(request):
     
-    #authenticating sender
-    user=getUser(request.data)
-    if not user.is_valid():
-        return error_returner('no_token_provided')
-    sender=token_to_user(user.userToken)
-    if sender==None: return error_returner('invalid_or_expired')
-
-    #authenticating rec
-    req=toUserAction(request.data) 
-    if not req.is_valid():
-        return error_returner('no_user_provided')
+    #authenticating incoming data
+    user=toUserAction(data=request.data)
+    if user.is_valid() is False:
+        return error_returner('incorrect_format')
     
-    action=intToAction(req.validated_data['action'])
-    rec=USER.objects.filter(name=req.validated_data['name'])
-    if rec.first() is None or action is None:
+    #authenitcate user
+    sender=token_to_user(user.validated_data['userToken'])
+    if sender==None:
+        return error_returner('invalid_or_expired')
+
+    #authenticate action
+    action=intToAction(user.validated_data['action'])
+    if action is None:
+        return error_returner('invalid_action')
+    
+    #authenticate rec
+    rec=USER.objects.filter(name=user.validated_data['name'])
+    if rec.first() is None:
         return error_returner('rec_not_found_or_unkown_action')
 
-    #ensure its not a self reference
+    #protect against self ref
     rec=rec.first()            
     if (rec==sender): error_returner('self_reference')
 
@@ -45,7 +48,7 @@ def makeRequest(request):
             rec,sender=sender,rec
 
         #account for already friends or blocked
-        elif USER_RELATION.object.filter(user1=sender, user2=rec).first() is not None:
+        elif USER_RELATION.objects.filter(user1=sender, user2=rec).first() is not None:
             error_returner('already_friends_or_blocked')
 
         else:
@@ -69,7 +72,7 @@ def makeRequest(request):
             new_relation.save()
 
             #remove pending requests
-            FRIEND_REQUEST.objects.get(sendId=sender, recId=rec).first().delete()
+            FRIEND_REQUEST.objects.get(sendId=sender, recId=rec).delete().save()
             return Response(status=201)
         error_returner('no_friend_request_found')
             

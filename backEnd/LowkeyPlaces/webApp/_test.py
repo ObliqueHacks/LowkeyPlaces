@@ -1,11 +1,13 @@
 from django.test import TestCase
 from registrationAndLogin.views import register, login
 from registrationAndLogin.models import USER
-from friendManager import views
+from friendManager.views import makeRequest
 from rest_framework.test import APIRequestFactory
 from rest_framework.response import Response
 from rest_framework import status
 from utils import create_token
+from django.core.exceptions import ValidationError
+from friendManager.models import FRIEND_REQUEST, USER_RELATION
 
 class TestRegistrationAndLogin(TestCase):
     # Make 10 users
@@ -60,10 +62,27 @@ class TestRegistrationAndLogin(TestCase):
         self.assertEqual(response.data, {'genToken': create_token(USER.objects.get(name='User1'))})
 
 
-'''
 class TestFriendManager(TestRegistrationAndLogin):
-    def setUp(self):
-        super().setUp()
-        #assert friendships:
-'''
+
+    def testSendFriendReqest(self):
+        #write tokens for the registered users
+        user1=create_token(USER.objects.get(name='User1'))
+        user2=create_token(USER.objects.get(name='User2'))
+        user3=create_token(USER.objects.get(name='User3'))
+        user4=create_token(USER.objects.get(name='User4'))
+
+        
+        factory = APIRequestFactory()
+        #testing sending valid friend requests
+        request = factory.post("/api-auth/make-request/", {'userToken': user2, 'name':'User1', 'action': 0}, format='json')
+        response = makeRequest(request)
+        self.assertEqual(response.status_code, 201, response.data)
+        
+
+        '''
+        try:
+            FRIEND_REQUEST.get(sendId = 'User2', recId='User1')
+        except ValidationError:
+            self.fail("request_not_made")
+        '''
 
