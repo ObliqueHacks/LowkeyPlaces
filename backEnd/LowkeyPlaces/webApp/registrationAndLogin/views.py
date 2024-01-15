@@ -19,7 +19,7 @@ def register(request):
     else:
         return Response({'error': 'user_name_taken'}, status=status.HTTP_400_BAD_REQUEST)
         
-
+        
 @api_view(['Post'])
 def login(request):
     data = request.data

@@ -6,4 +6,4 @@ class toUserAction(serializers.Serializer):
     action=serializers.IntegerField()
 
 class getUser(serializers.Serializer):
-    userToken=serializers.CharField(max_length=200)
+    userToken=serializers.CharField(max_length=300)

@@ -17,6 +17,7 @@ class MAP_USER(models.Model):
     userId=models.ForeignKey(USER, on_delete=models.CASCADE, related_name='mapUserToUserId')
     status=models.IntegerField()
 
+#fix this so it doesnt inherit from userRelation but just User and make it two users.
 class MAP_REQEST(models.Model):
     usrRel = models.ForeignKey(USER_RELATION, on_delete=models.CASCADE, related_name='mapRequestToUserRelation')
     reqType = models.IntegerField()
