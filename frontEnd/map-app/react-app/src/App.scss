@@ -90,6 +90,7 @@ ol {
       color: $color-primary;
       transform: translateY(-1px);
       text-shadow: inset 0 0 10rem;
+      cursor: pointer;
     }
 
     &.nav-link-button {

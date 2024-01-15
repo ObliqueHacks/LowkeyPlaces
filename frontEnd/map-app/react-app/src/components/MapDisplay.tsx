@@ -3,15 +3,15 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import LocationMarkers from "./LocationMarkers";
 import LocationHome from "./LocationHome";
-import { LoginContext } from "../App";
+import { MapContext } from "../App";
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 function MapDisplay() {
-  const loggedIn = useContext(LoginContext);
+  const showMap = useContext(MapContext);
 
   const center: any = [51.505, -0.09];
-  if (loggedIn) {
+  if (showMap) {
     return (
       <div className={"map"}>
         <MapContainer center={center} zoom={14}>
@@ -25,7 +25,7 @@ function MapDisplay() {
       </div>
     );
   } else {
-    console.log("Map Not Being Displayed. User is not logged in.");
+    console.log("Map Not Being Displayed. User has not loaded a map.");
   }
 }
 export default MapDisplay;

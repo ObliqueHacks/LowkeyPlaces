@@ -154,7 +154,6 @@ const Register = ({
           onFocus={() => setUserFocus(true)}
           onBlur={() => setUserFocus(false)}
           placeholder="Username"
-          tabIndex={-1}
           required
         />
         <p
@@ -186,7 +185,6 @@ const Register = ({
           placeholder="Password"
           onFocus={() => setPwdFocus(true)}
           onBlur={() => setPwdFocus(false)}
-          tabIndex={-1}
           required
         />
         <p
@@ -217,7 +215,6 @@ const Register = ({
           placeholder="Retype Password"
           onFocus={() => setMatchFocus(true)}
           onBlur={() => setMatchFocus(false)}
-          tabIndex={-1}
           required
         />
         <p

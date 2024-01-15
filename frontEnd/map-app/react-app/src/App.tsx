@@ -7,21 +7,18 @@ import Home from "./pages/Home.tsx";
 import Contact from "./pages/Contact.tsx";
 import LoginModal from "./pages/LoginModal.tsx";
 
-const loggedIn = false;
-export const LoginContext = React.createContext(loggedIn);
+const showMap = false;
+export const MapContext = React.createContext(showMap);
 
 function App() {
   return (
     <div className="app">
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<Home></Home>}></Route>
-          <Route path="contact" element={<Contact></Contact>}></Route>
-        </Routes>
-      </BrowserRouter>
-      <LoginContext.Provider value={loggedIn}>
+      <Routes>
+        <Route index element={<Home></Home>}></Route>
+      </Routes>
+      <MapContext.Provider value={showMap}>
         <MapDisplay />
-      </LoginContext.Provider>
+      </MapContext.Provider>
     </div>
   );
 }

@@ -48,12 +48,13 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
       if (!err?.response) {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 400) {
-        setErrMsg("Missing Username or Password");
+        setErrMsg("Invalid Username or Password");
       } else if (err.response?.status === 401) {
         setErrMsg("Unauthorized");
       } else {
         setErrMsg("Login Failed");
       }
+      setSuccess(false);
       errRef.current.focus();
     }
   };
@@ -96,7 +97,7 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
           ref={userRef}
           onChange={(e) => setPwd(e.target.value)}
           value={pwd}
-          aria-describedby="passwordHelpBlock"
+          aria-describedby="passwordHez lpBlock"
           placeholder="Password"
           tabIndex={-1}
           required

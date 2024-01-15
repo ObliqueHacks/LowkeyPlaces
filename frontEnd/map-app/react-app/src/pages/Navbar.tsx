@@ -28,46 +28,44 @@ export const Navbar = ({ toggleModal }: { toggleModal: () => void }) => {
           <div className="collapse navbar-collapse" id="navbarOpen">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <a>
-                  <LinkScroll
-                    to="home"
-                    smooth={true}
-                    duration={100}
-                    className="nav-link"
-                  >
-                    Home
-                  </LinkScroll>
-                </a>
+                <LinkScroll
+                  to="home"
+                  smooth={true}
+                  duration={100}
+                  className="nav-link"
+                >
+                  Home
+                </LinkScroll>
               </li>
               <li className="nav-item">
-                <a>
-                  <LinkScroll
-                    to="section-2"
-                    smooth={true}
-                    duration={100}
-                    offset={-200}
-                    className="nav-link"
-                  >
-                    About
-                  </LinkScroll>
-                </a>
+                <LinkScroll
+                  to="section-2"
+                  smooth={true}
+                  duration={100}
+                  offset={-200}
+                  className="nav-link"
+                >
+                  About
+                </LinkScroll>
               </li>
               <li className="nav-item">
-                <a>
-                  <LinkScroll
-                    to="section-3"
-                    smooth={true}
-                    duration={100}
-                    className="nav-link"
-                  >
-                    Contact
-                  </LinkScroll>
-                </a>
+                <LinkScroll
+                  to="section-3"
+                  smooth={true}
+                  duration={100}
+                  className="nav-link"
+                >
+                  Contact
+                </LinkScroll>
               </li>
               <li className="nav-item">
-                <a className="nav-link nav-link-button" onClick={toggleModal}>
+                <LinkScroll
+                  to="home"
+                  className="nav-link nav-link-button"
+                  onClick={toggleModal}
+                >
                   Login
-                </a>
+                </LinkScroll>
               </li>
             </ul>
           </div>
