@@ -18,7 +18,7 @@ def makeRequest(request):
     #authenticating incoming data
     user=toUserAction(data=request.data)
     if user.is_valid() is False:
-        return error_returner('incorrect_format')
+        return error_returner('incorrect_format_a')
     
     #authenitcate user
     sender=token_to_user(user.validated_data['userToken'])
@@ -81,7 +81,6 @@ def makeRequest(request):
             return Response(status=201)
         return error_returner('no_friend_request_found')
 
-    #TODO: fill in these methods when u have time. Logic above already accounts for their existence
     if action=='blockFriendReq':
         #just add a block relation if you see this
         pass
@@ -95,22 +94,35 @@ def makeRequest(request):
     if action=='unblockUser':
         pass
 
-        
-#TODO: create a view to send the current friends, incoming friendrequests, blocked individuals, sent friend requests for a user
+
 @api_view(['POST'])
 def getUserInfo(request):
 
     user = getUser(data=request.data)
     if user.is_valid() is False:
-        return error_returner('incorrect_format')
+        return error_returner('incorrect_format_b')
     
     #authenitcate user
-    sender=token_to_user(user.validated_data['userToken'])
-    if sender==None:
+    user=token_to_user(user.validated_data['userToken'])
+    if user==None:
         return error_returner('invalid_or_expired')
-    #construct user data (for now include -> incoming friend requests, friends, map_count) 
+    
+    
+    #construct user data (for now include -> incoming friend requests, sent friend requests, friends, map_count) 
     #for getting which maps you are part of it will be done in maps itself
-    #TODO: include users you have blocked
-    #TODO: include 
+    incomingRequests=[i.sendId.name for i in FRIEND_REQUEST.objects.filter(recId=user)]
+    sentRequests=[i.recId.name for i in FRIEND_REQUEST.objects.filter(sendId=user)]
+    friends=[i.user2.name for i in USER_RELATION.objects.filter(user1=user, status=1)]
+    blocks=[i.user2.name for i in USER_RELATION.objects.filter(user1=user, status=2)]
+    mapCount=user.mapCount
+    return Response({
+        'incomingRequests': incomingRequests,
+        'sentRequests': sentRequests,
+        'friends': friends,
+        'blocks': blocks,
+        'mapCount': mapCount
+    }, status=status.HTTP_201_CREATED)
 
+
+    
 
