@@ -33,4 +33,5 @@ def makeMap(request) -> Response:
 def addUser(request):
     pass
 
-def getUserMaps
+def getUserMaps():
+    pass
