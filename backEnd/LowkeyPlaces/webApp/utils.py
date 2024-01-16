@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import os
 import bcrypt
 
-def hash_password(password):
+def hash_password(password) -> str:
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
     return hashed_password.decode('utf-8')
@@ -60,10 +60,12 @@ def intToAction(num: int):
 
 #map_request method
 map_request_action_map = {
+
 0: 'inviteCollaborator',
 1: 'inviteSpectator',
 2: 'inviteThroughLinkCollaborator', #makes them friends (make api-auth call itself)
 3: 'inviteThroughLinkSpectator',    #makes them friends
 4: 'acceptCollaborator',
 5: 'acceptSpectator',
+
 }

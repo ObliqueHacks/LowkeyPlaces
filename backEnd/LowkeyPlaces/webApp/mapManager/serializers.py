@@ -7,8 +7,9 @@ class mapSerializer(serializers.ModelSerializer):
         model = MAP
         fields = '__all__'
 
-class joinMapRequest(serializers.Serializer):
-    recId = serializers.CharField(max_length=30)
-    typeOfRequest = serializers.IntegerField()
+class mapRequest(serializers.Serializer):
+    mapId=serializers.IntegerField()
+    recId=serializers.CharField(max_length=30)
+    typeOfRequest=serializers.IntegerField()
     
     
