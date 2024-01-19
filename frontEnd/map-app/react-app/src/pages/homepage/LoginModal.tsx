@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
-import Register from "../components/Register.tsx";
-import Login from "../components/Login.tsx";
+import Register from "../../components/Register.tsx";
+import Login from "../../components/Login.tsx";
 
 export const Modal = ({
   modalActive,

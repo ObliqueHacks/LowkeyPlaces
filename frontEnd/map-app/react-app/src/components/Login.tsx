@@ -1,5 +1,6 @@
 import React from "react";
 import { useRef, useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthProvider.tsx";
 import axios from "../api/axios.ts";
 
@@ -15,6 +16,7 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
   const [success, setSuccess] = useState(false);
 
   const { setAuth }: any = useContext(AuthContext);
+  let navigate = useNavigate();
 
   useEffect(() => {
     userRef.current.focus();
@@ -43,6 +45,7 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
       setUser("");
       setPwd("");
       setSuccess(true);
+      navigate("/dashboard");
     } catch (err: any) {
       console.log(err.response);
       if (!err?.response) {
@@ -111,12 +114,6 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
           aria-live="assertive"
         >
           {errMsg}
-        </p>
-        <p
-          className={success ? "success-login" : "offscreen"}
-          aria-live="assertive"
-        >
-          You are logged in!
         </p>
       </form>
     </section>

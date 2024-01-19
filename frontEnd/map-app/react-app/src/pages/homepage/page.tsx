@@ -5,24 +5,24 @@ import { Link as LinkScroll } from "react-scroll";
 import { Fade } from "react-awesome-reveal";
 
 // IMAGES
-import MarkerImage from "../assets/hiking.jpg";
-import MapIcon from "../assets/Map.png";
-import FriendsIcon from "../assets/friends.png";
-import PhotoIcon from "../assets/Gallery.png";
-import MapImg from "../assets/interactivemap.jpg";
-import FriendImg from "../assets/friendsimg.jpg";
-import GalleryImg from "../assets/Galleryimg.png";
-import HeaderImg from "../assets/headerimg.jpg";
-import DistractionsIcon from "../assets/Broom.png";
-import EasyIcon from "../assets/Easy.png";
-import LowkeyIcon from "../assets/Secret.png";
+import MarkerImage from "../../assets/hiking.jpg";
+import MapIcon from "../../assets/Map.png";
+import FriendsIcon from "../../assets/friends.png";
+import PhotoIcon from "../../assets/Gallery.png";
+import MapImg from "../../assets/interactivemap.jpg";
+import FriendImg from "../../assets/friendsimg.jpg";
+import GalleryImg from "../../assets/Galleryimg.png";
+import HeaderImg from "../../assets/headerimg.jpg";
+import DistractionsIcon from "../../assets/Broom.png";
+import EasyIcon from "../../assets/Easy.png";
+import LowkeyIcon from "../../assets/Secret.png";
 
 // PAGES
 import Modal from "./LoginModal.tsx";
 import Navbar from "./Navbar.tsx";
 
 // COMPONENTS
-import LinkBar from "../components/LinkBar.tsx";
+import LinkBar from "../../components/LinkBar.tsx";
 
 function HomePage() {
   const [modalActive, setModal] = useState(false);

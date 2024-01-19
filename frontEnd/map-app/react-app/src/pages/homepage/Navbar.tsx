@@ -1,11 +1,11 @@
 // LIBRARIES
 import React from "react";
 import { Link as LinkScroll } from "react-scroll";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet} from "react-router-dom";
 
 // IMAGES
-import Menu from "../assets/Menu.png";
-import Logo from "../assets/NinjaHead.png";
+import Menu from "../../assets/Menu.png";
+import Logo from "../../assets/NinjaHead.png";
 
 export const Navbar = ({ toggleModal }: { toggleModal: () => void }) => {
   return (
@@ -71,7 +71,6 @@ export const Navbar = ({ toggleModal }: { toggleModal: () => void }) => {
           </div>
         </div>
       </nav>
-      <Outlet />
     </React.Fragment>
   );
 };
