@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Logo from "../../assets/NinjaHead.png";
 import { Link, useLocation } from "react-router-dom";
 
+import AuthContext from "../../context/AuthProvider.tsx";
+
 export const Sidebar = () => {
   const location = useLocation();
+  const { setAuth }: any = useContext(AuthContext);
+
   const [mapActive, setMapActive] = useState(
     location.pathname === "/dashboard"
   );
@@ -57,9 +61,13 @@ export const Sidebar = () => {
           </h4>
           <span className="friend-requests">12</span>
         </Link>
-        <Link to="/friends" className="sidebar-item">
+        <Link to="/" className="sidebar-item">
           <span className="material-symbols-outlined">logout</span>
-          <h4 className="display-6" id="dashboard-display">
+          <h4
+            className="display-6"
+            id="dashboard-display"
+            onClick={() => setAuth({})}
+          >
             Logout
           </h4>
         </Link>

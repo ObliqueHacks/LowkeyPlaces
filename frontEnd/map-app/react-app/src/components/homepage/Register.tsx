@@ -6,7 +6,7 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "../api/axios";
+import axios from "../../api/axios";
 
 const REGISTER_URL = "api-auth/homepage/register/";
 

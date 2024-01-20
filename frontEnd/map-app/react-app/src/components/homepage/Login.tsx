@@ -1,8 +1,8 @@
 import React from "react";
 import { useRef, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import AuthContext from "../context/AuthProvider.tsx";
-import axios from "../api/axios.ts";
+import AuthContext from "../../context/AuthProvider.tsx";
+import axios from "../../api/axios.ts";
 
 const LOGIN_URL = "api-auth/homepage/login/";
 
@@ -15,7 +15,7 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const { setAuth }: any = useContext(AuthContext);
+  const { auth, setAuth }: any = useContext(AuthContext);
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -37,11 +37,11 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
           withCredentials: true,
         }
       );
-      const accessToken = response?.data?.accessToken;
-      const roles = response?.data?.roles;
+      const accessToken = response?.data?.genToken;
       console.log(response);
       console.log(accessToken);
-      setAuth({ user, pwd, roles, accessToken });
+      console.log(auth);
+      setAuth({ user, pwd, accessToken });
       setUser("");
       setPwd("");
       setSuccess(true);

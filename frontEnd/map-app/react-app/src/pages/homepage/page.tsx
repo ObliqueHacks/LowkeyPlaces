@@ -22,7 +22,7 @@ import Modal from "./LoginModal.tsx";
 import Navbar from "./Navbar.tsx";
 
 // COMPONENTS
-import LinkBar from "../../components/LinkBar.tsx";
+import LinkBar from "../../components/homepage/LinkBar.tsx";
 
 function HomePage() {
   const [modalActive, setModal] = useState(false);
