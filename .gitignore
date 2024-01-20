@@ -1,4 +1,6 @@
 backend/venv
+backend/db.sqlite3
+backend/LowkeyPlaces/webApp/mapManager/migrations
 reference.txt
 logs
 *.log
@@ -12,6 +14,7 @@ node_modules
 dist
 dist-ssr
 *.local
+
 
 # Editor directories and files
 .vscode/*
