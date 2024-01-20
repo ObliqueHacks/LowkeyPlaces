@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import os
 import bcrypt
 
-def hash_password(password):
+def hash_password(password) -> str:
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
     return hashed_password.decode('utf-8')
@@ -21,7 +21,6 @@ def verify_password(input_password, hashed_password):
 dotenv_path = '/LowkeySpots/' 
 load_dotenv()
 randomKey=os.getenv('randomKey')
-
 
 def error_returner(error_message: str) -> Response:
     return Response({'error': error_message}, status=status.HTTP_400_BAD_REQUEST)
@@ -44,7 +43,6 @@ def token_to_user(usrToken: str) -> USER:
         return found.first()
     return None
 
-
 # friend methodss
 action_map = {
 0:'sendFriendReq',
@@ -60,3 +58,14 @@ def intToAction(num: int):
         return action_map[num]
     return None
 
+#map_request method
+map_request_action_map = {
+
+0: 'inviteCollaborator',
+1: 'inviteSpectator',
+2: 'inviteThroughLinkCollaborator', #makes them friends (make api-auth call itself)
+3: 'inviteThroughLinkSpectator',    #makes them friends
+4: 'acceptCollaborator',
+5: 'acceptSpectator',
+
+}
