@@ -22,6 +22,7 @@ dotenv_path = '/LowkeySpots/'
 load_dotenv()
 randomKey=os.getenv('randomKey')
 
+
 def error_returner(error_message: str) -> Response:
     return Response({'error': error_message}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -43,6 +44,7 @@ def token_to_user(usrToken: str) -> USER:
         return found.first()
     return None
 
+
 # friend methodss
 action_map = {
 0:'sendFriendReq',
@@ -57,3 +59,4 @@ def intToAction(num: int):
     if -1 < num < len(action_map):
         return action_map[num]
     return None
+

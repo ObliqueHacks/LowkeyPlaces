@@ -18,22 +18,22 @@ def makeRequest(request):
     #authenticating incoming data
     user=toUserAction(data=request.data)
     if user.is_valid() is False:
-        return error_returner('incorrect_format_a')
+        return Response(status = 400) #invalid format
     
     #authenitcate user
     sender=token_to_user(user.validated_data['userToken'])
     if sender==None:
-        return error_returner('invalid_or_expired')
+        return Response(status = 408) #expired
 
     #authenticate action
     action=intToAction(user.validated_data['action'])
     if action is None:
-        return error_returner('invalid_action')
+        return Response(status = 400) #invalid action
     
     #authenticate receiver
     rec=USER.objects.filter(name=user.validated_data['name'])
     if rec.first() is None:
-        return error_returner('rec_not_found_or_unkown_action')
+        return Response(status = 404) #User doesn't exist
 
     #protect against self ref
     rec=rec.first()            
@@ -43,13 +43,14 @@ def makeRequest(request):
     if action == 'sendFriendReq':
         #already friends or blocked
         if USER_RELATION.objects.filter(user1=sender, user2=rec).first() is not None:
-            return error_returner('already_friends_or_blocked')
+            return Response(status = 409)
+        
         #already pending request (resolve the case by changing the reqest type)
         elif FRIEND_REQUEST.objects.filter(sendId=rec, recId=sender).first() is not None:
             action='acceptFriendReq'
         #request already sent
         elif FRIEND_REQUEST.objects.filter(sendId=sender,recId=rec).first() is not None:
-            return error_returner('repeating_request')
+            return Response(status = 422)
         #process valid request
         else:
             new_instance=FRIEND_REQUEST(sendId=sender, recId=rec)
@@ -70,7 +71,7 @@ def makeRequest(request):
             #remove pending requests
             FRIEND_REQUEST.objects.get(sendId=sender, recId=rec).delete()
             return Response(status=201)
-        return error_returner('no_friend_request_found')
+        return Response(status = 404) 
             
     # if user rejects        
     if action=='rejectFriendReq':
@@ -85,7 +86,7 @@ def makeRequest(request):
         #just add a block relation if you see this
         pass
 
-    if action=='removeFriend':
+    if action == 'removeFriend':
         pass
 
     if action=='blockFriend':
@@ -100,12 +101,12 @@ def getUserInfo(request):
 
     user = getUser(data=request.data)
     if user.is_valid() is False:
-        return error_returner('incorrect_format_b')
+        return Response(status = 400)
     
     #authenitcate user
     user=token_to_user(user.validated_data['userToken'])
     if user==None:
-        return error_returner('invalid_or_expired')
+        return Response(status=400)
     
     
     #construct user data (for now include -> incoming friend requests, sent friend requests, friends, map_count) 
