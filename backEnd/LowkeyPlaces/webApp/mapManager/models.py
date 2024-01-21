@@ -12,16 +12,12 @@ class MAP(models.Model):
     lat=models.FloatField(default=0.0)
     long=models.FloatField(default=0.0)
     markerCount=models.IntegerField(default=0)
-    isDeleted=models.BooleanField(default=False)
     mapFolder = models.CharField(default=str(uuid.uuid4()), max_length=36)
 
 class MAP_USER(models.Model):
     mapId=models.ForeignKey(MAP, on_delete=models.CASCADE, related_name='mapUserToMapId')
     userId=models.ForeignKey(USER, on_delete=models.CASCADE, related_name='mapUserToUserId')
-    status=models.IntegerField()
-
-
-
+    status=models.IntegerField(default=0)
 
 #status -> 0: owner 1: collaborator 2: spectator
 class MAP_REQEST(models.Model):
