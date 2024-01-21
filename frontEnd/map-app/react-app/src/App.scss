@@ -773,6 +773,44 @@ h4 {
     }
   }
 
+  /* TOPBAR */
+  .topbar {
+    position: relative;
+    height: 5vh;
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    margin-left: auto;
+    padding: none;
+    bottom: 50px;
+    right: 10px;
+    gap: 2em;
+    span {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    span:hover {
+      color: $color-primary;
+      transform: translateY(-2px);
+    }
+    img {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-right: 10px;
+      display: flex;
+      bottom: 10px;
+    }
+
+    h6 {
+      font-weight: 300;
+      position: relative;
+      top: 1px;
+      font-size: 20px;
+    }
+  }
+
   /* FRIENDS */
 
   input[type="search"]::-webkit-search-decoration,
@@ -786,17 +824,21 @@ h4 {
     position: relative;
     left: 2rem;
     top: 5rem;
-    width: 70vh;
+    width: 73vw;
     display: grid;
-    grid-template-rows: auto auto 3fr;
+    grid-template-rows: auto auto auto 3fr;
+
+    .topbar {
+    }
 
     .friends-bar {
       display: flex;
+      align-items: center;
+      justify-content: center;
       position: relative;
       height: 30px;
       gap: 6rem;
       cursor: pointer;
-
       background-color: $color-box-background;
       box-shadow: 0 1rem 3rem rgba(250, 94, 3, 0.08);
       border-radius: 15px;
@@ -807,9 +849,9 @@ h4 {
 
       .friends-item {
         display: flex;
+        flex-direction: row;
         align-items: center;
         position: relative;
-        right: 20px;
         transition: all 0.3s ease;
         &:hover {
           color: $color-primary;
@@ -825,7 +867,7 @@ h4 {
       box-shadow: 0 1rem 3rem rgba(250, 94, 3, 0.08);
       border-radius: 2rem;
       height: 60vh;
-      width: 90vh;
+      width: 73vw;
       transition: all 0.3s ease;
       &:hover {
         box-shadow: none;
@@ -838,7 +880,7 @@ h4 {
         left: 1rem;
         top: 1rem;
         input {
-          width: 80%;
+          width: 90%;
           background-color: $color-secondary;
           text-decoration: none;
           outline: none;
@@ -871,6 +913,8 @@ h4 {
 
       .send-friend-request {
         display: flex;
+        text-align: center;
+        justify-content: center;
         margin-left: 10px;
         margin-right: 30px;
         text-decoration: none;
@@ -879,7 +923,7 @@ h4 {
         background: $color-primary;
         border-radius: 2rem;
         font-size: 11px;
-        width: 15%;
+        width: 10%;
         height: 110%;
         transition: all 0.3s ease;
         &:hover {
@@ -946,6 +990,96 @@ h4 {
             transition: all 0.3s ease;
             &:hover {
               color: $color-primary;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .maps {
+    position: relative;
+    left: 2rem;
+    top: 5rem;
+    width: 73vw;
+    display: grid;
+    grid-template-rows: auto auto 3fr;
+
+    .mheader {
+      display: flex;
+      flex-direction: row;
+      button {
+        margin-left: auto;
+        padding: 10px;
+        background: $gradient-primary;
+        border: none;
+        text-decoration: none;
+        outline: none;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        position: relative;
+        right: 1rem;
+        transition: all 0.3s ease;
+        &:hover {
+          transform: translateY(-5px);
+        }
+      }
+    }
+
+    .map-dashboard {
+      position: relative;
+      top: 2rem;
+      background-color: $color-box-background;
+      box-shadow: 0 1rem 3rem rgba(250, 94, 3, 0.08);
+      border-radius: 2rem;
+      height: 80vh;
+      width: 73vw;
+      transition: all 0.3s ease;
+      .map-list {
+        position: relative;
+        top: 2rem;
+        max-height: 73vh;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        li {
+          width: 63em;
+          gap: 1rem;
+          display: flex;
+          flex-direction: row;
+          h4 {
+            color: $color-primary;
+          }
+
+          .card {
+            box-shadow: 0 1rem 3rem rgba(250, 94, 3, 0.1);
+            transition: all 0.3s ease;
+            &:hover {
+              box-shadow: none;
+              transition: translateY(-2px);
+            }
+          }
+
+          .card-body {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 0.2rem;
+
+            p {
+              color: white;
+            }
+
+            &:hover {
+              background-color: $color-primary;
+              h4 {
+                color: $color-secondary;
+              }
+              p {
+                color: $color-secondary;
+              }
             }
           }
         }

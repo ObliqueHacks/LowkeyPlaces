@@ -3,6 +3,7 @@ import { Sidebar } from "../global/Sidebar";
 import AllFriends from "../../components/friends/AllFriends.tsx";
 import Pending from "../../components/friends/Pending.tsx";
 import AddFriends from "../../components/friends/AddFriends.tsx";
+import Topbar from "../global/Topbar.tsx";
 
 import AuthContext from "../../context/AuthProvider.tsx";
 
@@ -89,11 +90,10 @@ const Friends = () => {
     <div className="container">
       <Sidebar></Sidebar>
       <div className="friends">
+        <Topbar></Topbar>
         <h1 className="fheader">Friends</h1>
 
         <div className="friends-bar">
-          <br />
-          <br />
           <span className="friends-item" onClick={() => handleCatgeory("all")}>
             All
           </span>
