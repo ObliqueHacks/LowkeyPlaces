@@ -76,6 +76,7 @@ class TestFriendManager(TestCase, CommonSetup):
     def setUp(self):
         super().start()
         
+        
     def testSendFriendReqest(self):
         #sending valid friend requests
         request = self.factory.post("/api-auth/dashboard/make-request/", {'userToken': self.user2, 'name':'User1', 'action': 0}, format='json')
@@ -105,6 +106,7 @@ class TestFriendManager(TestCase, CommonSetup):
         except ValidationError:
             self.fail("request_not_made")
         '''
+    
     
     def testAcceptFriendRequest(self):
 
@@ -156,10 +158,10 @@ class TestFriendManager(TestCase, CommonSetup):
         response=makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user1, 'name':'User4', 'action': 2}, format='json'))
         self.assertEqual(response.status_code, 400)
     
+    
 class TestUserInfo(TestCase, CommonSetup):
     def setUp(self):
         super().start()
-
     def testGetUserinfo(self):
         #send friend requests
         makeRequest(self.factory.post("/api-auth/dashboard/make-request/", {'userToken': self.user2, 'name':'User1', 'action': 0}, format='json'))
