@@ -42,6 +42,15 @@ def makeMap(request) -> Response:
         mapObject.delete()
         mapUserInstance.delete()
         return Response(status=500)
+    
+    directory_path = "/lowkeySpots/frontEnd/map-app/react-app/src/maps/" + mapObject.mapFolder + "/markers"
+    try:
+        os.makedirs(directory_path)
+    except OSError as e:
+        mapObject.delete()
+        mapUserInstance.delete()
+        return Response(status=500)
+    
     return Response(status=201, data={'mapId': mapObject.id})
 
 
@@ -98,12 +107,11 @@ def getUserMaps(request) -> Response:
     return Response(status=201, data={"mapId": list_of_mapId})
 
 
-def getMapFromId(request) -> Response:
-    
+def template(request, func1: function)->Response:
+        
     #authenticate user
     user=userEquals(request)
     if user is None: return Response(status=408)
-    
     
     #authenticate mapId
     mapId=getMap(data=request.data)
@@ -111,27 +119,35 @@ def getMapFromId(request) -> Response:
         return Response(status=400)
     mapId=mapId.validated_data['mapId']
     
-    
     #authenticate this is a real map
     try:
         mapId=MAP.objects.get(id=mapId)
-        #authenticate this map belonds to user (and for now also authenticate they are owner)
+        #authenticate this map belongs to user
         try:
             #authenticate this map even has the user
-            mapData=MAP_USER.objects.get(mapId=mapId, userId=user)
-            
-            #send map_data
-            mapData=mapSerializer(mapId)
-            return Response(status=201, data=mapData.data)
+            MAP_USER.objects.get(mapId=mapId, userId=user)
+            #perform action    
+            return func1(mapId,user,request)
+        
         
         except ObjectDoesNotExist:
             return Response(status=400)
-        
     except ObjectDoesNotExist:
-        return Response(status=400)
+        return Response(status=400)    
+
+
+def getMapFromId(request) -> Response:
+    def discrete(mapId,user,request):
+        mapData=mapSerializer(mapId)
+        return Response(status=201, data=mapData.data)
+    return template(request=request, func1=discrete())
 
 def getMapUsers(request):
-    pass    
+    def discrete(mapId,user,request):
+        mapUsers=MAP_USER.objects.filter(mapId=mapId)
+        mapUsers={i.userId.name: i.status for i in mapUsers}
+        return Response(status=201,data=mapUsers)
+    return template(request=request, func1=discrete())
 
 def editMapFeatures(request) -> Response:
     pass
