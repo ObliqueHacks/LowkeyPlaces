@@ -8,6 +8,7 @@ from friendManager.serializers import getUser
 from utils import token_to_user, error_returner
 from .models import MAP_USER
 from django.core.exceptions import ValidationError
+import os
 # Create your views here.
 
 def userEquals(request):
@@ -21,18 +22,27 @@ def userEquals(request):
 def makeMap(request) -> Response:
     #authenticate user: 
     user=userEquals(request.data)
-    if user is None: error_returner("invalid_or_expired_token")
+    if user is None: return Response(status=400)
     
     #make sure its a valid map request
     mapObject = mapRequest(data=request.data)
     if mapObject.is_valid() is False:
-        error_returner("internal error")
-    mapObject=mapObject.save()
+        return Response(status=500)
     
     #make map user with map number
     mapUserInstance = MAP_USER(mapId=mapObject, userId=user, status=0)
     mapUserInstance.save()
-    return Response(status=201,date={'success':'map_created'})
+    
+    #make map folder
+    directory_path = "/lowkeySpots/frontEnd/map-app/react-app/src/maps/" + mapObject.mapFolder
+    try:
+        os.makedirs(directory_path)
+    except OSError as e:
+        mapObject.delete()
+        mapUserInstance.delete()
+        return Response(status=500)
+    return Response(status=201, data={'mapId': mapObject.id})
+
 
 def getMapLink(request) -> Response:
     pass

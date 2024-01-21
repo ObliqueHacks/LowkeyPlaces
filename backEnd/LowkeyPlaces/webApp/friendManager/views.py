@@ -48,9 +48,11 @@ def makeRequest(request):
         #already pending request (resolve the case by changing the reqest type)
         elif FRIEND_REQUEST.objects.filter(sendId=rec, recId=sender).first() is not None:
             action='acceptFriendReq'
+            
         #request already sent
         elif FRIEND_REQUEST.objects.filter(sendId=sender,recId=rec).first() is not None:
             return Response(status = 422)
+        
         #process valid request
         else:
             new_instance=FRIEND_REQUEST(sendId=sender, recId=rec)
@@ -83,7 +85,6 @@ def makeRequest(request):
         return error_returner('no_friend_request_found')
 
     if action=='blockFriendReq':
-        #just add a block relation if you see this
         pass
 
     if action == 'removeFriend':
@@ -123,7 +124,3 @@ def getUserInfo(request):
         'blocks': blocks,
         'mapCount': mapCount
     }, status=status.HTTP_201_CREATED)
-
-
-    
-
