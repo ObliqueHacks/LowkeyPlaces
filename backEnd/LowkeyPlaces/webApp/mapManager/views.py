@@ -156,7 +156,9 @@ def getMapFromId(request) -> Response:
     def discrete(mapId,user,request):
         mapData=mapSerializer(mapId)
         return Response(status=201, data=mapData.data)
-    return template(request=request, func1=discrete())
+    return template(request=request, func1=discrete)
+
+
 
 @api_view(['POST'])
 def getMapUsers(request):
@@ -164,20 +166,20 @@ def getMapUsers(request):
         mapUsers=MAP_USER.objects.filter(mapId=mapId)
         mapUsers={i.userId.name: i.status for i in mapUsers}
         return Response(status=201,data=mapUsers)
-    return template(request=request, func1=discrete())
+    return template(request=request, func1=discrete)
 
 @api_view(['POST'])
 def editMapFeatures(request) -> Response:
     def discrete(mapId,user,request):
         pass
     
-    return template(request=request, func1=discrete())
+    return template(request=request, func1=discrete)
 
 @api_view(['POST'])
 def deleteMap(request) -> Response:
     def discrete(mapId,user,request):
         pass
-    return template(request=request, func1=discrete())
+    return template(request=request, func1=discrete)
 
 
 @api_view(['POST'])

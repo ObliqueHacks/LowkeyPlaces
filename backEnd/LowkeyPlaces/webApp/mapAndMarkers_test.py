@@ -53,8 +53,33 @@ class TestMakeMap(TestCase, CommonSetup):
         self.assertEqual(response.data, {'mapId': [1, 2, 3, 5, 6]})
         self.assertEqual(201, response.status_code)
         
-    def test_addFriendToMap(self):
-        pass
+    def test_getMapFromId(self):
+        request=self.factory.post('/api-auth/map/make-map/', {"userToken": self.user1, "title":"Food Sauga"}, format='json')
+        makeMap(request)
+        request=self.factory.post('/api-auth/map/make-map/', {"userToken": self.user1, "title":"Trails Toronto"}, format='json')
+        makeMap(request)
+        
+        request=self.factory.post('/api-auth/map/make-map/', {"userToken": self.user2, "title":"dontBelong"}, format='json')
+        makeMap(request)
+        
+        #correct map
+        request=self.factory.post('/api-auth/map/get-map/',  {"userToken": self.user1, "mapId":"1"})
+        response=getMapFromId(request)
+        self.assertEqual({'title': 'Food Sauga', 'desc': '', 'theme': 0, 'lat': 0.0, 'long': 0.0}, response.data)
+        
+        #map that doesnt exist
+        request=self.factory.post('/api-auth/map/get-map/',  {"userToken": self.user1, "mapId":"4"})
+        response=getMapFromId(request)
+        self.assertNotEqual(201, response.status_code)
+        
+        #map that doesnt belong to user
+        request=self.factory.post('/api-auth/map/get-map/',  {"userToken": self.user1, "mapId":"3"})
+        response=getMapFromId(request)
+        self.assertNotEqual(201, response.status_code)
+        
+        
+        
+        
         
         
         
