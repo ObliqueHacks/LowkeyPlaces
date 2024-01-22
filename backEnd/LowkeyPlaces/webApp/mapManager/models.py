@@ -11,6 +11,8 @@ class MAP(models.Model):
     theme=models.IntegerField(default=0)
     lat=models.FloatField(default=0.0)
     long=models.FloatField(default=0.0)
+    
+    
     markerCount=models.IntegerField(default=0)
     mapFolder = models.CharField(default=str(uuid.uuid4()), max_length=36)
 
@@ -23,4 +25,3 @@ class MAP_USER(models.Model):
 class MAP_REQEST(models.Model):
     usrRel = models.ForeignKey(USER_RELATION, on_delete=models.CASCADE, related_name='mapRequestToUserRelation')
     reqType = models.IntegerField()
-    status = models.IntegerField()

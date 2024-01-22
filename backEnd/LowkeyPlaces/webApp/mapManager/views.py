@@ -10,6 +10,7 @@ from .models import MAP_USER, MAP
 from django.core.exceptions import ValidationError
 import os
 from django.core.exceptions import ObjectDoesNotExist
+from typing import Callable
 # Create your views here.
 
 def userEquals(request):
@@ -18,7 +19,7 @@ def userEquals(request):
         return None
     user=token_to_user(user.validated_data['userToken'])
     return user
-    
+
 @api_view(['POST'])
 def makeMap(request) -> Response:
     #authenticate user: 
@@ -53,11 +54,11 @@ def makeMap(request) -> Response:
     
     return Response(status=201, data={'mapId': mapObject.id})
 
-
+@api_view(['POST'])
 def getMapLink(request) -> Response:
     pass
  
-               
+@api_view(['POST'])               
 def addFriendToMap(request) -> Response:
     
     #authenticate user and reciever
@@ -96,7 +97,7 @@ def addFriendToMap(request) -> Response:
     except ObjectDoesNotExist:
         return Response(status=404)
     
-    
+@api_view(['POST'])    
 def getUserMaps(request) -> Response:
     #authenticate suer
     user=userEquals(request)
@@ -106,9 +107,8 @@ def getUserMaps(request) -> Response:
     list_of_mapId = [t.mapId.id for t in userMaps]
     return Response(status=201, data={"mapId": list_of_mapId})
 
-
-def template(request, func1: function)->Response:
-        
+def template(request, func1:Callable)->Response:
+    
     #authenticate user
     user=userEquals(request)
     if user is None: return Response(status=408)
@@ -129,19 +129,20 @@ def template(request, func1: function)->Response:
             #perform action    
             return func1(mapId,user,request)
         
-        
         except ObjectDoesNotExist:
             return Response(status=400)
     except ObjectDoesNotExist:
         return Response(status=400)    
 
 
+@api_view(['POST'])
 def getMapFromId(request) -> Response:
     def discrete(mapId,user,request):
         mapData=mapSerializer(mapId)
         return Response(status=201, data=mapData.data)
     return template(request=request, func1=discrete())
 
+@api_view(['POST'])
 def getMapUsers(request):
     def discrete(mapId,user,request):
         mapUsers=MAP_USER.objects.filter(mapId=mapId)
@@ -149,5 +150,16 @@ def getMapUsers(request):
         return Response(status=201,data=mapUsers)
     return template(request=request, func1=discrete())
 
+@api_view(['POST'])
 def editMapFeatures(request) -> Response:
-    pass
+    def discrete(mapId,user,request):
+        pass
+    
+    return template(request=request, func1=discrete())
+
+@api_view(['POST'])
+def deleteMap(request) -> Response:
+    def discrete(mapId,user,request):
+        pass
+    
+    return template(request=request, func1=discrete())

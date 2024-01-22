@@ -37,7 +37,7 @@ def makeRequest(request):
 
     #protect against self ref
     rec=rec.first()            
-    if (rec==sender): return error_returner('self_reference')
+    if (rec==sender): return Response(status = 400)
 
     #handle friend request
     if action == 'sendFriendReq':
