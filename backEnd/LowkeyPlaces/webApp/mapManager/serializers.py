@@ -10,7 +10,7 @@ class mapSerializer(serializers.ModelSerializer):
 class mapRequest(serializers.Serializer):
     mapId=serializers.IntegerField()
     recId=serializers.CharField(max_length=30)
-    typeOfRequest=serializers.IntegerField()
+    reqType=serializers.IntegerField()
    
 class getMap(serializers.Serializer):
     mapId=serializers.IntegerField()
