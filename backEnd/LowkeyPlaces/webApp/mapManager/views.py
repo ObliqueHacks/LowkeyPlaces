@@ -66,7 +66,6 @@ def makeMap(request) -> Response:
  
 @api_view(['POST'])               
 def addFriendToMap(request) -> Response:
-    
     #authenticate user and reciever
     user=userEquals(request)
     if user is None: return Response(status=408)
@@ -77,17 +76,24 @@ def addFriendToMap(request) -> Response:
     mapId=tempVar.mapId
     reqType=tempVar.typeOfRequest
     
+    #ensure request is either collaborator or spectator
     if reqType not in [1,2]:
-        Response(status=400)    
+        Response(status=400)
+        
+        
     #authenticate user even has permissions to add (is a collaborator or owner)
     try:
         checker = MAP_USER.objects.get(userId=user, mapId=mapId)
-        if checker.status == 2:
+        
+        #make sure spectator can just add more spectators
+        if checker.status == 2 and reqType != 1:
             return Response(status=427)
     except ObjectDoesNotExist:
         return Response(status=427)
 
+
     #add them to the map by default instead of creating a mapRequest (since they are already Friends)
+    #check if rec is even valid
     try:
         recId=USER.objects.get(name=recId)
         try:
@@ -142,6 +148,7 @@ def template(request, func1:Callable)->Response:
         try:
             #authenticate this map even has the user
             MAP_USER.objects.get(mapId=mapId, userId=user)
+            
             #perform action    
             return func1(mapId,user,request)
         
@@ -155,10 +162,13 @@ def template(request, func1:Callable)->Response:
 def getMapFromId(request) -> Response:
     def discrete(mapId,user,request):
         mapData=mapSerializer(mapId)
-        return Response(status=201, data=mapData.data)
+        status = MAP_USER.objects.get(mapId=mapId, userId=user).status
+        response_data = {
+            'mapData': mapData.data,
+            'status': status,
+        }
+        return Response(status=201, data=response_data)
     return template(request=request, func1=discrete)
-
-
 
 @api_view(['POST'])
 def getMapUsers(request):
@@ -167,6 +177,7 @@ def getMapUsers(request):
         mapUsers={i.userId.name: i.status for i in mapUsers}
         return Response(status=201,data=mapUsers)
     return template(request=request, func1=discrete)
+
 
 @api_view(['POST'])
 def editMapFeatures(request) -> Response:

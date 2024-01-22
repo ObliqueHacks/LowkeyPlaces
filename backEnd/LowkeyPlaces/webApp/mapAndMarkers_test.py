@@ -78,8 +78,3 @@ class TestMakeMap(TestCase, CommonSetup):
         self.assertNotEqual(201, response.status_code)
         
         
-        
-        
-        
-        
-        
