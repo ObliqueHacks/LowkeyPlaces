@@ -1,8 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Logo from "../../assets/NinjaHead.png";
 import { Link, useLocation } from "react-router-dom";
 
 import AuthContext from "../../context/AuthProvider.tsx";
+import axios from "../../api/axios.ts";
+const FRIENDS_INFO_URL = "api-auth/dashboard/user-info/"; // Getting User Info
 
 export const Sidebar = () => {
   const location = useLocation();
@@ -14,6 +16,37 @@ export const Sidebar = () => {
   const [friendsActive, setFriendsActive] = useState(
     location.pathname === "/friends"
   );
+
+  const { auth }: any = useContext(AuthContext);
+  const { accessToken }: any = auth;
+  console.log(accessToken);
+
+  const [incomingRequests, setIncomingRequests] = useState([]);
+
+  useEffect(() => {
+    const processFriendRequests = async () => {
+      try {
+        const response: any = await axios.post(
+          FRIENDS_INFO_URL,
+          JSON.stringify({ userToken: accessToken }),
+          { headers: { "Content-type": "application/json" } }
+        );
+
+        const parsedResponse = JSON.parse(response.request.response);
+
+        const { incomingRequests } = parsedResponse;
+        setIncomingRequests(incomingRequests);
+        console.log(incomingRequests);
+      } catch (err: any) {
+        console.log(err.response);
+        if (err.response?.status === 400) {
+          console.log("Something went wrong");
+        }
+      }
+    };
+
+    processFriendRequests();
+  }, [accessToken]);
 
   console.log(mapActive, friendsActive);
 
@@ -59,7 +92,7 @@ export const Sidebar = () => {
           <h4 className="display-6" id="dashboard-display">
             Friends
           </h4>
-          <span className="friend-requests">12</span>
+          <span className="friend-requests">{incomingRequests.length}</span>
         </Link>
         <Link to="/" className="sidebar-item">
           <span className="material-symbols-outlined">logout</span>

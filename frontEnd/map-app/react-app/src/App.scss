@@ -655,7 +655,7 @@ h4 {
 .container {
   color: white;
   display: grid;
-  width: 96%;
+
   margin: 0 auto;
   gap: 1.8rem;
   grid-template-columns: 12rem auto 23rem;
@@ -828,15 +828,13 @@ h4 {
     display: grid;
     grid-template-rows: auto auto auto 3fr;
 
-    .topbar {
-    }
-
     .friends-bar {
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       height: 30px;
+      width: 95%;
       gap: 6rem;
       cursor: pointer;
       background-color: $color-box-background;
@@ -867,7 +865,7 @@ h4 {
       box-shadow: 0 1rem 3rem rgba(250, 94, 3, 0.08);
       border-radius: 2rem;
       height: 60vh;
-      width: 73vw;
+      width: 95%;
       transition: all 0.3s ease;
       &:hover {
         box-shadow: none;
@@ -923,7 +921,7 @@ h4 {
         background: $color-primary;
         border-radius: 2rem;
         font-size: 11px;
-        width: 10%;
+        width: 8%;
         height: 110%;
         transition: all 0.3s ease;
         &:hover {
@@ -997,11 +995,11 @@ h4 {
     }
   }
 
+  /* MAPS */
   .maps {
     position: relative;
     left: 2rem;
     top: 5rem;
-    width: 73vw;
     display: grid;
     grid-template-rows: auto auto 3fr;
 
@@ -1037,16 +1035,21 @@ h4 {
       height: 80vh;
       width: 73vw;
       transition: all 0.3s ease;
+
+      &:hover {
+        box-shadow: none;
+      }
       .map-list {
         position: relative;
-        top: 2rem;
-        max-height: 73vh;
+        top: 3rem;
+        max-height: 80vh;
         overflow: auto;
         display: flex;
         flex-direction: column;
+        justify-content: center;
         gap: 1.5rem;
         li {
-          width: 63em;
+          width: 95%;
           gap: 1rem;
           display: flex;
           flex-direction: row;
@@ -1055,12 +1058,6 @@ h4 {
           }
 
           .card {
-            box-shadow: 0 1rem 3rem rgba(250, 94, 3, 0.1);
-            transition: all 0.3s ease;
-            &:hover {
-              box-shadow: none;
-              transition: translateY(-2px);
-            }
           }
 
           .card-body {
@@ -1083,6 +1080,60 @@ h4 {
             }
           }
         }
+      }
+    }
+  }
+
+  /* MAP EDITOR */
+  .map-editor {
+    position: relative;
+    left: 2rem;
+    top: 5rem;
+    width: 73vw;
+    display: flex;
+    flex-direction: column;
+
+    .mheader {
+      display: flex;
+      flex-direction: row;
+      button {
+        margin-left: auto;
+        padding: 10px;
+        background: $gradient-primary;
+        border: none;
+        text-decoration: none;
+        outline: none;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        position: relative;
+        right: 1rem;
+        transition: all 0.3s ease;
+        &:hover {
+          transform: translateY(-5px);
+        }
+      }
+    }
+
+    .map-editor-display {
+      position: relative;
+      top: 2rem;
+      background-color: $color-box-background;
+      box-shadow: 0 1rem 3rem rgba(250, 94, 3, 0.08);
+      border-radius: 2rem;
+      height: 83vh;
+      width: 73vw;
+      transition: all 0.3s ease;
+      &:hover {
+        box-shadow: none;
+      }
+
+      .leaflet-container {
+        height: 100%;
+        width: 100%;
+        border-radius: 10px;
+        display: flex;
       }
     }
   }
