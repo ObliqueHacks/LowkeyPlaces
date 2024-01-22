@@ -6,6 +6,7 @@ class mapSerializer(serializers.ModelSerializer):
         model = MAP
         fields = ["title", "desc", "theme", "lat", "long"]
 
+
 class mapRequest(serializers.Serializer):
     mapId=serializers.IntegerField()
     recId=serializers.CharField(max_length=30)

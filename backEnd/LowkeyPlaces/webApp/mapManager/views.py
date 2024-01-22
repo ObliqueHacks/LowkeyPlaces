@@ -42,7 +42,6 @@ def makeMap(request) -> Response:
     
     #join the path to correct path from lowkeySpots/
     directory_path = os.path.join(new_path, "frontEnd/map-app/react-app/src/maps/", mapObject.mapFolder)
-    print(directory_path)
     
     #make map directory
     try:
@@ -54,7 +53,6 @@ def makeMap(request) -> Response:
   
     #make marker directory
     directory_path = os.path.join(directory_path, "markers")
-    print(directory_path)
     
     try:
         os.makedirs(directory_path)
@@ -96,14 +94,24 @@ def addFriendToMap(request) -> Response:
             curr_relation = USER_RELATION.objects.get(user1=user,user2=recId)
             #if they are friends add a newMapUser
             if curr_relation.status==1:
+                
+                #ensure they arent already part of the map
+                if MAP_USER.objects.filter(mapId=mapId, userId=recId, status=reqType) != None:
+                    return Response(status=404)
+                
+                
+                #correct request so proceed:
                 new_instance=MAP_USER(mapId=mapId, userId=recId, status=reqType)
                 new_instance.save()
+                return Response(status=201)
+            
             else:
-                Response(status=404)
+                return Response(status=404)
         except ObjectDoesNotExist:
             return Response(status=404)
     except ObjectDoesNotExist:
         return Response(status=404)
+    
     
 @api_view(['POST'])    
 def getUserMaps(request) -> Response:
@@ -113,10 +121,10 @@ def getUserMaps(request) -> Response:
     #return list of current maps
     userMaps = MAP_USER.objects.filter(userId=user)
     list_of_mapId = [t.mapId.id for t in userMaps]
-    return Response(status=201, data={"mapId": list_of_mapId})
+    return Response(status=201, data={'mapId': list_of_mapId})
+
 
 def template(request, func1:Callable)->Response:
-    
     #authenticate user
     user=userEquals(request)
     if user is None: return Response(status=408)
