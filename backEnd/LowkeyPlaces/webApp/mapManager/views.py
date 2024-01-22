@@ -30,21 +30,32 @@ def makeMap(request) -> Response:
     mapObject = mapSerializer(data=request.data)
     if mapObject.is_valid() is False:
         return Response(status=500)
+    mapObject = mapObject.save()
     
     #make map user with map number
     mapUserInstance = MAP_USER(mapId=mapObject, userId=user, status=0)
     mapUserInstance.save()
     
-    #make map folder
-    directory_path = "/lowkeySpots/frontEnd/map-app/react-app/src/maps/" + mapObject.mapFolder
+    #show a 3 level higher
+    current_directory = os.getcwd()
+    new_path = os.path.abspath(os.path.join(current_directory, "..", "..", ".."))
+    
+    #join the path to correct path from lowkeySpots/
+    directory_path = os.path.join(new_path, "frontEnd/map-app/react-app/src/maps/", mapObject.mapFolder)
+    print(directory_path)
+    
+    #make map directory
     try:
         os.makedirs(directory_path)
     except OSError as e:
         mapObject.delete()
         mapUserInstance.delete()
         return Response(status=500)
+  
+    #make marker directory
+    directory_path = os.path.join(directory_path, "markers")
+    print(directory_path)
     
-    directory_path = "/lowkeySpots/frontEnd/map-app/react-app/src/maps/" + mapObject.mapFolder + "/markers"
     try:
         os.makedirs(directory_path)
     except OSError as e:
@@ -53,10 +64,7 @@ def makeMap(request) -> Response:
         return Response(status=500)
     
     return Response(status=201, data={'mapId': mapObject.id})
-
-@api_view(['POST'])
-def getMapLink(request) -> Response:
-    pass
+ 
  
 @api_view(['POST'])               
 def addFriendToMap(request) -> Response:
@@ -161,5 +169,9 @@ def editMapFeatures(request) -> Response:
 def deleteMap(request) -> Response:
     def discrete(mapId,user,request):
         pass
-    
     return template(request=request, func1=discrete())
+
+
+@api_view(['POST'])
+def getMapLink(request) -> Response:
+    pass

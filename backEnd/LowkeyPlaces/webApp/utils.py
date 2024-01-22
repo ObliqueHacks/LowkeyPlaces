@@ -8,6 +8,7 @@ from rest_framework import status
 from dotenv import load_dotenv
 import os
 import bcrypt
+from jwt.exceptions import PyJWTError
 
 def hash_password(password) -> str:
     salt = bcrypt.gensalt()
@@ -36,11 +37,14 @@ def create_token(elem: USER) -> str:
 
 #verify token
 def token_to_user(usrToken: str) -> USER:
-    load=jwt.decode(usrToken, randomKey, 'HS256')
-    found=USER.objects.filter(name=load['name'])
-    exp=datetime.utcfromtimestamp(load['exp'])
-    if found and exp > datetime.utcnow():
-        return found.first()
+    try:
+        load=jwt.decode(usrToken, randomKey, 'HS256')
+        found=USER.objects.filter(name=load['name'])
+        exp=datetime.utcfromtimestamp(load['exp'])
+        if found and exp > datetime.utcnow():
+            return found.first()
+    except PyJWTError:
+        return None
     return None
 
 # friend methodss

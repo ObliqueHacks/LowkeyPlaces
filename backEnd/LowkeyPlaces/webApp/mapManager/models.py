@@ -4,9 +4,11 @@ from registrationAndLogin.models import USER
 from utils import hash_password
 import uuid
 
-# Create your models here.
+def generate_uuid():
+    return str(uuid.uuid4())
+
 class MAP(models.Model):
-    title=models.CharField(max_length=30)
+    title=models.CharField(max_length=30, default="unamed")
     desc=models.TextField(default="")
     theme=models.IntegerField(default=0)
     lat=models.FloatField(default=0.0)
@@ -14,7 +16,7 @@ class MAP(models.Model):
     
     
     markerCount=models.IntegerField(default=0)
-    mapFolder = models.CharField(default=str(uuid.uuid4()), max_length=36)
+    mapFolder = models.CharField(default=generate_uuid, max_length=36)
 
 class MAP_USER(models.Model):
     mapId=models.ForeignKey(MAP, on_delete=models.CASCADE, related_name='mapUserToMapId')

@@ -14,7 +14,7 @@ node_modules
 dist
 dist-ssr
 *.local
-
+frontEnd/map-app/react-app/src/maps/*
 
 # Editor directories and files
 .vscode/*
