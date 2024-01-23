@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Profile from "../../assets/profile.jpg";
 
 import AuthContext from "../../context/AuthProvider.tsx";
+import { ToastContainer, toast } from "react-toastify";
 
 import axios from "../../api/axios";
 
@@ -40,6 +41,19 @@ const Pending = () => {
     processFriendRequests();
   }, [accessToken]);
 
+  const handleTest = () => {
+    toast.info("Friend Request Was Accepted!", {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  };
+
   const acceptFriendRequest = async (requestName: string) => {
     try {
       const action = 1;
@@ -49,19 +63,65 @@ const Pending = () => {
         { headers: { "Content-type": "application/json" } }
       );
       console.log(response);
+      toast.info("Friend Request Was Accepted!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
       setIncomingRequests((prevRequests) =>
         prevRequests.filter((request) => request !== requestName)
       );
     } catch (err: any) {
       console.log(err.response);
       if (err.response?.status === 400) {
-        console.log("Something went wrong");
+        toast.error("Something went wrong", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else if (err.response?.status === 408) {
-        console.log("You timed out!");
+        toast.error("You timed out!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else if (err.response?.status === 404) {
-        console.log("Friend request not found");
+        toast.error("Friend request not found", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else {
-        console.log("No Server Response");
+        toast.error("No Server Response", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
     }
   };
@@ -109,6 +169,7 @@ const Pending = () => {
             >
               done
             </span>
+
             <span
               className="material-symbols-outlined"
               onClick={() => denyFriendRequest(request)}
@@ -116,6 +177,18 @@ const Pending = () => {
               close
             </span>
           </div>
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
         </li>
       ))}
     </ul>

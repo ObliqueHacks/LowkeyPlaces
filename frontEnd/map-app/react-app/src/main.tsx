@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
+import "react-toastify/dist/ReactToastify.css";
 
 // Import all of Bootstrap's JS
 // import * as bootstrap from "bootstrap";
