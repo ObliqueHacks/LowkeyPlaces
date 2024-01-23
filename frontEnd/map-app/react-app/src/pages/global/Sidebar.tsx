@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Logo from "../../assets/NinjaHead.png";
 import { Link, useLocation } from "react-router-dom";
-import Markerbar from "../map/Markerbar.tsx";
+import Markerbar from "../../components/map/Markerbar.tsx";
 
 import AuthContext from "../../context/AuthProvider.tsx";
 import axios from "../../api/axios.ts";

@@ -3,8 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 /* COMPONENTS */
 import Sidebar from "../global/Sidebar";
 import Topbar from "../global/Topbar.tsx";
-import MapDisplay from "../map/MapDisplay.tsx";
-import Markerbar from "../map/Markerbar";
+import MapDisplay from "../../components/map/MapDisplay.tsx";
 import AllFriends from "../../components/friends/AllFriends.tsx";
 
 /* LIRBARIES */
