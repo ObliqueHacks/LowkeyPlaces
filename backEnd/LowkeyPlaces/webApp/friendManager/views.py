@@ -8,23 +8,28 @@ from utils import create_token, token_to_user, intToAction, error_returner
 from .models import FRIEND_REQUEST, USER_RELATION
 from datetime import datetime
 from django.core.exceptions import ValidationError
-
-
 # all respnses to makeRequest are binary in status code
 #specific error message may be displayed if frontend desires.
+
+
+def userEquals(request: Response) -> USER:
+    user=getUser(data=request.data)
+    if user.is_valid() is False:
+        return None
+    user=token_to_user(user.validated_data['userToken'])
+    return user
+
+
 @api_view(['POST'])
 def makeRequest(request):
     
-    #authenticating incoming data
+    sender=userEquals(request)
+    if sender is None: return Response(status=408)
+
     user=toUserAction(data=request.data)
     if user.is_valid() is False:
-        return Response(status = 400) #invalid format
+        return Response(status=400)
     
-    #authenitcate user
-    sender=token_to_user(user.validated_data['userToken'])
-    if sender==None:
-        return Response(status = 408) #expired
-
     #authenticate action
     action=intToAction(user.validated_data['action'])
     if action is None:
@@ -100,15 +105,8 @@ def makeRequest(request):
 @api_view(['POST'])
 def getUserInfo(request):
 
-    user = getUser(data=request.data)
-    if user.is_valid() is False:
-        return Response(status = 400)
-    
-    #authenitcate user
-    user=token_to_user(user.validated_data['userToken'])
-    if user==None:
-        return Response(status=400)
-    
+    user=userEquals(request)
+    if user is None: return Response(status=408)
     
     #construct user data (for now include -> incoming friend requests, sent friend requests, friends, map_count) 
     #for getting which maps you are part of it will be done in maps itself

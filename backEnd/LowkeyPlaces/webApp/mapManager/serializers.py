@@ -1,4 +1,4 @@
-from .models import MAP, MAP_REQEST, MAP_USER
+from .models import MAP
 from rest_framework import serializers
 
 class mapSerializer(serializers.ModelSerializer):
