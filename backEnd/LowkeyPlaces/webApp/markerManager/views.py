@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view
 from mapManager.serializers import getMap
 from mapManager.models import MAP, MAP_USER
 from django.core.exceptions import ObjectDoesNotExist
-from .serializers import markerSerializer, imageSerializer, markerIdSerializer
+from .serializers import markerSerializer, imageSerializer, markerIdSerializer, updateMarkerActionSerializer
 from .models import MARKER, MARKER_IMAGE
 from mapManager.views import authTemplate
 from django.conf import settings 
@@ -45,7 +45,7 @@ def authTemplate2(request: Response, func1: Callable) -> Callable:
     except ObjectDoesNotExist:
         return Response(status=400)    
 
-
+#authTemplate2
 @api_view(['POST'])
 def placeMarker(request: Response) -> Response:
     def discrete(mapId, user, request):
@@ -72,10 +72,7 @@ def placeMarker(request: Response) -> Response:
         return Response(status=201)
     return authTemplate2(request, discrete)
 
-#use the normal auth template for these
-
-
-#use authTemplate for these
+#authTemplate2
 #this returns a list of markers (it's fine to send all the marker data at once, since there isnt any scrolling)
 @api_view(['POST'])
 def getMarkerList(request: Response) -> Response:
@@ -84,14 +81,13 @@ def getMarkerList(request: Response) -> Response:
         return Response(status=201, data={i.id:[i.name, i.desc, i.lat, i.long, i.address, i.imageCount, i.timeCreated] for i in markerList})
     return authTemplate(request, discrete)
 
-
-#use authtemplate2 here
+#authTemplate
 @api_view(['POST'])
 def addMarkerImg(request: Response) -> Response:
     def discrete(mapId, user, request):
         image=imageSerializer(request.data)
         markerId=markerIdSerializer(request.data)
-        if image.is_valid() is False:
+        if image.is_valid() is False or markerId.is_valid() is False:
             return Response(status=440)
         try:
             #ensure there is a valid marker for this map
@@ -111,16 +107,45 @@ def addMarkerImg(request: Response) -> Response:
             return Response(status=497)
     return authTemplate2(request)
 
-#def return None
+#authTemplate2
 @api_view(['POST'])
-#action map: {1: update lat-long, 2: update description}
+#action map: {1: update lat-long, 2: update description, 3: update color}
 def updateMarker(request: Response) -> Response:
-    pass
+    def discrete(mapId, user, request):
+        
+        markerId=markerIdSerializer(request.data)
+        newMarker = markerSerializer(request.data)
+        
+        if newMarker.isvalid() is False or markerId.is_valid() is False:
+            return Response(status=419)
+        
+        markerId=markerId.validated_data
+        newMarker=newMarker.validated_data
+        
+        try:
+            #ensure there is a valid marker for this map
+            old_marker = MARKER.objects.get(id=markerId['markerId'], mapId=mapId)
+            
+            #update all success
+            old_marker.name=newMarker['name'],
+            old_marker.desc=newMarker['desc'],
+            old_marker.lat=newMarker['lat'],
+            old_marker.long=newMarker['long'],
+            old_marker.address=newMarker['address'],
+            old_marker.save()
+            
+            #return updated mapList
+            return getMarkerList(request.data)
+            
+        except ObjectDoesNotExist:
+            return Response(status=497)
 
+#authTemplate2
 @api_view(['POST'])
 def deleteMarkerImage():
     pass
 
+#authTemplate2$
 @api_view(['POST'])
 def deleteMarker():
     pass

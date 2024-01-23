@@ -16,7 +16,3 @@ class MARKER(models.Model):
     userId=models.ForeignKey(USER, on_delete=models.CASCADE, related_name='markerToUserId')
     imageCount=models.IntegerField(default=0)
     timeCreated=models.DateTimeField(default=datetime.now)
-
-class MARKER_IMAGE(models.Model):
-    markerId=models.ForeignKey(MARKER, on_delete=models.CASCADE, related_name='markerImageToMarker')
-    image=models.ImageField()

@@ -10,5 +10,9 @@ class markerSerializer(serializers.Serializer):
 
 class imageSerializer(serializers.Serializer):
     image=serializers.ImageField()
+    
 class markerIdSerializer(serializers.Serializer):
     markerId=serializers.IntegerField()
+    
+class updateMarkerActionSerializer(serializers.Serializer):
+    action=serializers.IntegerField(max_length = 10)
