@@ -8,7 +8,7 @@ import AuthContext from "../../context/AuthProvider.tsx";
 
 import axios from "../../api/axios";
 
-const AllFriends = () => {
+const AllFriends = ({ addFriendMap }: { addFriendMap: boolean }) => {
   const { auth }: any = useContext(AuthContext);
   const { accessToken }: any = auth;
   console.log(accessToken);
@@ -66,18 +66,26 @@ const AllFriends = () => {
 
   return (
     <ul className="friend-list">
-      {friends.map((friend, index) => (
-        <li key={index}>
-          <img className="profile-pic" src={Profile} alt="" />
-          <span className="friend-name">{friend}</span>
-          <span
-            className="material-symbols-outlined"
-            onClick={() => removeFriend(friend)}
-          >
-            close
-          </span>
-        </li>
-      ))}
+      {addFriendMap
+        ? friends.map((friend, index) => (
+            <li key={index}>
+              <img className="profile-pic" src={Profile} alt="" />
+              <span className="friend-name">{friend}</span>
+              <span className="material-symbols-outlined">add</span>
+            </li>
+          ))
+        : friends.map((friend, index) => (
+            <li key={index}>
+              <img className="profile-pic" src={Profile} alt="" />
+              <span className="friend-name">{friend}</span>
+              <span
+                className="material-symbols-outlined"
+                onClick={() => removeFriend(friend)}
+              >
+                close
+              </span>
+            </li>
+          ))}
     </ul>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
-import { Sidebar } from "../global/Sidebar";
+import Sidebar from "../global/Sidebar";
 import AllFriends from "../../components/friends/AllFriends.tsx";
 import Pending from "../../components/friends/Pending.tsx";
 import AddFriends from "../../components/friends/AddFriends.tsx";
@@ -154,7 +154,7 @@ const Friends = () => {
 
   return (
     <div className="container">
-      <Sidebar></Sidebar>
+      <Sidebar editMap={false}></Sidebar>
       <Fade>
         <div className="friends">
           <Topbar></Topbar>
@@ -228,7 +228,9 @@ const Friends = () => {
               </div>
             )}
             <p>{`${category}`}</p>
-            {category === "All" && <AllFriends></AllFriends>}
+            {category === "All" && (
+              <AllFriends addFriendMap={false}></AllFriends>
+            )}
             {category === "Pending" && <Pending></Pending>}
             {category === "Add Friend" && <AddFriends></AddFriends>}
           </div>

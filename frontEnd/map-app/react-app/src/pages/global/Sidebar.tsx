@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import Logo from "../../assets/NinjaHead.png";
 import { Link, useLocation } from "react-router-dom";
+import Markerbar from "../map/Markerbar.tsx";
 
 import AuthContext from "../../context/AuthProvider.tsx";
 import axios from "../../api/axios.ts";
 const FRIENDS_INFO_URL = "api-auth/dashboard/user-info/"; // Getting User Info
 
-export const Sidebar = () => {
+const Sidebar = ({ editMap }: { editMap: boolean }) => {
   const location = useLocation();
   const { setAuth }: any = useContext(AuthContext);
 
@@ -105,6 +106,8 @@ export const Sidebar = () => {
           </h4>
         </Link>
       </div>
+      {editMap && <Markerbar></Markerbar>}
     </aside>
   );
 };
+export default Sidebar;

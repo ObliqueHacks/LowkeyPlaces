@@ -9,7 +9,6 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 function MapDisplay() {
   const center: any = [51.505, -0.09];
   console.log("Map is being displayed");
-  console.log(API_KEY);
 
   return (
     <MapContainer center={center} zoom={14}>
