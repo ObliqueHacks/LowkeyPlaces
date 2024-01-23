@@ -157,8 +157,6 @@ def authTemplate(request: Response, func1: Callable) -> Callable:
         return Response(status=400)    
 
 
-
-
 @api_view(['POST'])
 def getMapFromId(request) -> Response:
     def discrete(mapId,user,request):
@@ -170,6 +168,7 @@ def getMapFromId(request) -> Response:
         }
         return Response(status=201, data=response_data)
     return authTemplate(request=request, func1=discrete)
+
 
 @api_view(['POST'])
 def getMapUsers(request):

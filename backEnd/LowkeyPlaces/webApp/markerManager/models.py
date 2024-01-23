@@ -3,6 +3,11 @@ from registrationAndLogin.models import USER
 from mapManager.models import MAP
 from datetime import datetime 
 from django.conf import settings 
+import uuid
+
+
+def generate_uuid():
+    return str(uuid.uuid4())
 
 # Create your models here.
 class MARKER(models.Model):
@@ -16,3 +21,9 @@ class MARKER(models.Model):
     userId=models.ForeignKey(USER, on_delete=models.CASCADE, related_name='markerToUserId')
     imageCount=models.IntegerField(default=0)
     timeCreated=models.DateTimeField(default=datetime.now)
+    folderPath=models.CharField(default=generate_uuid, max_length=36)
+    
+class MARKER_IMG(models.Model):
+    markerId=models.ForeignKey(MARKER, on_delete=models.CASCADE, related_name='imgToMarkerId')
+    folderPath=models.CharField(default=generate_uuid, max_length=36)
+    pass
