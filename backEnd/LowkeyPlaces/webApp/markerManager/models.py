@@ -18,5 +18,5 @@ class MARKER(models.Model):
     timeCreated=models.DateTimeField(default=datetime.now)
 
 class MARKER_IMAGE(models.Model):
-    marker=models.ForeignKey(MARKER, on_delete=models.CASCADE, related_name='markerImageToMarker')
+    markerId=models.ForeignKey(MARKER, on_delete=models.CASCADE, related_name='markerImageToMarker')
     image=models.ImageField()
