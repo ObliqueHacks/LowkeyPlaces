@@ -58,14 +58,13 @@ class TestMakeMap(TestCase, CommonSetup):
         makeMap(request)
         request=self.factory.post('/api-auth/map/make-map/', {"userToken": self.user1, "title":"Trails Toronto"}, format='json')
         makeMap(request)
-        
         request=self.factory.post('/api-auth/map/make-map/', {"userToken": self.user2, "title":"dontBelong"}, format='json')
         makeMap(request)
         
         #correct map
         request=self.factory.post('/api-auth/map/get-map/',  {"userToken": self.user1, "mapId":"1"})
         response=getMapFromId(request)
-        self.assertEqual({'title': 'Food Sauga', 'desc': '', 'theme': 0, 'lat': 0.0, 'long': 0.0}, response.data)
+        self.assertEqual({'mapData': {'title': 'Food Sauga', 'desc': '', 'theme': 0, 'lat': 0.0, 'long': 0.0}, 'status': 0}, response.data)
         
         #map that doesnt exist
         request=self.factory.post('/api-auth/map/get-map/',  {"userToken": self.user1, "mapId":"4"})
@@ -76,10 +75,30 @@ class TestMakeMap(TestCase, CommonSetup):
         request=self.factory.post('/api-auth/map/get-map/',  {"userToken": self.user1, "mapId":"3"})
         response=getMapFromId(request)
         self.assertNotEqual(201, response.status_code)
+    
+    def test_getMapUsers(self):
+        #add map
+        request=self.factory.post('/api-auth/map/make-map/', {"userToken": self.user1, "title":"Food Sauga"}, format='json')
+        makeMap(request)
         
+        #check if it gives map users
+        request=self.factory.post('/api-auth/map/get-users/', {'userToken': self.user1, 'mapId':'1'}, format='json')
+        response = getMapUsers(request)
+        self.assertEqual((201, {'User1': 0}), (response.status_code, response.data))
+    
+    def test_addFriendToMap(self):
+        #add map
+        request=self.factory.post('/api-auth/map/make-map/', {"userToken": self.user1, "title":"Food Sauga"}, format='json')
+        makeMap(request)
         
+        #add userfriend and accept
+        makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user2, 'name':'User1', 'action': 0}, format='json'))
+        makeRequest(self.factory.post("/api-auth/make-request/", {'userToken': self.user1, 'name':'User2', 'action': 1}, format='json'))
         
+        #add friend to map
+        request = self.factory.post("/api-auth/add-friend/", {'userToken': self.user1, 'recId': 'User2', 'mapId':'1', 'reqType': '1'}, format='json')
+        response=addFriendToMap(request)
+        print(response.status_code)
         
-        
-        
+    
         
