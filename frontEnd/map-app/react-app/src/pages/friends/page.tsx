@@ -19,8 +19,6 @@ const Friends = () => {
   const { auth }: any = useContext(AuthContext);
   const { accessToken }: any = auth;
 
-  console.log(accessToken);
-
   const [category, setCategory] = useState("All");
 
   const resetFields = () => {
@@ -67,7 +65,6 @@ const Friends = () => {
         { headers: { "Content-type": "application/json" } }
       );
 
-      console.log(response);
       toast.success("Friend Request Was Sent!", {
         position: "bottom-right",
         autoClose: 5000,
@@ -80,7 +77,6 @@ const Friends = () => {
       });
       resetFields();
     } catch (err: any) {
-      console.log(err.response);
       if (err.response?.status === 400) {
         toast.error("Something went wrong! Please logout and login.", {
           position: "bottom-right",

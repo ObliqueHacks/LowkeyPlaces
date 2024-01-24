@@ -6,7 +6,6 @@ import React, { useContext } from "react";
 
 const Topbar = () => {
   const { auth }: any = useContext(AuthContext);
-  console.log(auth);
   const { user }: any = auth;
 
   return (
