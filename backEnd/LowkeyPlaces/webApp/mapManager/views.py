@@ -182,6 +182,7 @@ def getMapFromId(request) -> Response:
         response_data = {
             'mapData': mapData.data,
             'status': status,
+            'folderName': mapId.mapFolder,
         }
         return Response(status=201, data=response_data)
     return authTemplate(request=request, func1=discrete)
