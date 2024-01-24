@@ -1102,8 +1102,9 @@ h4 {
         gap: 1.5rem;
         li {
           width: 30%;
-          gap: 1rem;
+          gap: 3rem;
           display: flex;
+          max-height: 100vh;
           flex-direction: column;
 
           h4 {
@@ -1127,6 +1128,13 @@ h4 {
 
           .card {
             transition: all 0.3s ease;
+
+            img {
+              max-width: 100%;
+              max-height: 100%;
+              object-fit: cover;
+            }
+
             &:hover {
               transform: translateY(-5px);
             }
@@ -1211,6 +1219,14 @@ h4 {
           }
           &:hover {
             border: 0.5px solid $color-secondary;
+          }
+        }
+
+        span {
+          cursor: pointer;
+          transition: all 0.3s ease;
+          &:hover {
+            color: $color-primary;
           }
         }
       }

@@ -11,7 +11,6 @@ import axios from "../../api/axios";
 const AllFriends = ({ addFriendMap }: { addFriendMap: boolean }) => {
   const { auth }: any = useContext(AuthContext);
   const { accessToken }: any = auth;
-  console.log(accessToken);
 
   const [friends, setFriends] = useState([]);
 
@@ -28,7 +27,6 @@ const AllFriends = ({ addFriendMap }: { addFriendMap: boolean }) => {
         const { friends } = parsedResponse;
         setFriends(friends);
       } catch (err: any) {
-        console.log(err.response);
         if (err.response?.status === 400) {
           console.log("Something went wrong");
         }
@@ -46,7 +44,7 @@ const AllFriends = ({ addFriendMap }: { addFriendMap: boolean }) => {
         JSON.stringify({ name: friendName, userToken: accessToken, action }),
         { headers: { "Content-type": "application/json" } }
       );
-      console.log(response);
+
       setFriends((prevFriends) =>
         prevFriends.filter((friend) => friend !== friendName)
       );
