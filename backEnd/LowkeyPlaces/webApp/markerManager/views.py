@@ -64,7 +64,7 @@ def placeMarker(request: Response) -> Response:
         )
         markerInstance.save()
         #make directory for marker
-        markerPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", mapId.mapFolder, "/markers/", markerInstance.folderPath)
+        markerPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps", mapId.mapFolder, "markers", markerInstance.folderPath)
         try:
             os.makedirs(markerPath)
         except OSError as e:
@@ -100,7 +100,7 @@ def addMarkerImg(request: Response) -> Response:
             imageInstance = MARKER_IMG(markerId=markerId)
             imageInstance.save()
             #save the image to file
-            markerPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", mapId.mapFolder, "markers/", markerId.folderPath, "/",imageInstance.folderPath, '.jpeg')
+            markerPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps", mapId.mapFolder, "markers", markerId.folderPath,imageInstance.folderPath+".jpg")
             markerId.imageCount+=1
             markerId.save()
             try:

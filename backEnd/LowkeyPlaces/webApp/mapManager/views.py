@@ -13,6 +13,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from typing import Callable
 from django.conf import settings 
 from friendManager.views import userEquals
+from markerManager.serializers import imageSerializer
+import shutil
 # Create your views here.
 
 @api_view(['POST'])
@@ -54,6 +56,21 @@ def makeMap(request: Response) -> Response:
         mapUserInstance.delete()
         return Response(status=500)
     
+    #serializer map image:
+    mapImage = imageSerializer(data=request.data)
+    mapDestinationPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", mapObject.mapFolder, "MAP_IMAGE.jpg")
+    if mapImage.is_valid() is False:
+        mapImagePath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", "MAP_IMAGE.jpg")
+        shutil.copy(mapImagePath, mapDestinationPath)
+        
+    #check this
+    else:
+        mapImage = mapImage.validated_data['image']
+        try:
+            with open(mapDestinationPath, 'wb') as new_image_file:
+                new_image_file.write(mapImage.read())
+        except Exception as e:
+            return Response(status=500)
     return Response(status=201, data={'mapId': mapObject.id})
  
  
@@ -78,8 +95,8 @@ def addFriendToMap(request: Response) -> Response:
         
     #authenticate user even has permissions to add (is a collaborator or owner)
     try:
+        mapId = MAP.objects.get(id=mapId)
         checker = MAP_USER.objects.get(userId=user, mapId=mapId)
-        
         #make sure spectator can just add more spectators
         if checker.status == 2 and reqType != 2:
             return Response(status=427)
@@ -102,7 +119,7 @@ def addFriendToMap(request: Response) -> Response:
                     return Response(status=400)
                 
                 #valid request so proceed:
-                new_instance=MAP_USER(mapId=checker.mapId, userId=recId, status=reqType)
+                new_instance=MAP_USER(mapId=mapId, userId=recId, status=reqType)
                 new_instance.save()
                 return Response(status=201)
             else:

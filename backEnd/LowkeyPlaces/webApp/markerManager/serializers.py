@@ -16,4 +16,4 @@ class markerIdSerializer(serializers.Serializer):
     markerId=serializers.IntegerField()
     
 class updateMarkerActionSerializer(serializers.Serializer):
-    action=serializers.IntegerField(max_length = 10)
+    action=serializers.IntegerField()
