@@ -20,7 +20,7 @@ const Sidebar = ({ editMap }: { editMap: boolean }) => {
 
   const { auth }: any = useContext(AuthContext);
   const { accessToken }: any = auth;
-  console.log(accessToken);
+
 
   const [incomingRequests, setIncomingRequests] = useState([]);
 
@@ -37,7 +37,6 @@ const Sidebar = ({ editMap }: { editMap: boolean }) => {
 
         const { incomingRequests } = parsedResponse;
         setIncomingRequests(incomingRequests);
-        console.log(incomingRequests);
       } catch (err: any) {
         console.log(err.response);
         if (err.response?.status === 400) {
@@ -49,7 +48,7 @@ const Sidebar = ({ editMap }: { editMap: boolean }) => {
     processFriendRequests();
   }, [accessToken]);
 
-  console.log(mapActive, friendsActive);
+
 
   const handleMapLink = () => {
     setMapActive(true);
