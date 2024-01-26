@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Sidebar from "../global/Sidebar";
 import Topbar from "../global/Topbar.tsx";
 import MapDisplay from "../../components/map/MapDisplay.tsx";
+import MapFriends from "../../components/friends/MapFriends.tsx";
 import AllFriends from "../../components/friends/AllFriends.tsx";
 import axios from "../../api/axios";
 import AuthContext from "../../context/AuthProvider.tsx";
@@ -20,6 +21,7 @@ import NatureOne from "../../assets/nature-1.jpg";
 const CREATE_MAP_URL = "api-auth/map/make-map/";
 const GET_MAP_IDS_URL = "api-auth/map/get-user-maps/";
 const GET_MAP_URL = "api-auth/map/get-map/";
+const ADD_FRIEND_TO_MAP_URL = "api-auth/map/add-friend/";
 
 const Dashboard = () => {
   const { auth }: any = useContext(AuthContext);
@@ -33,13 +35,22 @@ const Dashboard = () => {
     file: null,
   });
 
+  const status = ["Admin", "Collaborator", "Spectator"];
+
   const [selectedMap, setSelectedMap] = useState<{
     mapName: string;
     mapImage: { preview: string; file: File | null };
+    status: number;
+    mapId: number;
   } | null>(null);
 
   const [displayMaps, setDisplayMaps] = useState<
-    Array<{ mapName: string; mapImage: { preview: string; file: File | null } }>
+    Array<{
+      mapName: string;
+      mapImage: { preview: string; file: File | null };
+      status: number;
+      mapId: number;
+    }>
   >([]);
 
   const onDrop = useCallback(
@@ -68,50 +79,76 @@ const Dashboard = () => {
     setDisplayMaps(updatedMaps);
   };
 
-  useEffect(() => {
-    const getMapIds = async () => {
-      try {
+  const getMapIds = async () => {
+    try {
+      const response = await axios.post(
+        GET_MAP_IDS_URL,
+        JSON.stringify({ userToken: accessToken }),
+        { headers: { "Content-type": "application/json" } }
+      );
+      console.log(response.data.mapId);
+      setMapIds(response.data.mapId);
+    } catch (err: any) {
+      if (err.response?.status == 408) {
+        console.log("Token Invalid. Relogin");
+      } else {
+        console.log("No server response");
+      }
+    }
+  };
+
+  const getMaps = async () => {
+    try {
+      let updatedDisplayMaps = [];
+
+      for (const id of mapIds) {
         const response = await axios.post(
-          GET_MAP_IDS_URL,
-          JSON.stringify({ userToken: accessToken }),
+          GET_MAP_URL,
+          JSON.stringify({ userToken: accessToken, mapId: id }),
           { headers: { "Content-type": "application/json" } }
         );
-        console.log(response.data.mapId);
-        setMapIds(response.data.mapId);
-      } catch (err: any) {
-        if (err.response?.status == 408) {
-          console.log("Token Invalid. Relogin");
-        } else {
-          console.log("No server response");
-        }
-      }
-    };
-    getMapIds();
-  }, [accessToken]);
 
+        const folder = response.data?.folderName;
+        const path = "src/maps/" + folder + "/MAP_IMAGE.jpg";
+        const file = new File([response.data], "MAP_IMAGE.jpg", {
+          type: "image/jpeg",
+        });
+
+        console.log(response?.data);
+
+        updatedDisplayMaps.push({
+          mapName: response.data.mapData.title,
+          mapImage: {
+            preview: path,
+            file: file,
+          },
+          status: response.data.status,
+          mapId: id,
+        });
+      }
+
+      // Clear existing maps and set the updated ones
+      console.log(updatedDisplayMaps);
+      setDisplayMaps(updatedDisplayMaps);
+    } catch (err: any) {
+      console.log(err.response);
+      if (err.response?.status === 400) {
+        console.log("Something wrong with Map ID");
+      } else if (err.response?.status === 408) {
+        console.log("User Token Expired. Relogin");
+      } else {
+        console.log("No server response");
+      }
+    }
+  };
+
+  // useEffect to call getMapIds when the component is loaded
   useEffect(() => {
-    const getMaps = async () => {
-      for (const id of mapIds) {
-        try {
-          const response = await axios.post(
-            GET_MAP_URL,
-            JSON.stringify({ userToken: accessToken, mapId: id }),
-            { headers: { "Content-type": "application/json" } }
-          );
+    getMapIds();
+  }, []);
 
-          console.log(response);
-        } catch (err: any) {
-          console.log(err.response);
-          if (err.response?.status === 400) {
-            console.log("Something wrong with Map ID");
-          } else if (err.response?.status === 408) {
-            console.log("User Token Expired. Relogin");
-          } else {
-            console.log("No server response");
-          }
-        }
-      }
-    };
+  // useEffect to call getMaps when mapIds changes
+  useEffect(() => {
     getMaps();
   }, [mapIds]);
 
@@ -122,24 +159,21 @@ const Dashboard = () => {
   ) => {
     e.preventDefault();
     try {
-      const response: any = await axios.post(
-        CREATE_MAP_URL,
-        JSON.stringify({
-          userToken: accessToken,
-          title: title,
-        }),
-        { headers: { "Content-type": "application/json" } }
-      );
+      const formData = new FormData();
+      formData.append("userToken", accessToken);
+      formData.append("title", title);
+      if (img.file) {
+        formData.append("image", img.file);
+      }
+
+      const response: any = await axios.post(CREATE_MAP_URL, formData, {
+        headers: { "Content-type": "multipart/form-data" },
+      });
       console.log(accessToken);
       console.log(response);
-      setDisplayMaps((prevDisplayMap) => [
-        ...prevDisplayMap,
-        {
-          mapName: title,
-          mapImage: img,
-        },
-      ]);
-      setEditMap(true);
+
+      getMapIds();
+      getMaps();
     } catch (err: any) {
       console.log(err.response);
       if (err.response?.status === 400) {
@@ -180,11 +214,7 @@ const Dashboard = () => {
                     <div className="card">
                       <AspectRatio ratio="3/4" style={{ maxHeight: "170px" }}>
                         <img
-                          src={
-                            displayMap.mapImage.file
-                              ? displayMap.mapImage.preview
-                              : NatureOne
-                          }
+                          src={displayMap.mapImage.preview}
                           className="card-img-top"
                           alt=""
                         />
@@ -210,7 +240,7 @@ const Dashboard = () => {
                             </span>
                           </div>
                         </h4>
-                        <p>Admin</p>
+                        <p>{status[displayMap.status]}</p>
                       </div>
                     </div>
                   </li>
@@ -316,11 +346,14 @@ const Dashboard = () => {
             <div className="mheader">
               <h1>{selectedMap?.mapName}</h1>
               <div className="buttons">
-                <button className="add-friend-map">
+                <button
+                  className="add-friend-map"
+                  data-bs-toggle="modal"
+                  data-bs-target="#displayMapFriends"
+                >
                   <span className="material-symbols-outlined">group</span>
                   Members
                 </button>
-
                 <button
                   className="add-friend-map"
                   data-bs-toggle="modal"
@@ -357,7 +390,37 @@ const Dashboard = () => {
                     </button>
                   </div>
                   <div className="modal-body">
-                    <AllFriends addFriendMap={true}></AllFriends>
+                    <MapFriends
+                      mapId={selectedMap?.mapId ?? 0}
+                      addFriend={true}
+                    ></MapFriends>
+                  </div>
+                  <div className="modal-footer"></div>
+                </div>
+              </div>
+            </div>
+            <div
+              className="modal fade"
+              id="displayMapFriends"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h1 className="modal-title fs-5" id="exampleModalLabel">
+                      Members
+                    </h1>
+                    <button type="button" data-bs-dismiss="modal">
+                      {" "}
+                      <span className="material-symbols-outlined">close</span>
+                    </button>
+                  </div>
+                  <div className="modal-body">
+                    <MapFriends
+                      mapId={selectedMap?.mapId ?? 0}
+                      addFriend={false}
+                    ></MapFriends>
                   </div>
                   <div className="modal-footer"></div>
                 </div>

@@ -12,7 +12,6 @@ const ACTION_FRIENDS_URL = "api-auth/dashboard/make-request/"; // Accepting/Reje
 const Pending = () => {
   const { auth }: any = useContext(AuthContext);
   const { accessToken }: any = auth;
-  console.log(accessToken);
 
   const [incomingRequests, setIncomingRequests] = useState([]);
 

@@ -8,11 +8,13 @@ import AuthContext from "../../context/AuthProvider.tsx";
 
 import axios from "../../api/axios";
 
-const AllFriends = ({ addFriendMap }: { addFriendMap: boolean }) => {
+const AllFriends = () => {
   const { auth }: any = useContext(AuthContext);
   const { accessToken }: any = auth;
 
   const [friends, setFriends] = useState([]);
+  // const [showSpectatorPopup, setShowSpectatorPopup] = useState(false);
+  // const [showCollaboratorPopup, setShowCollaboratorPopup] = useState(false);
 
   useEffect(() => {
     const processFriends = async () => {
@@ -64,26 +66,18 @@ const AllFriends = ({ addFriendMap }: { addFriendMap: boolean }) => {
 
   return (
     <ul className="friend-list">
-      {addFriendMap
-        ? friends.map((friend, index) => (
-            <li key={index}>
-              <img className="profile-pic" src={Profile} alt="" />
-              <span className="friend-name">{friend}</span>
-              <span className="material-symbols-outlined">add</span>
-            </li>
-          ))
-        : friends.map((friend, index) => (
-            <li key={index}>
-              <img className="profile-pic" src={Profile} alt="" />
-              <span className="friend-name">{friend}</span>
-              <span
-                className="material-symbols-outlined"
-                onClick={() => removeFriend(friend)}
-              >
-                close
-              </span>
-            </li>
-          ))}
+      {friends.map((friend, index) => (
+        <li key={index}>
+          <img className="profile-pic" src={Profile} alt="" />
+          <span className="friend-name">{friend}</span>
+          <span
+            className="material-symbols-outlined"
+            onClick={() => removeFriend(friend)}
+          >
+            close
+          </span>
+        </li>
+      ))}
     </ul>
   );
 };

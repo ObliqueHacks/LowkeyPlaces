@@ -224,9 +224,7 @@ const Friends = () => {
               </div>
             )}
             <p>{`${category}`}</p>
-            {category === "All" && (
-              <AllFriends addFriendMap={false}></AllFriends>
-            )}
+            {category === "All" && <AllFriends></AllFriends>}
             {category === "Pending" && <Pending></Pending>}
             {category === "Add Friend" && <AddFriends></AddFriends>}
           </div>

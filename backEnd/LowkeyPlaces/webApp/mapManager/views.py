@@ -36,7 +36,7 @@ def makeMap(request: Response) -> Response:
     #show a 3 level higher
     
     #join the path to correct path from lowkeySpots/
-    directory_path = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", mapObject.mapFolder)
+    directory_path = os.path.join(settings.ROOT_FOLDER, "frontEnd\\map-app\\react-app\\src\\maps\\", mapObject.mapFolder)
     
     #make map directory
     try:
@@ -58,16 +58,16 @@ def makeMap(request: Response) -> Response:
     
     #serializer map image:
     mapImage = imageSerializer(data=request.data)
-    mapDestinationPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", mapObject.mapFolder, "MAP_IMAGE.jpg")
+    mapDestinationPath = os.path.join(settings.ROOT_FOLDER, "frontEnd\\map-app\\react-app\\src\\maps\\", mapObject.mapFolder, "MAP_IMAGE.jpg")
     if mapImage.is_valid() is False:
-        mapImagePath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", "MAP_IMAGE.jpg")
+        mapImagePath = os.path.join(settings.ROOT_FOLDER, "frontEnd\\map-app\\react-app\\src\\maps\\", "MAP_IMAGE.jpg")
         shutil.copy(mapImagePath, mapDestinationPath)
         
     #check this
     else:
         mapImage = mapImage.validated_data['image']
         try:
-            with open(mapDestinationPath, 'wb') as new_image_file:
+            with open(mapDestinationPath, 'wb+') as new_image_file:
                 new_image_file.write(mapImage.read())
         except Exception as e:
             return Response(status=500)

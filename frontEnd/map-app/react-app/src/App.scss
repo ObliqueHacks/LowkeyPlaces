@@ -1312,6 +1312,7 @@ h4 {
         align-items: center;
         flex-direction: row;
         width: 94%;
+        height: 20%;
         position: relative;
         border-bottom: 1px solid rgba(237, 156, 109, 0.5);
 
@@ -1330,16 +1331,30 @@ h4 {
           }
         }
 
+        .status {
+          font-size: 12px;
+          margin-right: 10px;
+          margin-top: 10px;
+          color: $color-primary;
+        }
+
         .accept-deny {
           display: flex;
           gap: 0.5rem;
         }
 
+        .add-map-friend-symbols {
+          display: flex;
+          flex-direction: row;
+          margin-left: auto;
+          gap: 1rem;
+        }
+
         .material-symbols-outlined {
           display: flex;
-          margin-left: auto;
           color: white;
           cursor: pointer;
+          position: relative;
           transition: all 0.3s ease;
           &:hover {
             color: $color-primary;
