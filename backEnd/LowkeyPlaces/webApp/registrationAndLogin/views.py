@@ -29,5 +29,10 @@ def login(request):
         if found.first() and verify_password(serializer.validated_data['psswd'], found.first().psswd):
             found=found.first()
             genToken = create_token(found)
-            return Response({'genToken': genToken}, status=status.HTTP_201_CREATED)
-    return Response({'error': 'failed'}, status=status.HTTP_400_BAD_REQUEST)
+            print("Gen token:", genToken)
+             
+            a = Response()
+            a.set_cookie('genToken', genToken, domain=None, secure=True, samesite="None", httponly=True)
+            a.status = 201
+            return a; 
+    return Response({'error': 'failed'}, status=status.HTTP_400_BAD_REQUEST)    

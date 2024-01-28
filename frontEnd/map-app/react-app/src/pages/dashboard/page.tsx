@@ -24,9 +24,6 @@ const GET_MAP_URL = "api-auth/map/get-map/";
 const ADD_FRIEND_TO_MAP_URL = "api-auth/map/add-friend/";
 
 const Dashboard = () => {
-  const { auth }: any = useContext(AuthContext);
-  const { accessToken }: any = auth;
-
   const [editMap, setEditMap] = useState(false);
   const [mapName, setMapName] = useState("");
   const [mapIds, setMapIds] = useState([]);
@@ -84,8 +81,11 @@ const Dashboard = () => {
     try {
       const response = await axios.post(
         GET_MAP_IDS_URL,
-        JSON.stringify({ userToken: accessToken }),
-        { headers: { "Content-type": "application/json" } }
+        {},
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
       );
       console.log(response.data.mapId);
       setMapIds(response.data.mapId);
@@ -105,8 +105,13 @@ const Dashboard = () => {
       for (const id of mapIds) {
         const response = await axios.post(
           GET_MAP_URL,
-          JSON.stringify({ userToken: accessToken, mapId: id }),
-          { headers: { "Content-type": "application/json" } }
+          JSON.stringify({ mapId: id }),
+          {
+            headers: {
+              "Content-type": "application/json",
+            },
+            withCredentials: true,
+          }
         );
 
         const folder = response.data?.folderName;
@@ -161,7 +166,7 @@ const Dashboard = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append("userToken", accessToken);
+
       formData.append("title", title);
       if (img.file) {
         formData.append("image", img.file);
@@ -169,8 +174,9 @@ const Dashboard = () => {
 
       const response: any = await axios.post(CREATE_MAP_URL, formData, {
         headers: { "Content-type": "multipart/form-data" },
+        withCredentials: true,
       });
-      console.log(accessToken);
+
       console.log(response);
 
       getMapIds();

@@ -16,9 +16,6 @@ const ADD_FRIENDS_URL = "api-auth/dashboard/make-request/";
 const Friends = () => {
   const recieverRef: any = useRef();
 
-  const { auth }: any = useContext(AuthContext);
-  const { accessToken }: any = auth;
-
   const [category, setCategory] = useState("All");
 
   const resetFields = () => {
@@ -59,10 +56,12 @@ const Friends = () => {
         ADD_FRIENDS_URL,
         JSON.stringify({
           name: recieverRef.current.value,
-          userToken: accessToken,
           action,
         }),
-        { headers: { "Content-type": "application/json" } }
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
       );
 
       toast.success("Friend Request Was Sent!", {

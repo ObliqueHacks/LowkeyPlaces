@@ -15,9 +15,6 @@ const MapFriends = ({
   mapId: number;
   addFriend: boolean;
 }) => {
-  const { auth }: any = useContext(AuthContext);
-  const { accessToken }: any = auth;
-
   const [mapFriends, setMapFriends]: any = useState({});
   const [allFriends, setAllFriends]: any = useState([]);
 
@@ -25,8 +22,11 @@ const MapFriends = ({
     try {
       const response: any = await axios.post(
         MAP_USERS_URL,
-        JSON.stringify({ userToken: accessToken, mapId: mapId }),
-        { headers: { "Content-type": "application/json" } }
+        JSON.stringify({ mapId: mapId }),
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
       );
 
       console.log(response.data);
@@ -40,15 +40,18 @@ const MapFriends = ({
 
   useEffect(() => {
     processMapFriends(mapId);
-  }, [accessToken]);
+  }, []);
 
   useEffect(() => {
     const processFriends = async () => {
       try {
         const response: any = await axios.post(
           FRIENDS_INFO_URL,
-          JSON.stringify({ userToken: accessToken }),
-          { headers: { "Content-type": "application/json" } }
+          {},
+          {
+            headers: { "Content-type": "application/json" },
+            withCredentials: true,
+          }
         );
 
         const parsedResponse = JSON.parse(response.request.response);
@@ -76,12 +79,14 @@ const MapFriends = ({
       const response: any = await axios.post(
         ADD_FRIEND_TO_MAP_URL,
         JSON.stringify({
-          userToken: accessToken,
           recId: recId,
           mapId: mapId,
           reqType: status,
         }),
-        { headers: { "Content-type": "application/json" } }
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
       );
       console.log(response);
       processMapFriends(mapId);
@@ -108,12 +113,14 @@ const MapFriends = ({
       const response: any = await axios.post(
         ADD_FRIEND_TO_MAP_URL,
         JSON.stringify({
-          userToken: accessToken,
           recId: recId,
           mapId: mapId,
           reqType: status,
         }),
-        { headers: { "Content-type": "application/json" } }
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
       );
       processMapFriends(mapId);
       console.log(response);

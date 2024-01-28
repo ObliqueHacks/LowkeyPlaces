@@ -5,6 +5,7 @@ import Markerbar from "../../components/map/Markerbar.tsx";
 
 import AuthContext from "../../context/AuthProvider.tsx";
 import axios from "../../api/axios.ts";
+import Cookies from "js-cookie";
 const FRIENDS_INFO_URL = "api-auth/dashboard/user-info/"; // Getting User Info
 
 const Sidebar = ({ editMap }: { editMap: boolean }) => {
@@ -18,10 +19,6 @@ const Sidebar = ({ editMap }: { editMap: boolean }) => {
     location.pathname === "/friends"
   );
 
-  const { auth }: any = useContext(AuthContext);
-  const { accessToken }: any = auth;
-
-
   const [incomingRequests, setIncomingRequests] = useState([]);
 
   useEffect(() => {
@@ -29,8 +26,11 @@ const Sidebar = ({ editMap }: { editMap: boolean }) => {
       try {
         const response: any = await axios.post(
           FRIENDS_INFO_URL,
-          JSON.stringify({ userToken: accessToken }),
-          { headers: { "Content-type": "application/json" } }
+          {},
+          {
+            headers: { "Content-type": "application/json" },
+            withCredentials: true,
+          }
         );
 
         const parsedResponse = JSON.parse(response.request.response);
@@ -46,9 +46,7 @@ const Sidebar = ({ editMap }: { editMap: boolean }) => {
     };
 
     processFriendRequests();
-  }, [accessToken]);
-
-
+  }, []);
 
   const handleMapLink = () => {
     setMapActive(true);
@@ -99,7 +97,7 @@ const Sidebar = ({ editMap }: { editMap: boolean }) => {
           <h4
             className="display-6"
             id="dashboard-display"
-            onClick={() => setAuth({})}
+            onClick={() => Cookies.remove("genToken")}
           >
             Logout
           </h4>

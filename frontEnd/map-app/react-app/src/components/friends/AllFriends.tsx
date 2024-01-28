@@ -9,9 +9,6 @@ import AuthContext from "../../context/AuthProvider.tsx";
 import axios from "../../api/axios";
 
 const AllFriends = () => {
-  const { auth }: any = useContext(AuthContext);
-  const { accessToken }: any = auth;
-
   const [friends, setFriends] = useState([]);
   // const [showSpectatorPopup, setShowSpectatorPopup] = useState(false);
   // const [showCollaboratorPopup, setShowCollaboratorPopup] = useState(false);
@@ -21,8 +18,11 @@ const AllFriends = () => {
       try {
         const response: any = await axios.post(
           FRIENDS_INFO_URL,
-          JSON.stringify({ userToken: accessToken }),
-          { headers: { "Content-type": "application/json" } }
+          {},
+          {
+            headers: { "Content-type": "application/json" },
+            withCredentials: true,
+          }
         );
 
         const parsedResponse = JSON.parse(response.request.response);
@@ -36,15 +36,18 @@ const AllFriends = () => {
     };
 
     processFriends();
-  }, [accessToken]);
+  }, []);
 
   const removeFriend = async (friendName: string) => {
     try {
       const action = 1;
       const response = await axios.post(
         ACTION_FRIENDS_URL,
-        JSON.stringify({ name: friendName, userToken: accessToken, action }),
-        { headers: { "Content-type": "application/json" } }
+        JSON.stringify({ name: friendName, action }),
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
       );
 
       setFriends((prevFriends) =>

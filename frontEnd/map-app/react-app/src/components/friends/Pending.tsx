@@ -20,8 +20,11 @@ const Pending = () => {
       try {
         const response: any = await axios.post(
           FRIENDS_INFO_URL,
-          JSON.stringify({ userToken: accessToken }),
-          { headers: { "Content-type": "application/json" } }
+          {},
+          {
+            headers: { "Content-type": "application/json" },
+            withCredentials: true,
+          }
         );
 
         const parsedResponse = JSON.parse(response.request.response);
@@ -58,7 +61,7 @@ const Pending = () => {
       const action = 1;
       const response = await axios.post(
         ACTION_FRIENDS_URL,
-        JSON.stringify({ name: requestName, userToken: accessToken, action }),
+        JSON.stringify({ name: requestName, action }),
         { headers: { "Content-type": "application/json" } }
       );
       console.log(response);

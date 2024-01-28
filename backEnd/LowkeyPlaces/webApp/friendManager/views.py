@@ -13,10 +13,9 @@ from django.core.exceptions import ValidationError
 
 
 def userEquals(request: Response) -> USER:
-    user=getUser(data=request.data)
-    if user.is_valid() is False:
-        return None
-    user=token_to_user(user.validated_data['userToken'])
+    session_id = request.COOKIES.get('genToken', None)
+    print(session_id)
+    user=token_to_user(session_id)
     return user
 
 

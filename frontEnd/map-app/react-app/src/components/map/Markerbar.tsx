@@ -14,7 +14,9 @@ interface FileState {
   file: File | null;
 }
 
-const Markerbar = (mapId: { mapId: number }) => {
+const mapId = 0; 
+
+const Markerbar = () => {
   const [markerName, setMarkerName] = useState("");
   const [description, setDescription] = useState("");
   const [files, setFiles] = useState<FileState[]>([]);
@@ -50,7 +52,7 @@ const Markerbar = (mapId: { mapId: number }) => {
         MAP_LIST_URL,
         JSON.stringify({
           userToken: accessToken,
-          mapId: mapId.mapId,
+          mapId: mapId,
         }),
         { headers: { "Content-type": "application/json" } }
       );
@@ -70,7 +72,7 @@ const Markerbar = (mapId: { mapId: number }) => {
         const formData = new FormData();
         formData.append("userToken", accessToken);
 
-        formData.append("mapId", String(mapId.mapId));
+        formData.append("mapId", String(mapId));
 
         if (file.file) {
           formData.append("image", file.file);
@@ -78,6 +80,7 @@ const Markerbar = (mapId: { mapId: number }) => {
 
         const response = await axios.post(ADD_MARKER_IMG_URL, formData, {
           headers: { "Content-type": "multipart/form-data" },
+          withCredentials: true,
         });
         console.log(response);
       }
@@ -102,6 +105,7 @@ const Markerbar = (mapId: { mapId: number }) => {
           }),
           {
             headers: { "Content-type": "application/json" },
+            withCredentials: true,
           }
         );
         console.log(response);

@@ -12,9 +12,6 @@ function LocationMarkers(mapId: { mapId: number }) {
   const [markers, setMarkers] = useState(initialMarkers);
   const [address, setAddress] = useState("");
 
-  const { auth }: any = useContext(AuthContext);
-  const { accessToken }: any = auth;
-
   // GET REQUEST FOR ADDRESS BASED ON LAT AND LONG
   useEffect(() => {
     const fetchAddress = async () => {
@@ -51,13 +48,15 @@ function LocationMarkers(mapId: { mapId: number }) {
       const response = await axios.post(
         PLACE_MARKER_URL,
         JSON.stringify({
-          userToken: accessToken,
           lat: lat,
           long: lng,
           address: address,
           mapId: mapId.mapId,
         }),
-        { headers: { "Content-type": "application/json" } }
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
       );
       console.log(response);
     } catch (err: any) {

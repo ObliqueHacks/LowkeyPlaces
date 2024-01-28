@@ -3,6 +3,7 @@ import { useRef, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthProvider.tsx";
 import axios from "../../api/axios.ts";
+import Cookies from "js-cookie";
 
 const LOGIN_URL = "api-auth/homepage/login/";
 
@@ -38,6 +39,7 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
         }
       );
       const accessToken = response?.data?.genToken;
+      Cookies.set("genToken", accessToken, { expires: 7 });
       console.log(response);
       console.log(accessToken);
       console.log(auth);
