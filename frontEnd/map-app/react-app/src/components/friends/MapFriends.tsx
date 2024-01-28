@@ -40,7 +40,7 @@ const MapFriends = ({
 
   useEffect(() => {
     processMapFriends(mapId);
-  }, [mapFriends]);
+  }, [accessToken]);
 
   useEffect(() => {
     const processFriends = async () => {

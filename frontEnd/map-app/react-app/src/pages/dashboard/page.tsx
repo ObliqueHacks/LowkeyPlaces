@@ -35,6 +35,7 @@ const Dashboard = () => {
     file: null,
   });
 
+  const [filter, setFilter] = useState("All");
   const status = ["Admin", "Collaborator", "Spectator"];
 
   const [selectedMap, setSelectedMap] = useState<{
@@ -199,52 +200,144 @@ const Dashboard = () => {
             <Topbar></Topbar>
             <div className="mheader">
               <h1>Your Maps</h1>
-              <button
-                className="add-map"
-                data-bs-toggle="modal"
-                data-bs-target="#newMapForm"
-              >
-                <span className="material-symbols-outlined">add</span>New Map
-              </button>
+
+              <div className="main-buttons">
+                <button
+                  className="btn btn-secondary dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  {filter}
+                </button>
+                <ul className="dropdown-menu">
+                  <li>
+                    <a
+                      className="dropdown-item"
+                      onClick={() => setFilter("All")}
+                    >
+                      All
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      className="dropdown-item"
+                      onClick={() => setFilter("Admin")}
+                    >
+                      Admin
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      className="dropdown-item"
+                      onClick={() => setFilter("Collaborator")}
+                    >
+                      Collaborator
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      className="dropdown-item"
+                      onClick={() => setFilter("Spectator")}
+                    >
+                      Spectator
+                    </a>
+                  </li>
+                </ul>
+
+                <button
+                  className="add-map"
+                  data-bs-toggle="modal"
+                  data-bs-target="#newMapForm"
+                >
+                  <span className="material-symbols-outlined">add</span>New Map
+                </button>
+              </div>
             </div>
             <div className="map-dashboard">
               <ul className="map-list">
-                {displayMaps.map((displayMap, index) => (
-                  <li key={index}>
-                    <div className="card">
-                      <AspectRatio ratio="3/4" style={{ maxHeight: "170px" }}>
-                        <img
-                          src={displayMap.mapImage.preview}
-                          className="card-img-top"
-                          alt=""
-                        />
-                      </AspectRatio>
-                      <div
-                        className="card-body"
-                        onClick={() => {
-                          setSelectedMap(displayMap);
-                          setEditMap(true);
-                        }}
-                      >
-                        <h4>
-                          {displayMap.mapName}
-                          <div className="buttons">
-                            <span
-                              className="material-symbols-outlined"
-                              onClick={(e) => deleteMap(index, e)}
-                            >
-                              delete
-                            </span>
-                            <span className="material-symbols-outlined">
-                              more_vert
-                            </span>
+                {filter === "All"
+                  ? displayMaps.map((displayMap, index) => (
+                      <li key={index}>
+                        <div className="card">
+                          <AspectRatio
+                            ratio="3/4"
+                            style={{ maxHeight: "170px" }}
+                          >
+                            <img
+                              src={displayMap.mapImage.preview}
+                              className="card-img-top"
+                              alt=""
+                            />
+                          </AspectRatio>
+                          <div
+                            className="card-body"
+                            onClick={() => {
+                              setSelectedMap(displayMap);
+                              setEditMap(true);
+                            }}
+                          >
+                            <h4>
+                              {displayMap.mapName}
+                              <div className="buttons">
+                                <span
+                                  className="material-symbols-outlined"
+                                  onClick={(e) => deleteMap(index, e)}
+                                >
+                                  delete
+                                </span>
+                                <span className="material-symbols-outlined">
+                                  more_vert
+                                </span>
+                              </div>
+                            </h4>
+                            <p>{status[displayMap.status]}</p>
                           </div>
-                        </h4>
-                        <p>{status[displayMap.status]}</p>
-                      </div>
-                    </div>
-                  </li>
-                ))}
+                        </div>
+                      </li>
+                    ))
+                  : displayMaps.map(
+                      (displayMap, index) =>
+                        status[displayMap.status] == filter && (
+                          <li key={index}>
+                            <div className="card">
+                              <AspectRatio
+                                ratio="3/4"
+                                style={{ maxHeight: "170px" }}
+                              >
+                                <img
+                                  src={displayMap.mapImage.preview}
+                                  className="card-img-top"
+                                  alt=""
+                                />
+                              </AspectRatio>
+                              <div
+                                className="card-body"
+                                onClick={() => {
+                                  setSelectedMap(displayMap);
+                                  setEditMap(true);
+                                }}
+                              >
+                                <h4>
+                                  {displayMap.mapName}
+                                  <div className="buttons">
+                                    <span
+                                      className="material-symbols-outlined"
+                                      onClick={(e) => deleteMap(index, e)}
+                                    >
+                                      delete
+                                    </span>
+                                    <span className="material-symbols-outlined">
+                                      more_vert
+                                    </span>
+                                  </div>
+                                </h4>
+                                <p>{status[displayMap.status]}</p>
+                              </div>
+                            </div>
+                          </li>
+                        )
+                    )}
               </ul>
             </div>
 
@@ -369,7 +462,7 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="map-editor-display">
-              <MapDisplay></MapDisplay>
+              <MapDisplay mapId={selectedMap?.mapId ?? 0}></MapDisplay>
             </div>
 
             <div

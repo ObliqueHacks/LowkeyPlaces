@@ -22,4 +22,5 @@ urlpatterns = [
     path('api-auth/homepage/', include('registrationAndLogin.urls')),
     path('api-auth/dashboard/', include('friendManager.urls')),
     path('api-auth/map/', include('mapManager.urls')),
+    path('api-auth/markers/', include('markerManager.urls')),
 ]

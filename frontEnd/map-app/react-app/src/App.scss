@@ -676,6 +676,96 @@ h4 {
   /* SIDEBAR */
 
   aside {
+    .modal {
+      .modal-content {
+        .modal-header {
+          button {
+            background: $color-secondary;
+            border: none;
+            outline: none;
+            text-decoration: none;
+            span {
+              color: $color-primary;
+              opacity: 0.6;
+              transition: all 0.3s ease;
+              &:hover {
+                opacity: 1;
+              }
+            }
+          }
+        }
+
+        form {
+          .mb-3 {
+            margin-left: 10px;
+          }
+          input {
+            display: flex;
+            outline: none;
+            width: 70%;
+            color: white;
+            border: 0.5px solid $color-primary;
+            transition: all 0.3s ease;
+            &:focus {
+              border: 0.5px solid $color-secondary;
+            }
+          }
+          button {
+            position: relative;
+            margin: 10px;
+            left: 80%;
+            height: 40px;
+            width: 70px;
+            border: none;
+            outline: none;
+            text-decoration: none;
+            border-radius: 10px;
+            background: $gradient-primary;
+            transition: all 0.3s ease;
+            &:not([disabled]):hover {
+              transform: translateY(-2px);
+            }
+          }
+        }
+        .drag-drop-img {
+          border: 0.5px solid $color-primary;
+          box-shadow: 0 1rem 3rem rgba(250, 94, 3, 0.08);
+          height: 300px;
+          width: 320px;
+          text-align: center;
+          margin-top: 20px;
+          transition: all 0.3s ease;
+          cursor: pointer;
+          p {
+            position: relative;
+            top: 45%;
+          }
+          &:hover {
+            border: 0.5px solid $color-secondary;
+          }
+        }
+
+        .image-preview-list {
+          display: flex;
+          flex-direction: row;
+          gap: 0.8rem;
+          .image-preview-item {
+            list-style-type: none;
+            display: flex;
+            flex-direction: column;
+          }
+        }
+
+        span {
+          cursor: pointer;
+          transition: all 0.3s ease;
+          &:hover {
+            color: $color-primary;
+          }
+        }
+      }
+    }
+
     height: 100vh;
     .toggle {
       display: flex;
@@ -1056,10 +1146,31 @@ h4 {
     .mheader {
       display: flex;
       flex-direction: row;
-      button {
+
+      .main-buttons {
+        display: flex;
+        flex-direction: row;
         margin-left: auto;
+        gap: 1.5rem;
+      }
+
+      .dropdown-menu {
+        background-color: $color-primary;
+        border-radius: 0.4rem;
+        .dropdown-item {
+          transition: all 0.5s ease;
+          cursor: pointer;
+          &:hover {
+            color: $color-primary;
+            background-color: $color-box-background;
+          }
+        }
+      }
+
+      button {
         padding: 10px;
         background: $gradient-primary;
+        color: black;
         border: none;
         text-decoration: none;
         outline: none;
@@ -1173,6 +1284,7 @@ h4 {
         }
 
         form {
+          color: white;
           .mb-3 {
             margin-left: 10px;
           }
@@ -1187,6 +1299,7 @@ h4 {
               border: 0.5px solid $color-secondary;
             }
           }
+
           button {
             position: relative;
             margin: 10px;
@@ -1376,11 +1489,18 @@ h4 {
         box-shadow: none;
       }
 
+      .context-menu {
+        height: 200px;
+        width: 200px;
+        background-color: black;
+      }
+
       .leaflet-container {
         height: 100%;
         width: 100%;
         border-radius: 10px;
         display: flex;
+        background: transparent;
       }
     }
   }

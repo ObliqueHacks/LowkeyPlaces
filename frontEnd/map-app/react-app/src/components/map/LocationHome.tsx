@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useMapEvents, Marker, Popup } from "react-leaflet";
-
 function LocationHome() {
   const [position, setPosition]: any = useState(null);
   const map = useMapEvents({
