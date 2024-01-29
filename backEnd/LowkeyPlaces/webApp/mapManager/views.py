@@ -19,7 +19,7 @@ import shutil
 
 @api_view(['POST'])
 def makeMap(request: Response) -> Response:
-    #authenticate user: 
+    #authenticate user:
     user=userEquals(request)
     if user is None: return Response(status=408)
     
@@ -36,7 +36,7 @@ def makeMap(request: Response) -> Response:
     #show a 3 level higher
     
     #join the path to correct path from lowkeySpots/
-    directory_path = os.path.join(settings.ROOT_FOLDER, "frontEnd\\map-app\\react-app\\src\\maps\\", mapObject.mapFolder)
+    directory_path = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps", mapObject.mapFolder)
     
     #make map directory
     try:
