@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view
 from mapManager.serializers import getMap
 from mapManager.models import MAP, MAP_USER
 from django.core.exceptions import ObjectDoesNotExist
-from .serializers import markerSerializer, imageSerializer, markerIdSerializer, updateMarkerActionSerializer
+from .serializers import markerSerializer, imageSerializer, markerIdSerializer, updateMarkerActionSerializer, imageIdSerializer
 from .models import MARKER, MARKER_IMG
 from mapManager.views import authTemplate
 from django.conf import settings 
@@ -79,9 +79,8 @@ def placeMarker(request: Response) -> Response:
 def getMarkerList(request: Response) -> Response:
     def discrete(mapId, user, request):
         markerList = MARKER.objects.filter(mapId=mapId)
-        return Response(status=201, data={i.id:[i.name, i.desc, i.lat, i.long, i.address, i.imageCount, i.timeCreated, i.folderPath] for i in markerList})
+        return Response(status=201, data={i.id:{'name':i.name, 'desc':i.desc, 'lat': i.lat, 'long': i.long, 'address': i.address, 'imageCount': i.imageCount, 'timeCreated': i.timeCreated, 'folderPath':i.folderPath} for i in markerList})
     return authTemplate(request, discrete)
-
 
 #authTemplate
 @api_view(['POST'])
@@ -124,7 +123,7 @@ def getMarkerImg(request):
             markerId = MARKER.objects.get(id=markerId.validated_data['markerId'], mapId=mapId)
             img = MARKER_IMG.objects.filter(markerId=markerId)
             return Response(201, {"image_ids":[i.folderPath for i in img]})
-        except Exception as e:
+        except ObjectDoesNotExist:
                 return Response(status=500)
     return authTemplate(request, discrete)
         
@@ -165,10 +164,42 @@ def updateMarker(request: Response) -> Response:
 
 #authTemplate2
 @api_view(['POST'])
-def deleteMarkerImage():
-    pass
+def deleteMarkerImage(request):
+    def discrete(mapId, user, request):
+        markerId=markerIdSerializer(request.data)
+        if markerId.is_valid() is False:
+            return Response(status=440)
+        try:
+            #ensure there is a valid marker for this map
+            markerId = MARKER.objects.get(id=markerId.validated_data['markerId'], mapId=mapId)
+            
+            #delete image
+            img = imageIdSerializer(request.data)
+            if img.is_valid() is False:
+                return Response(status=440)
+                       
+            img = MARKER_IMG.objects.get(folderPath = img.validated_data['folderPath'])
+            img.delete()
+            markerId.save()
+            return Response(status=201)
+            
+        except ObjectDoesNotExist:
+                return Response(status=500)
+            
+    return authTemplate2(request, discrete)
+        
             
 #authTemplate2$
 @api_view(['POST'])
 def deleteMarker():
-    pass
+    def discrete(mapId, user, request):
+        markerId=markerIdSerializer(request.data)
+        if markerId.is_valid() is False:
+            return Response(status=440)
+        try:
+            #ensure there is a valid marker for this map
+            markerId = MARKER.objects.get(id=markerId.validated_data['markerId'], mapId=mapId)
+            markerId.delete()
+            markerId.save()
+        except ObjectDoesNotExist:
+                return Response(status=500)

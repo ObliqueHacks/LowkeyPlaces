@@ -166,7 +166,7 @@ def authTemplate(request: Response, func1: Callable) -> Callable:
             #perform action    
             return func1(mapId,user,request)
     
-    #edit the codes here  
+        #edit the codes here  
         except ObjectDoesNotExist:
             return Response(status=400)
         
@@ -212,7 +212,6 @@ def deleteMap(request) -> Response:
             mapId.delete()
             return Response(status=201)
     return authTemplate(request=request, func1=discrete)
-
 
 #ability for owner to remove a member or make them a spectator (fill in after implementing markers -- should destroy all user markers)
 @api_view(['POST'])
