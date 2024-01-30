@@ -168,7 +168,6 @@ def updateMarker(request: Response) -> Response:
 def deleteMarkerImage():
     pass
             
-
 #authTemplate2$
 @api_view(['POST'])
 def deleteMarker():
