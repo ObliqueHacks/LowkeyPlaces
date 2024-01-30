@@ -49,8 +49,8 @@ def authTemplate2(request: Response, func1: Callable) -> Callable:
 @api_view(['POST'])
 def placeMarker(request: Response) -> Response:
     def discrete(mapId, user, request):
-        marker = markerSerializer(request.data)
-        if marker.isvalid() is False:
+        marker = markerSerializer(data=request.data)
+        if marker.is_valid() is False:
             return Response(status=419)
         marker=marker.validated_data
         markerInstance = MARKER(
@@ -59,7 +59,7 @@ def placeMarker(request: Response) -> Response:
             lat=marker['lat'],
             long=marker['long'],
             address=marker['address'],
-            user=user,
+            userId=user,
             mapId=mapId
         )
         markerInstance.save()
@@ -78,7 +78,7 @@ def placeMarker(request: Response) -> Response:
 @api_view(['POST'])
 def getMarkerList(request: Response) -> Response:
     def discrete(mapId, user, request):
-        markerList = MARKER.objects.filter(user=user, mapId=mapId)
+        markerList = MARKER.objects.filter(mapId=mapId)
         return Response(status=201, data={i.id:[i.name, i.desc, i.lat, i.long, i.address, i.imageCount, i.timeCreated, i.folderPath] for i in markerList})
     return authTemplate(request, discrete)
 

@@ -58,9 +58,9 @@ def makeMap(request: Response) -> Response:
     
     #serializer map image:
     mapImage = imageSerializer(data=request.data)
-    mapDestinationPath = os.path.join(settings.ROOT_FOLDER, "frontEnd\\map-app\\react-app\\src\\maps\\", mapObject.mapFolder, "MAP_IMAGE.jpg")
+    mapDestinationPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", mapObject.mapFolder, "MAP_IMAGE.jpg")
     if mapImage.is_valid() is False:
-        mapImagePath = os.path.join(settings.ROOT_FOLDER, "frontEnd\\map-app\\react-app\\src\\maps\\", "MAP_IMAGE.jpg")
+        mapImagePath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", "MAP_IMAGE.jpg")
         shutil.copy(mapImagePath, mapDestinationPath)
         
     #check this
