@@ -103,7 +103,6 @@ def addFriendToMap(request: Response) -> Response:
     except ObjectDoesNotExist:
         return Response(status=427)
 
-
     #add them to the map by default instead of creating a mapRequest (since they are already Friends)
     #check if rec is even valid
     try:

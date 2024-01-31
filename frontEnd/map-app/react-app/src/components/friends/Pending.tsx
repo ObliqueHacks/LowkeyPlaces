@@ -133,8 +133,9 @@ const Pending = () => {
       const action = 2;
       const response = await axios.post(
         ACTION_FRIENDS_URL,
-        JSON.stringify({ name: requestName, userToken: accessToken, action }),
-        { headers: { "Content-type": "application/json" } }
+        JSON.stringify({ name: requestName, action }),
+        { headers: { "Content-type": "application/json" },
+          withCredentials: true,}
       );
       console.log(response);
       setIncomingRequests((prevRequests) =>
