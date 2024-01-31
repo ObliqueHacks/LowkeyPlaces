@@ -3,11 +3,11 @@ from .models import MARKER
 
 
 class markerSerializer(serializers.Serializer):
-    name=serializers.CharField(default="No Name", max_length=30)
-    desc=serializers.CharField(default="")
-    lat=serializers.FloatField()
-    long=serializers.FloatField()
-    address=serializers.CharField(max_length=150)
+    name=serializers.CharField(required=False, max_length=30)
+    desc=serializers.CharField(required=False)
+    lat=serializers.FloatField(required=False)
+    long=serializers.FloatField(required=False)
+    address=serializers.CharField(required=False, max_length=150)
 
 class imageSerializer(serializers.Serializer):
     image=serializers.ImageField()

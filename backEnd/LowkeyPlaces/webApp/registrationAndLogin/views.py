@@ -14,7 +14,6 @@ def preset(userToken):
     url = "api-auth/"
     headers = {"Cookie": "genToken="+userToken}
 
-
 # Create your views here.
 @api_view(['Post'])
 def register(request):
