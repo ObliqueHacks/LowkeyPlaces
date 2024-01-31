@@ -8,6 +8,7 @@ import MapFriends from "../../components/friends/MapFriends.tsx";
 import AllFriends from "../../components/friends/AllFriends.tsx";
 import axios from "../../api/axios";
 import AuthContext from "../../context/AuthProvider.tsx";
+import CardSkeleton from "../../components/CardSkeleton.tsx";
 
 /* LIRBARIES */
 import { Fade } from "react-awesome-reveal";
@@ -20,6 +21,7 @@ import Skeleton from "react-loading-skeleton";
 /* OTHER */
 import NatureOne from "../../assets/nature-1.jpg";
 import Markerbar from "../../components/map/Markerbar.tsx";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const CREATE_MAP_URL = "api-auth/map/make-map/";
 const GET_MAP_IDS_URL = "api-auth/map/get-user-maps/";
@@ -37,6 +39,8 @@ const Dashboard = () => {
 
   const [filter, setFilter] = useState("All");
   const status = ["Admin", "Collaborator", "Spectator"];
+
+  const [loading, setLoading] = useState(true);
 
   const [selectedMap, setSelectedMap] = useState<{
     mapName: string;
@@ -102,7 +106,7 @@ const Dashboard = () => {
 
   const getMaps = async () => {
     try {
-      let updatedDisplayMaps = [];
+      let updatedDisplayMaps: any = [];
 
       for (const id of mapIds) {
         const response = await axios.post(
@@ -136,7 +140,10 @@ const Dashboard = () => {
       }
 
       // Clear existing maps and set the updated ones
-      setDisplayMaps(updatedDisplayMaps);
+      setTimeout(() => {
+        setDisplayMaps(updatedDisplayMaps);
+        setLoading(false);
+      }, 1000);
     } catch (err: any) {
       console.log(err.response);
       if (err.response?.status === 400) {
@@ -263,6 +270,7 @@ const Dashboard = () => {
             </div>
             <div className="map-dashboard">
               <ul className="map-list">
+                {loading && <CardSkeleton cards={mapIds.length} />}
                 {filter === "All"
                   ? displayMaps.map((displayMap, index) => (
                       <li key={index}>
@@ -272,20 +280,11 @@ const Dashboard = () => {
                             style={{ maxHeight: "170px" }}
                           >
                             {" "}
-                            {(
-                              <img
-                                src={displayMap.mapImage.preview}
-                                className="card-img-top"
-                                alt=""
-                              />
-                            ) || (
-                              <Skeleton
-                                baseColor="rgb(18, 18, 18)"
-                                highlightColor="#525252"
-                                className="map-image-skeleton"
-                                duration={1}
-                              />
-                            )}
+                            <img
+                              src={displayMap.mapImage.preview}
+                              className="card-img-top"
+                              alt=""
+                            />
                           </AspectRatio>
                           <div
                             className="card-body"

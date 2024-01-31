@@ -1210,24 +1210,27 @@ h4 {
         position: relative;
         top: 3rem;
         height: 100%;
+        width: 100%;
         max-height: 70vh;
         overflow: auto;
         display: flex;
         flex-wrap: wrap; /* Allow items to wrap to the next line */
         gap: 1.5rem;
+
+        .card-skeleton {
+          width: 30%;
+          gap: 1.5rem;
+          display: flex;
+          max-height: 100vh;
+          flex-direction: column;
+        }
+
         li {
           width: 30%;
           gap: 3rem;
           display: flex;
           max-height: 100vh;
           flex-direction: column;
-
-          .map-image-skeleton {
-            display: flex;
-            height: 170px;
-            width: 220px;
-            margin-right: 10px;
-          }
 
           h4 {
             color: $color-primary;
