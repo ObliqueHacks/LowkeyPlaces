@@ -5,6 +5,16 @@ from .models import USER
 from django.utils import timezone
 from rest_framework import status
 from utils import create_token, hash_password, verify_password
+from rest_framework.request import Request
+from rest_framework.test import APIRequestFactory
+
+
+#private 
+def preset(userToken):
+    url = "api-auth/"
+    headers = {"Cookie": "genToken="+userToken}
+
+
 # Create your views here.
 @api_view(['Post'])
 def register(request):
@@ -35,4 +45,4 @@ def login(request):
             a.set_cookie('genToken', genToken, domain=None, secure=True, samesite="None", httponly=True)
             a.status = 201
             return a; 
-    return Response({'error': 'failed'}, status=status.HTTP_400_BAD_REQUEST)    
+    return Response({'error': 'failed'}, status=status.HTTP_400_BAD_REQUEST)
