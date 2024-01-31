@@ -5,22 +5,24 @@ import React, { useContext, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useCallback } from "react";
 
-const MAP_LIST_URL = "api-auth/markers/marker-list/";
+import { useMapContext } from "../../context/MapProvider.tsx";
+
+const MARKER_LIST_URL = "api-auth/markers/marker-list/";
 const ADD_MARKER_IMG_URL = "api-auth/markers/add-marker-img/";
 const GET_MARKER_IMG_URL = "api-auth/markers/get-marker-img/";
+const UPDATE_MARKER_URL = "api-auth/markers/update-marker/";
 
 interface FileState {
   preview: string;
   file: File | null;
 }
 
-const mapId = 0; 
-
-const Markerbar = () => {
-  const [markerName, setMarkerName] = useState("");
-  const [description, setDescription] = useState("");
+const Markerbar = ({ mapId }: { mapId: number }) => {
+  const [updatedName, setMarkerName] = useState("");
+  const [selectMarker, setSelectMarker]: any = useState({});
+  const [updatedDescription, setDescription] = useState("");
   const [files, setFiles] = useState<FileState[]>([]);
-
+  const { markers } = useMapContext();
   const [mapImg, setMapImg] = useState<{ preview: string; file: File | null }>({
     preview: "",
     file: null,
@@ -43,34 +45,10 @@ const Markerbar = () => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const { auth }: any = useContext(AuthContext);
-  const { accessToken }: any = auth;
-
-  const mapList = async () => {
-    try {
-      const response = await axios.post(
-        MAP_LIST_URL,
-        JSON.stringify({
-          userToken: accessToken,
-          mapId: mapId,
-        }),
-        { headers: { "Content-type": "application/json" } }
-      );
-      console.log(response);
-    } catch (err: any) {
-      if (err.response?.status === 500) {
-        console.log("Something went wrong");
-      } else {
-        console.log("No response. Server Error");
-      }
-    }
-  };
-
-  const addMarkerImgs = async () => {
+  const addMarkerImgs = async (markerId: number) => {
     try {
       for (const file of files) {
         const formData = new FormData();
-        formData.append("userToken", accessToken);
 
         formData.append("mapId", String(mapId));
 
@@ -78,7 +56,7 @@ const Markerbar = () => {
           formData.append("image", file.file);
         }
 
-        const response = await axios.post(ADD_MARKER_IMG_URL, formData, {
+        const response = await axios.post(ADD_MARKER_IMG_URL, {
           headers: { "Content-type": "multipart/form-data" },
           withCredentials: true,
         });
@@ -93,13 +71,48 @@ const Markerbar = () => {
     }
   };
 
+  const updateMarker = async (
+    markerId: any,
+    updatedName: string,
+    updateDesc: string
+  ) => {
+    console.log("update marker is being called");
+    console.log(mapId);
+    try {
+      const response = await axios.post(
+        UPDATE_MARKER_URL,
+        JSON.stringify({
+          mapId: mapId,
+          markerId: markerId,
+          name: updatedName,
+          desc: updateDesc,
+        }),
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      console.log(response);
+    } catch (err: any) {
+      if (err.response?.status === 419) {
+        console.log("Invalid Marker");
+      } else if (err.response?.status === 497) {
+        console.log("Marker Id is not valid");
+      } else if (err.response?.status === 400) {
+        console.log("Something went wrong");
+      } else {
+        console.log("No server response");
+      }
+    }
+  };
+
   const getMarkerImgs = async () => {
     try {
       for (const file of files) {
         const response = await axios.post(
           GET_MARKER_IMG_URL,
           JSON.stringify({
-            userToken: accessToken,
             mapId: mapId,
             image: file.file,
           }),
@@ -127,18 +140,24 @@ const Markerbar = () => {
           Spots <span className="material-symbols-outlined">location_on</span>
         </h6>
         <ul className="marker-list">
-          <li className="marker">
-            <input type="checkbox" />
-            <label htmlFor="item1">Marker Name</label>{" "}
-            <span className="material-symbols-outlined">delete</span>
-            <span
-              className="material-symbols-outlined"
-              data-bs-toggle="modal"
-              data-bs-target="#newMarkerForm"
-            >
-              edit
-            </span>
-          </li>
+          {markers.map((marker: any, index: number) => (
+            <li className="marker" key={index}>
+              <input type="checkbox" />
+              <label className="marker-name">{marker.name}</label>{" "}
+              <span className="material-symbols-outlined">delete</span>
+              <span
+                className="material-symbols-outlined"
+                data-bs-toggle="modal"
+                data-bs-target="#newMarkerForm"
+                onClick={() => setSelectMarker(marker)}
+              >
+                edit
+              </span>
+              <span className="material-symbols-outlined">
+                gallery_thumbnail
+              </span>
+            </li>
+          ))}
         </ul>
       </div>
       <div
@@ -151,7 +170,7 @@ const Markerbar = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Create Spot
+                Update Spot
               </h1>
 
               <button type="button" data-bs-dismiss="modal">
@@ -168,7 +187,7 @@ const Markerbar = () => {
                   className="form-control"
                   id="nameMarker"
                   onChange={(e) => setMarkerName(e.target.value)}
-                  value={markerName}
+                  value={updatedName}
                   required
                 />
               </div>
@@ -178,7 +197,7 @@ const Markerbar = () => {
                   className="form-control"
                   id="descriptionMarker"
                   onChange={(e) => setDescription(e.target.value)}
-                  value={description}
+                  value={updatedDescription}
                   style={{
                     display: "flex",
                     outline: "none",
@@ -228,13 +247,18 @@ const Markerbar = () => {
               </div>
               <button
                 type="button"
-                disabled={markerName !== "" ? false : true}
+                disabled={updatedName !== "" ? false : true}
                 data-bs-dismiss="modal"
                 onClick={(e) => {
                   e.preventDefault();
+                  updateMarker(
+                    selectMarker.id,
+                    updatedName,
+                    updatedDescription
+                  );
                 }}
               >
-                Create
+                Update
               </button>
             </form>
           </div>

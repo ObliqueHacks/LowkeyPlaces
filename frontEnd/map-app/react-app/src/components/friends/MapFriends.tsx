@@ -29,7 +29,6 @@ const MapFriends = ({
         }
       );
 
-      console.log(response.data);
       setMapFriends(response.data);
     } catch (err: any) {
       if (err.response?.status === 400) {

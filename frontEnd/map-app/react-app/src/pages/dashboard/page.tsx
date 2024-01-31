@@ -15,8 +15,11 @@ import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { AspectRatio } from "react-aspect-ratio";
 
+import Skeleton from "react-loading-skeleton";
+
 /* OTHER */
 import NatureOne from "../../assets/nature-1.jpg";
+import Markerbar from "../../components/map/Markerbar.tsx";
 
 const CREATE_MAP_URL = "api-auth/map/make-map/";
 const GET_MAP_IDS_URL = "api-auth/map/get-user-maps/";
@@ -87,7 +90,6 @@ const Dashboard = () => {
           withCredentials: true,
         }
       );
-      console.log(response.data.mapId);
       setMapIds(response.data.mapId);
     } catch (err: any) {
       if (err.response?.status == 408) {
@@ -134,7 +136,6 @@ const Dashboard = () => {
       }
 
       // Clear existing maps and set the updated ones
-      console.log(updatedDisplayMaps);
       setDisplayMaps(updatedDisplayMaps);
     } catch (err: any) {
       console.log(err.response);
@@ -199,7 +200,7 @@ const Dashboard = () => {
 
   return (
     <div className="container">
-      <Sidebar editMap={editMap}></Sidebar>
+      <Sidebar editMap={editMap} mapId={selectedMap?.mapId}></Sidebar>
       {!editMap && (
         <Fade>
           <div className="maps">
@@ -270,11 +271,21 @@ const Dashboard = () => {
                             ratio="3/4"
                             style={{ maxHeight: "170px" }}
                           >
-                            <img
-                              src={displayMap.mapImage.preview}
-                              className="card-img-top"
-                              alt=""
-                            />
+                            {" "}
+                            {(
+                              <img
+                                src={displayMap.mapImage.preview}
+                                className="card-img-top"
+                                alt=""
+                              />
+                            ) || (
+                              <Skeleton
+                                baseColor="rgb(18, 18, 18)"
+                                highlightColor="#525252"
+                                className="map-image-skeleton"
+                                duration={1}
+                              />
+                            )}
                           </AspectRatio>
                           <div
                             className="card-body"
@@ -284,7 +295,7 @@ const Dashboard = () => {
                             }}
                           >
                             <h4>
-                              {displayMap.mapName}
+                              {displayMap.mapName || <Skeleton />}
                               <div className="buttons">
                                 <span
                                   className="material-symbols-outlined"

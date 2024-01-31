@@ -149,7 +149,7 @@ const Friends = () => {
 
   return (
     <div className="container">
-      <Sidebar editMap={false}></Sidebar>
+      <Sidebar></Sidebar>
       <Fade>
         <div className="friends">
           <Topbar></Topbar>

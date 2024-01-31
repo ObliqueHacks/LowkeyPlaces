@@ -79,7 +79,7 @@ def placeMarker(request: Response) -> Response:
 def getMarkerList(request: Response) -> Response:
     def discrete(mapId, user, request):
         markerList = MARKER.objects.filter(mapId=mapId)
-        return Response(status=201, data={i.id:[i.name, i.desc, i.lat, i.long, i.address, i.imageCount, i.timeCreated, i.folderPath] for i in markerList})
+        return Response(status=201, data={i.id:{'name':i.name, 'desc':i.desc, 'lat': i.lat, 'long': i.long, 'address': i.address, 'imageCount': i.imageCount, 'timeCreated': i.timeCreated, 'folderPath':i.folderPath} for i in markerList})
     return authTemplate(request, discrete)
 
 
@@ -133,12 +133,11 @@ def getMarkerImg(request):
 @api_view(['POST'])
 #action map: {1: update lat-long, 2: update description, 3: update color}
 def updateMarker(request: Response) -> Response:
-    def discrete(mapId, user, request):
-        
-        markerId=markerIdSerializer(request.data)
-        newMarker = markerSerializer(request.data)
-        
-        if newMarker.isvalid() is False or markerId.is_valid() is False:
+    def discrete(mapId, user, request): 
+        print(request.data)
+        markerId=markerIdSerializer(data=request.data)
+        newMarker = markerSerializer(data=request.data)
+        if newMarker.is_valid() is False or markerId.is_valid() is False:
             return Response(status=419)
         
         markerId=markerId.validated_data
@@ -168,7 +167,6 @@ def updateMarker(request: Response) -> Response:
 def deleteMarkerImage():
     pass
             
-
 #authTemplate2$
 @api_view(['POST'])
 def deleteMarker():

@@ -4,6 +4,7 @@ import Layout from "./pages/homepage/Navbar.tsx";
 import Home from "./pages/homepage/page.tsx";
 import Dashboard from "./pages/dashboard/page.tsx";
 import Friends from "./pages/friends/page.tsx";
+import { MapProvider } from "./context/MapProvider.tsx";
 
 import React, { useState } from "react";
 

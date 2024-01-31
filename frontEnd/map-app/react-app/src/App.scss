@@ -888,11 +888,15 @@ h4 {
         list-style-type: none;
         padding: 0;
         margin: 0;
+        overflow: auto;
+        .marker-name {
+          text-overflow: ellipsis;
+        }
         li {
           margin-left: 10px;
           margin-bottom: 10px;
           margin-top: 10px;
-          font-size: 13px;
+          font-size: 11px;
 
           input {
             margin-right: 5px;
@@ -1217,6 +1221,13 @@ h4 {
           display: flex;
           max-height: 100vh;
           flex-direction: column;
+
+          .map-image-skeleton {
+            display: flex;
+            height: 170px;
+            width: 220px;
+            margin-right: 10px;
+          }
 
           h4 {
             color: $color-primary;

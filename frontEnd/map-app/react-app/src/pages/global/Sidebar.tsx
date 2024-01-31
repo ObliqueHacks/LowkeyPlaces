@@ -8,7 +8,13 @@ import axios from "../../api/axios.ts";
 import Cookies from "js-cookie";
 const FRIENDS_INFO_URL = "api-auth/dashboard/user-info/"; // Getting User Info
 
-const Sidebar = ({ editMap }: { editMap: boolean }) => {
+const Sidebar = ({
+  editMap = false,
+  mapId = -1,
+}: {
+  editMap?: boolean;
+  mapId?: number;
+}) => {
   const location = useLocation();
   const { setAuth }: any = useContext(AuthContext);
 
@@ -103,7 +109,7 @@ const Sidebar = ({ editMap }: { editMap: boolean }) => {
           </h4>
         </Link>
       </div>
-      {editMap && <Markerbar></Markerbar>}
+      {editMap && <Markerbar mapId={mapId}></Markerbar>}
     </aside>
   );
 };
