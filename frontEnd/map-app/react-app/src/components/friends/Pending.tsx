@@ -10,9 +10,6 @@ const FRIENDS_INFO_URL = "api-auth/dashboard/user-info/"; // Getting User Info
 const ACTION_FRIENDS_URL = "api-auth/dashboard/make-request/"; // Accepting/Rejecting
 
 const Pending = () => {
-  const { auth }: any = useContext(AuthContext);
-  const { accessToken }: any = auth;
-
   const [incomingRequests, setIncomingRequests] = useState([]);
 
   useEffect(() => {
@@ -41,7 +38,7 @@ const Pending = () => {
     };
 
     processFriendRequests();
-  }, [accessToken]);
+  }, []);
 
   const handleTest = () => {
     toast.info("Friend Request Was Accepted!", {
@@ -62,7 +59,10 @@ const Pending = () => {
       const response = await axios.post(
         ACTION_FRIENDS_URL,
         JSON.stringify({ name: requestName, action }),
-        { headers: { "Content-type": "application/json" } }
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
       );
       console.log(response);
       toast.info("Friend Request Was Accepted!", {
@@ -134,8 +134,10 @@ const Pending = () => {
       const response = await axios.post(
         ACTION_FRIENDS_URL,
         JSON.stringify({ name: requestName, action }),
-        { headers: { "Content-type": "application/json" },
-          withCredentials: true,}
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
       );
       console.log(response);
       setIncomingRequests((prevRequests) =>

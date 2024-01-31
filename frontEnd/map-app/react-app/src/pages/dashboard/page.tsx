@@ -126,8 +126,6 @@ const Dashboard = () => {
           type: "image/jpeg",
         });
 
-        console.log(response?.data);
-
         updatedDisplayMaps.push({
           mapName: response.data.mapData.title,
           mapImage: {
@@ -143,7 +141,7 @@ const Dashboard = () => {
       setTimeout(() => {
         setDisplayMaps(updatedDisplayMaps);
         setLoading(false);
-      }, 1000);
+      }, 700);
     } catch (err: any) {
       console.log(err.response);
       if (err.response?.status === 400) {
@@ -184,8 +182,6 @@ const Dashboard = () => {
         headers: { "Content-type": "multipart/form-data" },
         withCredentials: true,
       });
-
-      console.log(response);
 
       getMapIds();
       getMaps();

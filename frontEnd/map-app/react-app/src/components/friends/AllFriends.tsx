@@ -40,15 +40,17 @@ const AllFriends = () => {
 
   const removeFriend = async (friendName: string) => {
     try {
-      const action = 1;
+      const action = 4;
       const response = await axios.post(
         ACTION_FRIENDS_URL,
-        JSON.stringify({ name: friendName, action }),
+        JSON.stringify({ name: friendName, action: action }),
         {
           headers: { "Content-type": "application/json" },
           withCredentials: true,
         }
       );
+
+      console.log(response);
 
       setFriends((prevFriends) =>
         prevFriends.filter((friend) => friend !== friendName)
