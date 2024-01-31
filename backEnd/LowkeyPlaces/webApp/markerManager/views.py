@@ -54,15 +54,25 @@ def placeMarker(request: Response) -> Response:
             return Response(status=419)
         marker=marker.validated_data
         markerInstance = MARKER(
-            name=marker['name'],
-            desc=marker['desc'],
-            lat=marker['lat'],
-            long=marker['long'],
-            address=marker['address'],
             userId=user,
             mapId=mapId
         )
+        if 'name' in marker:
+            markerInstance.name=marker['name']
+            
+        if 'desc' in marker:
+            markerInstance.desc=marker['desc']
+            
+        if 'lat' in marker:
+            markerInstance.lat=marker['lat']
+        
+        if 'long' in marker:    
+            markerInstance.long=marker['long']
+          
+        if 'address' in marker:      
+            markerInstance.address=marker['address']
         markerInstance.save()
+        
         #make directory for marker
         markerPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps", mapId.mapFolder, "markers", markerInstance.folderPath)
         try:
@@ -112,6 +122,7 @@ def addMarkerImg(request: Response) -> Response:
     return authTemplate2(request)
 
 
+
 @api_view(['POST'])
 def getMarkerImg(request):
     def discrete(mapId, user, request):
@@ -127,15 +138,17 @@ def getMarkerImg(request):
                 return Response(status=500)
     return authTemplate(request, discrete)
         
+        
 
 #authTemplate2
 @api_view(['POST'])
 #action map: {1: update lat-long, 2: update description, 3: update color}
 def updateMarker(request: Response) -> Response:
     def discrete(mapId, user, request): 
-        print(request.data)
-        markerId=markerIdSerializer(data=request.data)
+        markerId = markerIdSerializer(data=request.data)
         newMarker = markerSerializer(data=request.data)
+        print([i for i in request.data])
+        
         if newMarker.is_valid() is False or markerId.is_valid() is False:
             return Response(status=419)
         
@@ -145,21 +158,25 @@ def updateMarker(request: Response) -> Response:
         try:
             #ensure there is a valid marker for this map
             old_marker = MARKER.objects.get(id=markerId['markerId'], mapId=mapId)
-            
             #update all success
-            old_marker.name=newMarker['name'],
-            old_marker.desc=newMarker['desc'],
-            old_marker.lat=newMarker['lat'],
-            old_marker.long=newMarker['long'],
-            old_marker.address=newMarker['address'],
+            if 'name' in markerId:
+                old_marker.name=newMarker['name']   
+            if 'desc' in markerId:
+                old_marker.desc=newMarker['desc']
+            if 'lat' in markerId:
+                old_marker.lat=newMarker['lat']
+            if 'long' in markerId:
+                old_marker.long=newMarker['long']
+            if 'address' in markerId:
+                old_marker.address=newMarker['address']
             old_marker.save()
-            
             #return updated mapList
-            return getMarkerList(request.data)
-            
+            return Response(status=201)
         except ObjectDoesNotExist:
             return Response(status=497)
     return authTemplate2(request, discrete)
+
+
 
 #authTemplate2
 @api_view(['POST'])

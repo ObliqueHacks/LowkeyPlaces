@@ -25,9 +25,11 @@ def makeRequest(request):
     sender=userEquals(request)
     if sender is None: return Response(status=408)
 
+
     user=toUserAction(data=request.data)
     if user.is_valid() is False:
         return Response(status=400)
+    
     
     #authenticate action
     action=intToAction(user.validated_data['action'])
@@ -95,6 +97,7 @@ def makeRequest(request):
         if USER_RELATION.objects.filter(user1=sender, user2=rec).first() is not None:
             USER_RELATION.objects.filter(user1=sender, user2=rec).first().delete().save()
             USER_RELATION.objects.filter(user1=rec, user2=sender).first().delete().save()
+            
             
     if action=='blockFriend':
         pass
