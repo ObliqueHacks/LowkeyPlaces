@@ -14,7 +14,6 @@ from django.core.exceptions import ValidationError
 
 def userEquals(request: Response) -> USER:
     session_id = request.COOKIES.get('genToken', None)
-    print(session_id)
     user=token_to_user(session_id)
     return user
 
@@ -45,6 +44,7 @@ def makeRequest(request):
     rec=rec.first()            
     if (rec==sender): return Response(status = 400)
 
+
     #handle friend request
     if action == 'sendFriendReq':
         #already friends or blocked
@@ -65,6 +65,7 @@ def makeRequest(request):
             new_instance.save()
             return Response(status=201)
 
+
     #if user accepts
     if action=='acceptFriendReq':
         rec,sender=sender,rec #flip to see if there even is an inconming request
@@ -81,6 +82,7 @@ def makeRequest(request):
             return Response(status=201)
         return Response(status = 404) 
             
+            
     # if user rejects        
     if action=='rejectFriendReq':
         rec,sender=sender,rec #flip to see if there even is an inconming request
@@ -93,15 +95,18 @@ def makeRequest(request):
     if action=='blockFriendReq':
         pass
 
+
     if action == 'removeFriend':
         if USER_RELATION.objects.filter(user1=sender, user2=rec).first() is not None:
             USER_RELATION.objects.filter(user1=sender, user2=rec).first().delete().save()
             USER_RELATION.objects.filter(user1=rec, user2=sender).first().delete().save()
-        return Response(status=201)
+            return Response(status=201)
+        return Response(status=408)
             
             
     if action=='blockFriend':
         pass
+
 
     if action=='unblockUser':
         pass
