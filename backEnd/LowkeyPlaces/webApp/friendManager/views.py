@@ -97,6 +97,7 @@ def makeRequest(request):
         if USER_RELATION.objects.filter(user1=sender, user2=rec).first() is not None:
             USER_RELATION.objects.filter(user1=sender, user2=rec).first().delete().save()
             USER_RELATION.objects.filter(user1=rec, user2=sender).first().delete().save()
+        return Response(status=201)
             
             
     if action=='blockFriend':
