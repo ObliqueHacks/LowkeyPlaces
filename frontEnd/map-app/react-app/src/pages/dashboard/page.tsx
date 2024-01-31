@@ -143,7 +143,7 @@ const Dashboard = () => {
       setTimeout(() => {
         setDisplayMaps(updatedDisplayMaps);
         setLoading(false);
-      }, 1000);
+      }, 700);
     } catch (err: any) {
       console.log(err.response);
       if (err.response?.status === 400) {
