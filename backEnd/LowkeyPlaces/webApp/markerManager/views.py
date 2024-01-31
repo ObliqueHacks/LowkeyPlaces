@@ -148,8 +148,6 @@ def updateMarker(request: Response) -> Response:
     def discrete(mapId, user, request): 
         markerId = markerIdSerializer(data=request.data)
         newMarker = markerSerializer(data=request.data)
-        
-        
         if newMarker.is_valid() is False or markerId.is_valid() is False:
             return Response(status=419)
         markerId=markerId.validated_data
