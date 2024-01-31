@@ -92,6 +92,7 @@ def getMarkerList(request: Response) -> Response:
         return Response(status=201, data={i.id:{'name':i.name, 'desc':i.desc, 'lat': i.lat, 'long': i.long, 'address': i.address, 'imageCount': i.imageCount, 'timeCreated': i.timeCreated, 'folderPath':i.folderPath} for i in markerList})
     return authTemplate(request, discrete)
 
+
 #authTemplate
 @api_view(['POST'])
 def addMarkerImg(request: Response) -> Response:
@@ -147,41 +148,30 @@ def updateMarker(request: Response) -> Response:
     def discrete(mapId, user, request): 
         markerId = markerIdSerializer(data=request.data)
         newMarker = markerSerializer(data=request.data)
-        print([i for i in request.data])
-        print(request.data)
-        
         if newMarker.is_valid() is False or markerId.is_valid() is False:
             return Response(status=419)
-        
         markerId=markerId.validated_data
+        
         newMarker=newMarker.validated_data
-        print(newMarker)
-        if "name" in newMarker:
-            print("yes", newMarker["name"])
         try:
             #ensure there is a valid marker for this map
             old_marker = MARKER.objects.get(id=markerId['markerId'], mapId=mapId)
             #update all success
-            if 'name' in markerId:
-                old_marker.name=newMarker['name']  
-                old_marker.save() 
-            if 'desc' in markerId:
+            if 'name' in newMarker:
+                old_marker.name=newMarker['name']   
+            if 'desc' in newMarker:
                 old_marker.desc=newMarker['desc']
-                old_marker.save()
-            if 'lat' in markerId:
+            if 'lat' in newMarker:
                 old_marker.lat=newMarker['lat']
-            if 'long' in markerId:
+            if 'long' in newMarker:
                 old_marker.long=newMarker['long']
-            if 'address' in markerId:
+            if 'address' in newMarker:
                 old_marker.address=newMarker['address']
-           
-            print(old_marker.name)
-            #return updated mapList
+            old_marker.save()
             return Response(status=201)
         except ObjectDoesNotExist:
             return Response(status=497)
     return authTemplate2(request, discrete)
-
 
 
 #authTemplate2
