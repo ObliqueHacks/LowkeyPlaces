@@ -1,16 +1,29 @@
 import axios from "../../api/axios";
-import { LatLng, layerGroup, marker } from "leaflet";
 import React, { useContext, useEffect } from "react";
-import { useState } from "react";
-import { useMapEvents, Marker, useMapEvent, useMap } from "react-leaflet";
+import {
+  useMapEvents,
+  Marker,
+  useMapEvent,
+  useMap,
+  Popup,
+} from "react-leaflet";
 import AuthContext from "../../context/AuthProvider.tsx";
 import { useMapContext } from "../../context/MapProvider.tsx";
+import { Icon } from "leaflet";
+import markerMapIcon from "../../assets/Visit.png";
 
 const PLACE_MARKER_URL = "api-auth/markers/place-marker/";
 const MARKER_LIST_URL = "api-auth/markers/marker-list/";
 
 function LocationMarkers({ mapId }: { mapId: number }) {
   const { markers, setMarkers }: any = useMapContext();
+
+  const customIcon = new Icon({
+    iconUrl: markerMapIcon,
+    iconSize: [45, 45], // Adjust the size of the icon
+    iconAnchor: [16, 32], // Adjust the anchor point if needed
+    popupAnchor: [0, -32], /// point from which the popup should open relative to the iconAnchor
+  });
 
   const getMarkers = async () => {
     let newMarkers = [];
@@ -110,7 +123,16 @@ function LocationMarkers({ mapId }: { mapId: number }) {
   });
 
   const markerList = markers.map((marker: any, index: number) => (
-    <Marker key={index} position={[marker.lat, marker.long]}></Marker>
+    <Marker key={index} position={[marker.lat, marker.long]} icon={customIcon}>
+      {marker.desc === "" ? (
+        <Popup className="popup-style"> Add a description!</Popup>
+      ) : (
+        <Popup>
+          {" "}
+          <h6>{marker.name}</h6> <p style={{ color: "white" }}>{marker.desc}</p>
+        </Popup>
+      )}
+    </Marker>
   ));
 
   return <React.Fragment>{markerList}</React.Fragment>;

@@ -13,28 +13,29 @@ const AllFriends = () => {
   // const [showSpectatorPopup, setShowSpectatorPopup] = useState(false);
   // const [showCollaboratorPopup, setShowCollaboratorPopup] = useState(false);
 
-  useEffect(() => {
-    const processFriends = async () => {
-      try {
-        const response: any = await axios.post(
-          FRIENDS_INFO_URL,
-          {},
-          {
-            headers: { "Content-type": "application/json" },
-            withCredentials: true,
-          }
-        );
-
-        const parsedResponse = JSON.parse(response.request.response);
-        const { friends } = parsedResponse;
-        setFriends(friends);
-      } catch (err: any) {
-        if (err.response?.status === 400) {
-          console.log("Something went wrong");
+  const processFriends = async () => {
+    try {
+      const response: any = await axios.post(
+        FRIENDS_INFO_URL,
+        {},
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
         }
-      }
-    };
+      );
 
+      const parsedResponse = JSON.parse(response.request.response);
+      console.log(response);
+      const { friends } = parsedResponse;
+      setFriends(friends);
+    } catch (err: any) {
+      if (err.response?.status === 400) {
+        console.log("Something went wrong");
+      }
+    }
+  };
+
+  useEffect(() => {
     processFriends();
   }, []);
 
@@ -52,9 +53,7 @@ const AllFriends = () => {
 
       console.log(response);
 
-      setFriends((prevFriends) =>
-        prevFriends.filter((friend) => friend !== friendName)
-      );
+      processFriends();
     } catch (err: any) {
       console.log(err.response);
       if (err.response?.status === 400) {

@@ -11,6 +11,7 @@ const MARKER_LIST_URL = "api-auth/markers/marker-list/";
 const ADD_MARKER_IMG_URL = "api-auth/markers/add-marker-img/";
 const GET_MARKER_IMG_URL = "api-auth/markers/get-marker-img/";
 const UPDATE_MARKER_URL = "api-auth/markers/update-marker/";
+const DELETE_MARKER_URL = "api-auth/markers/delete-marker/";
 
 interface FileState {
   preview: string;
@@ -23,10 +24,12 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
   const [updatedDescription, setDescription] = useState("");
   const [files, setFiles] = useState<FileState[]>([]);
   const { markers, setMarkers } = useMapContext();
-  const [mapImg, setMapImg] = useState<{ preview: string; file: File | null }>({
-    preview: "",
-    file: null,
-  });
+
+  const resetForm = () => {
+    setMarkerName("");
+    setDescription("");
+    setFiles([]);
+  };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles?.length) {
@@ -45,12 +48,13 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const addMarkerImgs = async (markerId: number) => {
+  const addMarkerImgs = async (marker: any) => {
     try {
       for (const file of files) {
         const formData = new FormData();
 
         formData.append("mapId", String(mapId));
+        formData.append("markerId", String(marker.id));
 
         if (file.file) {
           formData.append("image", file.file);
@@ -72,21 +76,38 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
   };
 
   const updateMarker = async (
-    markerId: any,
-    updatedName: string,
-    updateDesc: string
+    marker: any,
+    updatedName: string = "",
+    updateDesc: string = ""
   ) => {
     console.log("update marker is being called");
     console.log(mapId);
+    console.log(marker.id);
+
     try {
+      interface UpdateRequest {
+        mapId: number;
+        markerId: any;
+        name?: string;
+        desc?: string;
+      }
+
+      let request: UpdateRequest = {
+        mapId: mapId,
+        markerId: marker.id,
+      };
+
+      if (updatedName !== "") {
+        request.name = updatedName;
+      }
+
+      if (updateDesc !== "") {
+        request.desc = updateDesc;
+      }
+
       const response = await axios.post(
         UPDATE_MARKER_URL,
-        JSON.stringify({
-          mapId: mapId,
-          markerId: markerId,
-          name: updatedName,
-          desc: updateDesc,
-        }),
+        JSON.stringify(request),
         {
           headers: { "Content-type": "application/json" },
           withCredentials: true,
@@ -94,6 +115,9 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
       );
 
       console.log(response);
+      if (files.length >= 1) {
+        addMarkerImgs(marker);
+      }
       getMarkers();
     } catch (err: any) {
       if (err.response?.status === 419) {
@@ -149,20 +173,36 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
 
   const getMarkerImgs = async () => {
     try {
-      for (const file of files) {
-        const response = await axios.post(
-          GET_MARKER_IMG_URL,
-          JSON.stringify({
-            mapId: mapId,
-            image: file.file,
-          }),
-          {
-            headers: { "Content-type": "application/json" },
-            withCredentials: true,
-          }
-        );
-        console.log(response);
+      const response = await axios.post(
+        GET_MARKER_IMG_URL,
+        JSON.stringify({}),
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+    } catch (err: any) {
+      console.log(err.response);
+      if (err.response?.state == 440) {
+        console.log("Invalid Map ID");
+      } else {
+        console.log("Server Error");
       }
+    }
+  };
+
+  const deleteMarker = async (marker: any) => {
+    try {
+      const response = await axios.post(
+        DELETE_MARKER_URL,
+        JSON.stringify({ markerId: marker.id }),
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      console.log(response);
     } catch (err: any) {
       console.log(err.response);
       if (err.response?.state == 440) {
@@ -184,7 +224,12 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
             <li className="marker" key={index}>
               <input type="checkbox" />
               <label className="marker-name">{marker.name}</label>{" "}
-              <span className="material-symbols-outlined">delete</span>
+              <span
+                className="material-symbols-outlined"
+                onClick={() => deleteMarker(marker)}
+              >
+                delete
+              </span>
               <span
                 className="material-symbols-outlined"
                 data-bs-toggle="modal"
@@ -213,7 +258,11 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
                 Update Spot
               </h1>
 
-              <button type="button" data-bs-dismiss="modal">
+              <button
+                type="button"
+                data-bs-dismiss="modal"
+                onClick={() => resetForm()}
+              >
                 {" "}
                 <span className="material-symbols-outlined">close</span>
               </button>
@@ -228,7 +277,6 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
                   id="nameMarker"
                   onChange={(e) => setMarkerName(e.target.value)}
                   value={updatedName}
-                  required
                 />
               </div>
               <div className="mb-3">
@@ -287,15 +335,11 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
               </div>
               <button
                 type="button"
-                disabled={updatedName !== "" ? false : true}
                 data-bs-dismiss="modal"
                 onClick={(e) => {
                   e.preventDefault();
-                  updateMarker(
-                    selectMarker.id,
-                    updatedName,
-                    updatedDescription
-                  );
+                  updateMarker(selectMarker, updatedName, updatedDescription);
+                  resetForm();
                 }}
               >
                 Update
