@@ -2,8 +2,6 @@ import React from "react";
 import Skeleton from "react-loading-skeleton";
 
 const CardSkeleton = ({ cards }: { cards: number }) => {
-  console.log("Hi");
-
   const renderSkeletons = () =>
     Array.from({ length: cards }, (_, i) => (
       <li className="card-skeleton" key={i}>

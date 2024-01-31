@@ -1,7 +1,7 @@
 import AuthContext from "../../context/AuthProvider.tsx";
 import axios from "../../api/axios";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useCallback } from "react";
 
@@ -22,7 +22,7 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
   const [selectMarker, setSelectMarker]: any = useState({});
   const [updatedDescription, setDescription] = useState("");
   const [files, setFiles] = useState<FileState[]>([]);
-  const { markers } = useMapContext();
+  const { markers, setMarkers } = useMapContext();
   const [mapImg, setMapImg] = useState<{ preview: string; file: File | null }>({
     preview: "",
     file: null,
@@ -94,6 +94,7 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
       );
 
       console.log(response);
+      getMarkers();
     } catch (err: any) {
       if (err.response?.status === 419) {
         console.log("Invalid Marker");
@@ -106,6 +107,45 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
       }
     }
   };
+
+  const getMarkers = async () => {
+    let newMarkers: any = [];
+    try {
+      const response = await axios.post(
+        MARKER_LIST_URL,
+        JSON.stringify({
+          mapId: mapId,
+        }),
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      for (const key in response.data) {
+        newMarkers.push({
+          id: key,
+          name: response.data[key].name,
+          desc: response.data[key].desc,
+          lat: response.data[key].lat,
+          long: response.data[key].long,
+          address: response.data[key].address,
+          folderName: response.data[key].folderName,
+        });
+      }
+      setMarkers(newMarkers);
+    } catch (err: any) {
+      if (err.response?.status === 500) {
+        console.log("Something went wrong");
+      } else {
+        console.log("No response. Server Error");
+      }
+    }
+  };
+
+  useEffect(() => {
+    getMarkers();
+  }, []);
 
   const getMarkerImgs = async () => {
     try {

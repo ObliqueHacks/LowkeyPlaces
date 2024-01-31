@@ -148,28 +148,34 @@ def updateMarker(request: Response) -> Response:
         markerId = markerIdSerializer(data=request.data)
         newMarker = markerSerializer(data=request.data)
         print([i for i in request.data])
+        print(request.data)
         
         if newMarker.is_valid() is False or markerId.is_valid() is False:
             return Response(status=419)
         
         markerId=markerId.validated_data
         newMarker=newMarker.validated_data
-        
+        print(newMarker)
+        if "name" in newMarker:
+            print("yes", newMarker["name"])
         try:
             #ensure there is a valid marker for this map
             old_marker = MARKER.objects.get(id=markerId['markerId'], mapId=mapId)
             #update all success
             if 'name' in markerId:
-                old_marker.name=newMarker['name']   
+                old_marker.name=newMarker['name']  
+                old_marker.save() 
             if 'desc' in markerId:
                 old_marker.desc=newMarker['desc']
+                old_marker.save()
             if 'lat' in markerId:
                 old_marker.lat=newMarker['lat']
             if 'long' in markerId:
                 old_marker.long=newMarker['long']
             if 'address' in markerId:
                 old_marker.address=newMarker['address']
-            old_marker.save()
+           
+            print(old_marker.name)
             #return updated mapList
             return Response(status=201)
         except ObjectDoesNotExist:

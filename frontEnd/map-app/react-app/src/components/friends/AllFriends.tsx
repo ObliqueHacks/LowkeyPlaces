@@ -43,12 +43,14 @@ const AllFriends = () => {
       const action = 4;
       const response = await axios.post(
         ACTION_FRIENDS_URL,
-        JSON.stringify({ name: friendName, action : action }),
+        JSON.stringify({ name: friendName, action: action }),
         {
           headers: { "Content-type": "application/json" },
           withCredentials: true,
         }
       );
+
+      console.log(response);
 
       setFriends((prevFriends) =>
         prevFriends.filter((friend) => friend !== friendName)

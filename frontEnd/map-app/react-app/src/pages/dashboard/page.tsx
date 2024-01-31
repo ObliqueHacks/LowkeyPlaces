@@ -126,8 +126,6 @@ const Dashboard = () => {
           type: "image/jpeg",
         });
 
-        console.log(response?.data);
-
         updatedDisplayMaps.push({
           mapName: response.data.mapData.title,
           mapImage: {
@@ -184,8 +182,6 @@ const Dashboard = () => {
         headers: { "Content-type": "multipart/form-data" },
         withCredentials: true,
       });
-
-      console.log(response);
 
       getMapIds();
       getMaps();
