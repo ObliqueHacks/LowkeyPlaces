@@ -111,16 +111,9 @@ def addMarkerImg(request: Response) -> Response:
     print("reaching this point")
     
     def discrete(mapId, user, request):
-<<<<<<< HEAD
-        
         print("reaching addMarkerImg")
-        image=imageSerializer(request.data)
-        markerId=markerIdSerializer(request.data)
-=======
-        print(request.data)
         image=imageSerializer(data=request.data)
         markerId=markerIdSerializer(data=request.data)
->>>>>>> f51789472690260d3e544a7ef0ff8dce3c28ad08
         if image.is_valid() is False or markerId.is_valid() is False:
             return Response(status=440)
         try:
@@ -146,14 +139,9 @@ def addMarkerImg(request: Response) -> Response:
             except Exception as e:
                 return Response(status=500)      
         except ObjectDoesNotExist:
-<<<<<<< HEAD
             return Response(status=497)    
     return authTemplate2(request, discrete)
 
-=======
-            return Response(status=497)
-    return authTemplate2(request, discrete)
->>>>>>> f51789472690260d3e544a7ef0ff8dce3c28ad08
 
 
 
