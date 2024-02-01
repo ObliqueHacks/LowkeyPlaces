@@ -15,6 +15,7 @@ import os
 
 def authTemplate2(request: Response, func1: Callable) -> Callable:
     #authenticate user
+    print(request)
     user=userEquals(request)
     if user is None: return Response(status=408)
     
@@ -97,8 +98,9 @@ def getMarkerList(request: Response) -> Response:
 @api_view(['POST'])
 def addMarkerImg(request: Response) -> Response:
     def discrete(mapId, user, request):
-        image=imageSerializer(request.data)
-        markerId=markerIdSerializer(request.data)
+        print(request.data)
+        image=imageSerializer(data=request.data)
+        markerId=markerIdSerializer(data=request.data)
         if image.is_valid() is False or markerId.is_valid() is False:
             return Response(status=440)
         try:
@@ -120,7 +122,7 @@ def addMarkerImg(request: Response) -> Response:
                 return Response(status=500)
         except ObjectDoesNotExist:
             return Response(status=497)
-    return authTemplate2(request)
+    return authTemplate2(request, discrete)
 
 
 

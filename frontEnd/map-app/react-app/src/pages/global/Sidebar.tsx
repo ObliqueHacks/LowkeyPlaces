@@ -26,6 +26,7 @@ const Sidebar = ({
   );
 
   const [incomingRequests, setIncomingRequests] = useState([]);
+  const [nbRequest, setNbRequest] = useState();
 
   useEffect(() => {
     const processFriendRequests = async () => {
@@ -43,6 +44,7 @@ const Sidebar = ({
 
         const { incomingRequests } = parsedResponse;
         setIncomingRequests(incomingRequests);
+        setNbRequest(incomingRequests.length);
       } catch (err: any) {
         console.log(err.response);
         if (err.response?.status === 400) {
@@ -96,7 +98,7 @@ const Sidebar = ({
           <h4 className="display-6" id="dashboard-display">
             Friends
           </h4>
-          <span className="friend-requests">{incomingRequests.length}</span>
+          <span className="friend-requests">{nbRequest}</span>
         </Link>
         <Link to="/" className="sidebar-item">
           <span className="material-symbols-outlined">logout</span>

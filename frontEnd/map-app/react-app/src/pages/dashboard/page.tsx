@@ -32,6 +32,8 @@ const Dashboard = () => {
   const [editMap, setEditMap] = useState(false);
   const [mapName, setMapName] = useState("");
   const [mapIds, setMapIds] = useState([]);
+  const [member, setMember] = useState(false);
+
   const [mapImg, setMapImg] = useState<{ preview: string; file: File | null }>({
     preview: "",
     file: null,
@@ -455,6 +457,7 @@ const Dashboard = () => {
                   className="add-friend-map"
                   data-bs-toggle="modal"
                   data-bs-target="#displayMapFriends"
+                  onClick={() => setMember(true)}
                 >
                   <span className="material-symbols-outlined">group</span>
                   Members
@@ -476,7 +479,6 @@ const Dashboard = () => {
             <div className="map-editor-display">
               <MapDisplay mapId={selectedMap?.mapId ?? 0}></MapDisplay>
             </div>
-
             <div
               className="modal fade"
               id="addFriendToMap"
@@ -504,13 +506,20 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+
             <div
               className="modal fade"
               id="displayMapFriends"
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
+              onClick={() => {
+                setMember(false);
+              }}
             >
-              <div className="modal-dialog">
+              <div
+                className="modal-dialog"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className="modal-content">
                   <div className="modal-header">
                     <h1 className="modal-title fs-5" id="exampleModalLabel">
@@ -518,14 +527,21 @@ const Dashboard = () => {
                     </h1>
                     <button type="button" data-bs-dismiss="modal">
                       {" "}
-                      <span className="material-symbols-outlined">close</span>
+                      <span
+                        className="material-symbols-outlined"
+                        onClick={() => setMember(false)}
+                      >
+                        close
+                      </span>
                     </button>
                   </div>
                   <div className="modal-body">
-                    <MapFriends
-                      mapId={selectedMap?.mapId ?? 0}
-                      addFriend={false}
-                    ></MapFriends>
+                    {member && (
+                      <MapFriends
+                        mapId={selectedMap?.mapId ?? 0}
+                        addFriend={false}
+                      ></MapFriends>
+                    )}
                   </div>
                   <div className="modal-footer"></div>
                 </div>
