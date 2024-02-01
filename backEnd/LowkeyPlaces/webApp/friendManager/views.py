@@ -89,7 +89,7 @@ def makeRequest(request):
         rec,sender=sender,rec #flip to see if there even is an inconming request
         friend_request=FRIEND_REQUEST.objects.filter(sendId=sender, recId=rec).first()
         if friend_request is not None:
-            friend_request.delete().save()
+            friend_request.delete()
             return Response(status=201)
         return error_returner('no_friend_request_found')
 

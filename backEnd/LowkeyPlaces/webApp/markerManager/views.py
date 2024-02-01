@@ -13,11 +13,11 @@ from mapManager.views import authTemplate
 from django.conf import settings 
 import os
 
-def authTemplate2(request: Response, func1: Callable) -> Callable:
+def authTemplate2(request, result_function):
+    print("will enter function:", result_function)
     #authenticate user
     user=userEquals(request)
     if user is None: return Response(status=408)
-    
     #authenticate mapId
     mapId=getMap(data=request.data)
     if mapId.is_valid() is False:
@@ -27,20 +27,25 @@ def authTemplate2(request: Response, func1: Callable) -> Callable:
     #authenticate this is a real map
     try:
         mapId=MAP.objects.get(id=mapId)
+        
         #authenticate this map belongs to user
         try:
+            
             #authenticate this map even has the user
             checker = MAP_USER.objects.get(mapId=mapId, userId=user)
-            
             #if they are spectator then ignore 
             if checker.status == 2: return Response(status=400)
             
-            # finally perform action    
-            return func1(mapId,user,request)
+            print("entering function:\t", result_function)
+            
+            # finally perform action   
+            return result_function(mapId,user,request)
+    
     
     #edit the codes here  
         except ObjectDoesNotExist:
             return Response(status=400)
+        
         
     except ObjectDoesNotExist:
         return Response(status=400)    
@@ -74,7 +79,12 @@ def placeMarker(request: Response) -> Response:
         markerInstance.save()
         
         #make directory for marker
-        markerPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps", mapId.mapFolder, "markers", markerInstance.folderPath)
+        markerPath = os.path.join(
+            settings.ROOT_FOLDER,
+            "frontEnd/map-app/react-app/src/maps",
+            mapId.mapFolder,
+            "markers",
+            markerInstance.folderPath)
         try:
             os.makedirs(markerPath)
         except OSError as e:
@@ -82,6 +92,7 @@ def placeMarker(request: Response) -> Response:
             return Response(status=500)
         return Response(status=201)
     return authTemplate2(request, discrete)
+
 
 #authTemplate2
 #this returns a list of markers (it's fine to send all the marker data at once, since there isnt any scrolling)
@@ -96,7 +107,11 @@ def getMarkerList(request: Response) -> Response:
 #authTemplate
 @api_view(['POST'])
 def addMarkerImg(request: Response) -> Response:
+    print("reaching this point")
+    
     def discrete(mapId, user, request):
+        
+        print("reaching addMarkerImg")
         image=imageSerializer(request.data)
         markerId=markerIdSerializer(request.data)
         if image.is_valid() is False or markerId.is_valid() is False:
@@ -109,18 +124,24 @@ def addMarkerImg(request: Response) -> Response:
             
             imageInstance = MARKER_IMG(markerId=markerId)
             imageInstance.save()
+            
+            print(mapId.mapFolder, markerId.folderPath)
+            
             #save the image to file
-            markerPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps", mapId.mapFolder, "markers", markerId.folderPath,imageInstance.folderPath+".jpg")
+            markerPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", mapId.mapFolder, "markers/", markerId.folderPath,imageInstance.folderPath+".jpg")
+            print(markerPath)
             markerId.imageCount+=1
             markerId.save()
             try:
-                with open(markerPath, 'wb') as new_image_file:
+                with open(markerPath, 'wb+') as new_image_file:
                     new_image_file.write(image.read())
+                    return Response(status=201)
             except Exception as e:
-                return Response(status=500)
+                return Response(status=500)      
         except ObjectDoesNotExist:
-            return Response(status=497)
-    return authTemplate2(request)
+            return Response(status=497)    
+    return authTemplate2(request, discrete)
+
 
 
 
@@ -139,7 +160,6 @@ def getMarkerImg(request):
                 return Response(status=500)
     return authTemplate(request, discrete)
         
-        
 
 #authTemplate2
 @api_view(['POST'])
@@ -148,7 +168,6 @@ def updateMarker(request: Response) -> Response:
     def discrete(mapId, user, request): 
         markerId = markerIdSerializer(data=request.data)
         newMarker = markerSerializer(data=request.data)
-
         if newMarker.is_valid() is False or markerId.is_valid() is False:
             return Response(status=419)
         markerId=markerId.validated_data
