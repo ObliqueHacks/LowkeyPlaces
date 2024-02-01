@@ -28,7 +28,6 @@ const MapFriends = ({
           withCredentials: true,
         }
       );
-
       setMapFriends(response.data);
     } catch (err: any) {
       if (err.response?.status === 400) {
@@ -71,8 +70,6 @@ const MapFriends = ({
 
   const addCollabtoMap = async (recId: string, mapId: number) => {
     const status = 1; // Collab
-    console.log(mapId); // 22
-    console.log(recId); // friend1
 
     try {
       const response: any = await axios.post(
@@ -87,7 +84,7 @@ const MapFriends = ({
           withCredentials: true,
         }
       );
-      console.log(response);
+
       processMapFriends(mapId);
     } catch (err: any) {
       console.log(err.response);
@@ -105,8 +102,6 @@ const MapFriends = ({
 
   const addSpectoMap = async (recId: string, mapId: number) => {
     const status = 2;
-    console.log(recId);
-    console.log(mapId);
 
     try {
       const response: any = await axios.post(
@@ -171,12 +166,14 @@ const MapFriends = ({
               ? "Collaborator "
               : "Spectator"}
           </span>
-          <span
-            className="material-symbols-outlined"
-            // onClick={() => removeFriend(friend)}
-          >
-            close
-          </span>
+          {status !== 0 && (
+            <span
+              className="material-symbols-outlined"
+              // onClick={() => removeFriend(friend)}
+            >
+              close
+            </span>
+          )}
         </li>
       ))}
     </ul>

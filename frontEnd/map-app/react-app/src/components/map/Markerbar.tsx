@@ -60,7 +60,7 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
           formData.append("image", file.file);
         }
 
-        const response = await axios.post(ADD_MARKER_IMG_URL, {
+        const response = await axios.post(ADD_MARKER_IMG_URL, formData, {
           headers: { "Content-type": "multipart/form-data" },
           withCredentials: true,
         });
