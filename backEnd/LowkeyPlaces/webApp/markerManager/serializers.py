@@ -11,6 +11,9 @@ class markerSerializer(serializers.Serializer):
     color=serializers.CharField(required=False, max_length=10)
 
 
+class recSerializer(serializers.Serializer):
+    recId = serializers.CharField(max_length=40)
+
 class imageSerializer(serializers.Serializer):
     image=serializers.ImageField()
     

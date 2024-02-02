@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import mapRequest, mapSerializer, getMap
+from .serializers import mapRequest, mapSerializer, getMap, recSerializer
 from .models import USER, USER_RELATION
 from rest_framework import status
 from utils import create_token, hash_password, verify_password
@@ -172,7 +172,6 @@ def authTemplate(request: Response, func1: Callable) -> Callable:
     except ObjectDoesNotExist:
         return Response(status=400)    
 
-
 @api_view(['POST'])
 def getMapFromId(request) -> Response:
     def discrete(mapId,user,request):
@@ -203,7 +202,6 @@ def editMapFeatures(request) -> Response:
         pass
     return authTemplate(request=request, func1=discrete)
 
-
 #delete map
 @api_view(['POST'])
 def deleteMap(request) -> Response:
@@ -218,11 +216,33 @@ def deleteMap(request) -> Response:
     return authTemplate(request=request, func1=discrete)
 
 
+
 #ability for owner to remove a member or make them a spectator (fill in after implementing markers -- should destroy all user markers)
 @api_view(['POST'])
 def editPermission(request) -> Response:
     def discrete(mapId,user,request):
-        pass
+        
+        if MAP_USER.objects.get(mapId=mapId, user=user).status != 0:
+            return Response(status=440)
+        
+        recId = recSerializer(request.data)
+        if recId.is_valid() is False:
+            return Response(status=400)
+        recId = recId.validated_data['recId']
+        
+        
+        try:
+            recId = USER.objects.get(name=recId)
+            recId = MAP_USER.objects.get(userId=recId, mapId=mapId)
+            if recId.status==2:
+                recId.delete()
+                return Response(status=201)
+            if recId.status==1:
+                return Response(status=201)
+            return Response(status=440)
+        except ObjectDoesNotExist:
+            return Response(status=400)
+        
     return authTemplate(request=request, func1=discrete)
 
 

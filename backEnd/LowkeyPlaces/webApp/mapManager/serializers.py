@@ -15,4 +15,6 @@ class mapRequest(serializers.Serializer):
 class getMap(serializers.Serializer):
     mapId=serializers.IntegerField()
     
-    
+
+class recSerializer(serializers.Serializer):
+    recId = serializers.CharField(max_length=40)
