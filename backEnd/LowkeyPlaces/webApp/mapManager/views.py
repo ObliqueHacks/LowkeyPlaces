@@ -202,6 +202,7 @@ def editMapFeatures(request) -> Response:
         pass
     return authTemplate(request=request, func1=discrete)
 
+
 #delete map
 @api_view(['POST'])
 def deleteMap(request) -> Response:
@@ -220,17 +221,13 @@ def deleteMap(request) -> Response:
 #ability for owner to remove a member or make them a spectator (fill in after implementing markers -- should destroy all user markers)
 @api_view(['POST'])
 def editPermission(request) -> Response:
-    def discrete(mapId,user,request):
-        
+    def discrete(mapId,user,request):  
         if MAP_USER.objects.get(mapId=mapId, user=user).status != 0:
             return Response(status=440)
-        
         recId = recSerializer(request.data)
         if recId.is_valid() is False:
             return Response(status=400)
         recId = recId.validated_data['recId']
-        
-        
         try:
             recId = USER.objects.get(name=recId)
             recId = MAP_USER.objects.get(userId=recId, mapId=mapId)
@@ -242,7 +239,6 @@ def editPermission(request) -> Response:
             return Response(status=440)
         except ObjectDoesNotExist:
             return Response(status=400)
-        
     return authTemplate(request=request, func1=discrete)
 
 

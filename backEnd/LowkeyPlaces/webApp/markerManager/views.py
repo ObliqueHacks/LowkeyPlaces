@@ -162,6 +162,7 @@ def getMarkerImg(request):
             #ensure there is a valid marker for this map
             markerId = MARKER.objects.get(id=markerId.validated_data['markerId'], mapId=mapId)
             img = MARKER_IMG.objects.filter(markerId=markerId)
+            
             return Response(201, {"image_ids":[i.folderPath for i in img]})
         except ObjectDoesNotExist:
                 return Response(status=500)

@@ -138,5 +138,6 @@ def getUserInfo(request):
         'sentRequests': sentRequests,
         'friends': friends,
         'blocks': blocks,
-        'mapCount': mapCount
+        'mapCount': mapCount,
+        'name': user.name
     }, status=201)
