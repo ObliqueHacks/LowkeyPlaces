@@ -19,6 +19,8 @@ def authTemplate2(request, result_function):
     print(request)
     user=userEquals(request)
     if user is None: return Response(status=408)
+    
+    
     #authenticate mapId
     mapId=getMap(data=request.data)
     if mapId.is_valid() is False:
@@ -101,7 +103,16 @@ def placeMarker(request: Response) -> Response:
 def getMarkerList(request: Response) -> Response:
     def discrete(mapId, user, request):
         markerList = MARKER.objects.filter(mapId=mapId)
-        return Response(status=201, data={i.id:{'name':i.name, 'desc':i.desc, 'lat': i.lat, 'long': i.long, 'address': i.address, 'imageCount': i.imageCount, 'timeCreated': i.timeCreated, 'folderPath':i.folderPath} for i in markerList})
+        return Response(status=201, data={i.id:
+            {'name':i.name,
+             'desc':i.desc,
+             'lat': i.lat,
+             'long': i.long,
+             'address': i.address,
+             'imageCount': i.imageCount,
+             'timeCreated': i.timeCreated,
+             'folderPath':i.folderPath,
+             'color': i.color} for i in markerList})
     return authTemplate(request, discrete)
 
 
@@ -123,9 +134,7 @@ def addMarkerImg(request: Response) -> Response:
             image=image.validated_data['image']
             
             imageInstance = MARKER_IMG(markerId=markerId)
-            imageInstance.save()
-            
-            print(mapId.mapFolder, markerId.folderPath)
+            imageInstance.save()  
             
             #save the image to file
             markerPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", mapId.mapFolder, "markers/", markerId.folderPath,imageInstance.folderPath+".jpg")
@@ -137,12 +146,10 @@ def addMarkerImg(request: Response) -> Response:
                     new_image_file.write(image.read())
                     return Response(status=201)
             except Exception as e:
-                return Response(status=500)      
+                return Response(status=500)
         except ObjectDoesNotExist:
             return Response(status=497)    
     return authTemplate2(request, discrete)
-
-
 
 
 @api_view(['POST'])
@@ -187,6 +194,8 @@ def updateMarker(request: Response) -> Response:
                 old_marker.long=newMarker['long']
             if 'address' in newMarker:
                 old_marker.address=newMarker['address']
+            if 'color' in newMarker:
+                old_marker.color=newMarker['color']
             old_marker.save()
             return Response(status=201)
         except ObjectDoesNotExist:
@@ -220,10 +229,10 @@ def deleteMarkerImage(request):
             
     return authTemplate2(request, discrete)
         
-            
+        
 #authTemplate2$
 @api_view(['POST'])
-def deleteMarker():
+def deleteMarker(request):
     def discrete(mapId, user, request):
         markerId=markerIdSerializer(request.data)
         if markerId.is_valid() is False:
@@ -232,6 +241,6 @@ def deleteMarker():
             #ensure there is a valid marker for this map
             markerId = MARKER.objects.get(id=markerId.validated_data['markerId'], mapId=mapId)
             markerId.delete()
-            markerId.save()
         except ObjectDoesNotExist:
                 return Response(status=500)
+    return authTemplate2(request, discrete)

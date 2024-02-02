@@ -16,6 +16,7 @@ class MARKER(models.Model):
     lat=models.FloatField(default=0.0)
     long=models.FloatField(default=0.0)
     address=models.CharField(max_length=100)
+    color=models.CharField(max_length=10, default="orange")
     
     mapId=models.ForeignKey(MAP, on_delete=models.CASCADE, related_name='markerToMapId')
     userId=models.ForeignKey(USER, on_delete=models.CASCADE, related_name='markerToUserId')

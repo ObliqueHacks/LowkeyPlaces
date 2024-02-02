@@ -8,6 +8,7 @@ class markerSerializer(serializers.Serializer):
     lat=serializers.FloatField(required=False)
     long=serializers.FloatField(required=False)
     address=serializers.CharField(required=False, max_length=150)
+    color=serializers.CharField(required=False, max_length=10)
 
 
 class imageSerializer(serializers.Serializer):
