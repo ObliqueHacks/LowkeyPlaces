@@ -27,6 +27,7 @@ const CREATE_MAP_URL = "api-auth/map/make-map/";
 const GET_MAP_IDS_URL = "api-auth/map/get-user-maps/";
 const GET_MAP_URL = "api-auth/map/get-map/";
 const ADD_FRIEND_TO_MAP_URL = "api-auth/map/add-friend/";
+const DELETE_MAP_URL = "api-auth/map/delete-map/";
 
 const Dashboard = () => {
   const [editMap, setEditMap] = useState(false);
@@ -73,18 +74,6 @@ const Dashboard = () => {
     },
     [setMapImg]
   );
-
-  const deleteMap = (index: number, e: React.MouseEvent<HTMLSpanElement>) => {
-    // Prevent the click event from propagating to the parent card body
-    e.stopPropagation();
-
-    // Create a copy of the displayMaps array
-    const updatedMaps = [...displayMaps];
-    // Remove the element at the specified index
-    updatedMaps.splice(index, 1);
-    // Update the state with the modified array
-    setDisplayMaps(updatedMaps);
-  };
 
   const getMapIds = async () => {
     try {
@@ -201,11 +190,39 @@ const Dashboard = () => {
     }
   };
 
+  const deleteMap = async (displayMap: any, e: any) => {
+    // Prevent the click event from propagating to the parent card body
+    e.stopPropagation();
+    try {
+      const response = await axios.post(
+        DELETE_MAP_URL,
+        JSON.stringify({ mapId: displayMap.mapId }),
+        {
+          headers: {
+            "Content-type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+      getMapIds();
+    } catch (err: any) {
+      console.log(err.response);
+      if (err.response?.status === 400) {
+        console.log("Something wrong with Map ID");
+      } else if (err.response?.status === 408) {
+        console.log("User Token Expired. Relogin");
+      } else {
+        console.log("No server response");
+      }
+    }
+  };
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
     <div className="container">
-      <Sidebar editMap={editMap} mapId={selectedMap?.mapId}></Sidebar>
+      <Sidebar editMap={editMap} map={selectedMap}></Sidebar>
       {!editMap && (
         <Fade>
           <div className="maps">
@@ -294,12 +311,21 @@ const Dashboard = () => {
                             <h4>
                               {displayMap.mapName || <Skeleton />}
                               <div className="buttons">
-                                <span
-                                  className="material-symbols-outlined"
-                                  onClick={(e) => deleteMap(index, e)}
-                                >
-                                  delete
-                                </span>
+                                {displayMap.status === 0 ? (
+                                  <span
+                                    className="material-symbols-outlined"
+                                    onClick={(e) => deleteMap(displayMap, e)}
+                                  >
+                                    delete
+                                  </span>
+                                ) : (
+                                  <span
+                                    className="material-symbols-outlined"
+                                    onClick={(e) => deleteMap(displayMap, e)}
+                                  >
+                                    move_item
+                                  </span>
+                                )}
                                 <span className="material-symbols-outlined">
                                   more_vert
                                 </span>
@@ -335,15 +361,25 @@ const Dashboard = () => {
                                 <h4>
                                   {displayMap.mapName}
                                   <div className="buttons">
-                                    <span
-                                      className="material-symbols-outlined"
-                                      onClick={(e) => deleteMap(index, e)}
-                                    >
-                                      delete
-                                    </span>
-                                    <span className="material-symbols-outlined">
-                                      more_vert
-                                    </span>
+                                    {displayMap.status === 0 ? (
+                                      <span
+                                        className="material-symbols-outlined"
+                                        onClick={(e) =>
+                                          deleteMap(displayMap, e)
+                                        }
+                                      >
+                                        delete
+                                      </span>
+                                    ) : (
+                                      <span
+                                        className="material-symbols-outlined"
+                                        onClick={(e) =>
+                                          deleteMap(displayMap, e)
+                                        }
+                                      >
+                                        move_item
+                                      </span>
+                                    )}
                                   </div>
                                 </h4>
                                 <p>{status[displayMap.status]}</p>
@@ -462,14 +498,18 @@ const Dashboard = () => {
                   <span className="material-symbols-outlined">group</span>
                   Members
                 </button>
-                <button
-                  className="add-friend-map"
-                  data-bs-toggle="modal"
-                  data-bs-target="#addFriendToMap"
-                >
-                  <span className="material-symbols-outlined">person_add</span>
-                  Add Friend
-                </button>
+                {selectedMap?.status === 0 && (
+                  <button
+                    className="add-friend-map"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addFriendToMap"
+                  >
+                    <span className="material-symbols-outlined">
+                      person_add
+                    </span>
+                    Add Friend
+                  </button>
+                )}
                 <button className="your-maps" onClick={() => setEditMap(false)}>
                   <span className="material-symbols-outlined">arrow_back</span>
                   Your Maps
@@ -540,6 +580,7 @@ const Dashboard = () => {
                       <MapFriends
                         mapId={selectedMap?.mapId ?? 0}
                         addFriend={false}
+                        userStatus={selectedMap?.status}
                       ></MapFriends>
                     )}
                   </div>

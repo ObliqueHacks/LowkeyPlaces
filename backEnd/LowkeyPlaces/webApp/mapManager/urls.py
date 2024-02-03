@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import makeMap, addFriendToMap, getMapUsers, getUserMaps, getMapFromId, editMapFeatures, deleteMap
+from .views import makeMap, addFriendToMap, getMapUsers, getUserMaps, getMapFromId, editMapFeatures, editPermission, deleteMap
 
 urlpatterns = [
     path('make-map/', makeMap),
@@ -8,5 +8,6 @@ urlpatterns = [
     path('get-user-maps/', getUserMaps),
     path('get-map/', getMapFromId),
     path('edit/', editMapFeatures),
-    path('delete-map', deleteMap),
+    path('edit-perms/', editPermission),
+    path('delete-map/', deleteMap),
 ]

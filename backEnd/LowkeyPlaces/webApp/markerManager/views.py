@@ -155,7 +155,7 @@ def addMarkerImg(request: Response) -> Response:
 @api_view(['POST'])
 def getMarkerImg(request):
     def discrete(mapId, user, request):
-        markerId=markerIdSerializer(request.data)
+        markerId=markerIdSerializer(data=request.data)
         if markerId.is_valid() is False:
             return Response(status=440)
         try:
@@ -163,7 +163,7 @@ def getMarkerImg(request):
             markerId = MARKER.objects.get(id=markerId.validated_data['markerId'], mapId=mapId)
             img = MARKER_IMG.objects.filter(markerId=markerId)
             
-            return Response(201, {"image_ids":[i.folderPath for i in img]})
+            return Response({"image_ids":[i.folderPath for i in img]}, status=201)
         except ObjectDoesNotExist:
                 return Response(status=500)
     return authTemplate(request, discrete)
@@ -235,13 +235,14 @@ def deleteMarkerImage(request):
 @api_view(['POST'])
 def deleteMarker(request):
     def discrete(mapId, user, request):
-        markerId=markerIdSerializer(request.data)
+        markerId=markerIdSerializer(data=request.data)
         if markerId.is_valid() is False:
             return Response(status=440)
         try:
             #ensure there is a valid marker for this map
             markerId = MARKER.objects.get(id=markerId.validated_data['markerId'], mapId=mapId)
             markerId.delete()
+            return Response(status=201)
         except ObjectDoesNotExist:
                 return Response(status=500)
     return authTemplate2(request, discrete)

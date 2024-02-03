@@ -207,10 +207,10 @@ def editMapFeatures(request) -> Response:
 @api_view(['POST'])
 def deleteMap(request) -> Response:
     def discrete(mapId,user,request):
-        curr_map_user = MAP_USER.objects.get(mapId=mapId, user=user)
+        print(request.data)
+        curr_map_user = MAP_USER.objects.get(mapId=mapId, userId=user)
         if curr_map_user.status == 0:
             mapId.delete()
-            return
         else:
             curr_map_user.delete()
         return Response(status=201)
@@ -221,10 +221,10 @@ def deleteMap(request) -> Response:
 #ability for owner to remove a member or make them a spectator (fill in after implementing markers -- should destroy all user markers)
 @api_view(['POST'])
 def editPermission(request) -> Response:
-    def discrete(mapId,user,request):  
-        if MAP_USER.objects.get(mapId=mapId, user=user).status != 0:
+    def discrete(mapId,user,request):
+        if MAP_USER.objects.get(mapId=mapId, userId=user).status != 0:
             return Response(status=440)
-        recId = recSerializer(request.data)
+        recId = recSerializer(data=request.data)
         if recId.is_valid() is False:
             return Response(status=400)
         recId = recId.validated_data['recId']
@@ -234,7 +234,9 @@ def editPermission(request) -> Response:
             if recId.status==2:
                 recId.delete()
                 return Response(status=201)
-            if recId.status==1:
+            if recId.status==1: 
+                recId.status = 2
+                recId.save()
                 return Response(status=201)
             return Response(status=440)
         except ObjectDoesNotExist:

@@ -3,6 +3,7 @@ import Profile from "../../assets/profile.jpg";
 
 const MAP_USERS_URL = "api-auth/map/get-users/";
 const ADD_FRIEND_TO_MAP_URL = "api-auth/map/add-friend/";
+const EDIT_PERMS_URL = "api-auth/map/edit-perms/";
 const FRIENDS_INFO_URL = "api-auth/dashboard/user-info/";
 
 import AuthContext from "../../context/AuthProvider.tsx";
@@ -11,9 +12,11 @@ import axios from "../../api/axios";
 const MapFriends = ({
   mapId,
   addFriend,
+  userStatus,
 }: {
   mapId: number;
   addFriend: boolean;
+  userStatus?: number;
 }) => {
   const [mapFriends, setMapFriends]: any = useState({});
   const [allFriends, setAllFriends]: any = useState([]);
@@ -129,6 +132,32 @@ const MapFriends = ({
     }
   };
 
+  const removeFriendFromMap = async (recId: string, mapId: number) => {
+    try {
+      const response: any = await axios.post(
+        EDIT_PERMS_URL,
+        JSON.stringify({
+          recId: recId,
+          mapId: mapId,
+        }),
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      processMapFriends(mapId);
+      console.log(response);
+    } catch (err: any) {
+      if (err.response?.status === 400) {
+        console.log(
+          "Cannot add admins or the friend is already part of the map"
+        );
+      } else if (err.response?.status === 427) {
+        console.log("Invalid Permission");
+      }
+    }
+  };
+
   return addFriend ? (
     <ul className="friend-list">
       {allFriends.map((friend: string, index: number) => (
@@ -166,10 +195,19 @@ const MapFriends = ({
               ? "Collaborator "
               : "Spectator"}
           </span>
-          {status !== 0 && (
+
+          {userStatus === 0 && status === 1 && (
             <span
               className="material-symbols-outlined"
-              // onClick={() => removeFriend(friend)}
+              onClick={() => removeFriendFromMap(friend, mapId)}
+            >
+              visibility
+            </span>
+          )}
+          {userStatus === 0 && status === 2 && (
+            <span
+              className="material-symbols-outlined"
+              onClick={() => removeFriendFromMap(friend, mapId)}
             >
               close
             </span>

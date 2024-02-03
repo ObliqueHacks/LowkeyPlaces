@@ -10,10 +10,12 @@ const FRIENDS_INFO_URL = "api-auth/dashboard/user-info/"; // Getting User Info
 
 const Sidebar = ({
   editMap = false,
-  mapId = -1,
+  map,
+  status,
 }: {
   editMap?: boolean;
-  mapId?: number;
+  map?: any;
+  status?: number;
 }) => {
   const location = useLocation();
   const { setAuth }: any = useContext(AuthContext);
@@ -111,7 +113,7 @@ const Sidebar = ({
           </h4>
         </Link>
       </div>
-      {editMap && <Markerbar mapId={mapId}></Markerbar>}
+      {editMap && <Markerbar map={map}></Markerbar>}
     </aside>
   );
 };

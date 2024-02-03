@@ -12,17 +12,20 @@ const ADD_MARKER_IMG_URL = "api-auth/markers/add-marker-img/";
 const GET_MARKER_IMG_URL = "api-auth/markers/get-marker-img/";
 const UPDATE_MARKER_URL = "api-auth/markers/update-marker/";
 const DELETE_MARKER_URL = "api-auth/markers/delete-marker/";
+const GET_MAP_URL = "api-auth/map/get-map/";
 
 interface FileState {
   preview: string;
   file: File | null;
 }
 
-const Markerbar = ({ mapId }: { mapId: number }) => {
+const Markerbar = ({ map }: { map: any }) => {
   const [updatedName, setMarkerName] = useState("");
   const [selectMarker, setSelectMarker]: any = useState({});
   const [updatedDescription, setDescription] = useState("");
   const [files, setFiles] = useState<FileState[]>([]);
+  const [mapFolder, setMapFolder] = useState("");
+  const [slides, setSlides] = useState([]);
   const { markers, setMarkers } = useMapContext();
 
   const resetForm = () => {
@@ -53,7 +56,7 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
       for (const file of files) {
         const formData = new FormData();
 
-        formData.append("mapId", String(mapId));
+        formData.append("mapId", String(map.mapId));
         formData.append("markerId", String(marker.id));
 
         if (file.file) {
@@ -81,9 +84,6 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
     updateDesc: string = ""
   ) => {
     console.log("update marker is being called");
-    console.log(mapId);
-    console.log(marker.id);
-
     try {
       interface UpdateRequest {
         mapId: number;
@@ -93,7 +93,7 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
       }
 
       let request: UpdateRequest = {
-        mapId: mapId,
+        mapId: map.mapId,
         markerId: marker.id,
       };
 
@@ -138,7 +138,7 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
       const response = await axios.post(
         MARKER_LIST_URL,
         JSON.stringify({
-          mapId: mapId,
+          mapId: map.mapId,
         }),
         {
           headers: { "Content-type": "application/json" },
@@ -154,7 +154,7 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
           lat: response.data[key].lat,
           long: response.data[key].long,
           address: response.data[key].address,
-          folderName: response.data[key].folderName,
+          folderName: response.data[key].folderPath,
         });
       }
       setMarkers(newMarkers);
@@ -167,21 +167,58 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
     }
   };
 
-  useEffect(() => {
-    getMarkers();
-  }, []);
-
-  const getMarkerImgs = async () => {
+  const getMapFolder = async () => {
     try {
       const response = await axios.post(
-        GET_MARKER_IMG_URL,
-        JSON.stringify({}),
+        GET_MAP_URL,
+        JSON.stringify({ mapId: map.mapId }),
         {
           headers: { "Content-type": "application/json" },
           withCredentials: true,
         }
       );
-      console.log(response);
+
+      const folder = response.data?.folderName;
+      setMapFolder(folder);
+    } catch (err: any) {
+      console.log(err.response);
+      if (err.response?.status === 400) {
+        console.log("Something wrong with Map ID");
+      } else if (err.response?.status === 408) {
+        console.log("User Token Expired. Relogin");
+      } else {
+        console.log("No server response");
+      }
+    }
+  };
+
+  useEffect(() => {
+    getMarkers();
+    getMapFolder();
+  }, []);
+
+  const getMarkerImgs = async (marker: any) => {
+    console.log(marker);
+    try {
+      let urls: any = [];
+      const response = await axios.post(
+        GET_MARKER_IMG_URL,
+        JSON.stringify({ mapId: map.mapId, markerId: marker.id }),
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      const { image_ids } = response.data;
+      const folder = marker.folderName;
+      for (const key in image_ids) {
+        const img = image_ids[key];
+        const path =
+          "src/maps/" + mapFolder + "/markers/" + folder + "/" + img + ".jpg";
+        urls.push(path);
+      }
+      console.log(urls);
+      setSlides(urls);
     } catch (err: any) {
       console.log(err.response);
       if (err.response?.state == 440) {
@@ -196,13 +233,14 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
     try {
       const response = await axios.post(
         DELETE_MARKER_URL,
-        JSON.stringify({ markerId: marker.id }),
+        JSON.stringify({ mapId: map.mapId, markerId: marker.id }),
         {
           headers: { "Content-type": "application/json" },
           withCredentials: true,
         }
       );
       console.log(response);
+      getMarkers();
     } catch (err: any) {
       console.log(err.response);
       if (err.response?.state == 440) {
@@ -224,21 +262,30 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
             <li className="marker" key={index}>
               <input type="checkbox" />
               <label className="marker-name">{marker.name}</label>{" "}
-              <span
-                className="material-symbols-outlined"
-                onClick={() => deleteMarker(marker)}
-              >
-                delete
-              </span>
+              {map.status !== 2 && (
+                <span
+                  className="material-symbols-outlined"
+                  onClick={() => deleteMarker(marker)}
+                >
+                  delete
+                </span>
+              )}
+              {map.status !== 2 && (
+                <span
+                  className="material-symbols-outlined"
+                  data-bs-toggle="modal"
+                  data-bs-target="#newMarkerForm"
+                  onClick={() => setSelectMarker(marker)}
+                >
+                  edit
+                </span>
+              )}
               <span
                 className="material-symbols-outlined"
                 data-bs-toggle="modal"
-                data-bs-target="#newMarkerForm"
-                onClick={() => setSelectMarker(marker)}
+                data-bs-target="#viewGallery"
+                onClick={() => getMarkerImgs(marker)}
               >
-                edit
-              </span>
-              <span className="material-symbols-outlined">
                 gallery_thumbnail
               </span>
             </li>
@@ -255,7 +302,7 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Update Spot
+                Edit Spot
               </h1>
 
               <button
@@ -345,6 +392,88 @@ const Markerbar = ({ mapId }: { mapId: number }) => {
                 Update
               </button>
             </form>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade"
+        tabIndex={-1}
+        id="viewGallery"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div
+            className="modal-content"
+            style={{ width: "600px", height: "500px" }}
+          >
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">
+                Gallery
+              </h1>
+
+              <button
+                type="button"
+                data-bs-dismiss="modal"
+                onClick={() => resetForm()}
+              >
+                {" "}
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            {slides[0] && (
+              <div className="modal-body">
+                <div id="carouselExampleIndicators" className="carousel slide">
+                  <div className="carousel-indicators">
+                    {slides.map((_, index) => (
+                      <button
+                        type="button"
+                        data-bs-target="#carouselExampleIndicators"
+                        data-bs-slide-to={index}
+                        className="active"
+                        aria-current="true"
+                        aria-label="Slide"
+                      ></button>
+                    ))}
+                  </div>
+                  <div className="carousel-inner">
+                    {slides.map((url, index) => (
+                      <div className="carousel-item active">
+                        <img
+                          src={url}
+                          className="d-block w-100"
+                          style={{ width: "200px", height: "400px" }}
+                          alt="..."
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    className="carousel-control-prev"
+                    type="button"
+                    data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="prev"
+                  >
+                    <span
+                      className="carousel-control-prev-icon"
+                      aria-hidden="true"
+                    ></span>
+                    <span className="visually-hidden">Previous</span>
+                  </button>
+                  <button
+                    className="carousel-control-next"
+                    type="button"
+                    data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="next"
+                  >
+                    <span
+                      className="carousel-control-next-icon"
+                      aria-hidden="true"
+                    ></span>
+                    <span className="visually-hidden">Next</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

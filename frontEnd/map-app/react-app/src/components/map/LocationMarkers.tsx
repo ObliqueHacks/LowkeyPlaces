@@ -1,5 +1,6 @@
 import axios from "../../api/axios";
 import React, { useContext, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import {
   useMapEvents,
   Marker,
@@ -47,7 +48,7 @@ function LocationMarkers({ mapId }: { mapId: number }) {
           lat: response.data[key].lat,
           long: response.data[key].long,
           address: response.data[key].address,
-          folderName: response.data[key].folderName,
+          folderName: response.data[key].folderPath,
         });
       }
       setMarkers(newMarkers);
@@ -85,8 +86,6 @@ function LocationMarkers({ mapId }: { mapId: number }) {
   };
 
   const placeMarker = async (lat: number, lng: number, address: string) => {
-    console.log(lat, lng);
-
     try {
       const response = await axios.post(
         PLACE_MARKER_URL,
@@ -105,11 +104,29 @@ function LocationMarkers({ mapId }: { mapId: number }) {
       getMarkers();
     } catch (err: any) {
       if (err.response?.status === 500) {
-        console.log("Something went wrong");
+        toast.error("Something went wrong! Please logout and login.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else if (err.response?.status === 419) {
         console.log("Marker Object not Valid");
-      } else {
-        console.log("No response. Server Error");
+      } else if (err.response?.status === 400) {
+        toast.error("Must be an Admin or a Collaborator to add markers.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
     }
   };
@@ -135,6 +152,22 @@ function LocationMarkers({ mapId }: { mapId: number }) {
     </Marker>
   ));
 
-  return <React.Fragment>{markerList}</React.Fragment>;
+  return (
+    <React.Fragment>
+      {markerList}{" "}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+    </React.Fragment>
+  );
 }
 export default LocationMarkers;
