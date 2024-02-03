@@ -6,12 +6,16 @@ import { useDropzone } from "react-dropzone";
 import { useCallback } from "react";
 
 import { useMapContext } from "../../context/MapProvider.tsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
 
 const MARKER_LIST_URL = "api-auth/markers/marker-list/";
 const ADD_MARKER_IMG_URL = "api-auth/markers/add-marker-img/";
 const GET_MARKER_IMG_URL = "api-auth/markers/get-marker-img/";
 const UPDATE_MARKER_URL = "api-auth/markers/update-marker/";
 const DELETE_MARKER_URL = "api-auth/markers/delete-marker/";
+const DELETE_MARKER_IMG_URL = "api-auth/markers/delete-marker-img/";
 const GET_MAP_URL = "api-auth/map/get-map/";
 
 interface FileState {
@@ -32,6 +36,7 @@ const Markerbar = ({ map }: { map: any }) => {
   const resetForm = () => {
     setMarkerName("");
     setDescription("");
+    setSelectMarker({});
     setFiles([]);
     setColor("Default");
   };
@@ -127,11 +132,38 @@ const Markerbar = ({ map }: { map: any }) => {
       getMarkers();
     } catch (err: any) {
       if (err.response?.status === 419) {
-        console.log("Invalid Marker");
+        toast.error("Your name is too long! Please use a shorter name.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else if (err.response?.status === 497) {
-        console.log("Marker Id is not valid");
+        toast.error("Something went wrong. Please Refresh.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else if (err.response?.status === 400) {
-        console.log("Something went wrong");
+        toast.error("Something went wrong.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else {
         console.log("No server response");
       }
@@ -255,8 +287,41 @@ const Markerbar = ({ map }: { map: any }) => {
     }
   };
 
+  const deleteMarkerImg = async (marker: any, url: string) => {
+    try {
+      const response = await axios.post(
+        DELETE_MARKER_IMG_URL,
+        JSON.stringify({ mapId: map.mapId, markerId: marker.id, img: url }),
+        {
+          headers: { "Content-type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      getMarkers();
+    } catch (err: any) {
+      console.log(err.response);
+      if (err.response?.state == 440) {
+        console.log("Invalid Map ID");
+      } else {
+        console.log("Server Error");
+      }
+    }
+  };
+
   return (
     <React.Fragment>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       <div className="marker-bar">
         <h6>
           Spots <span className="material-symbols-outlined">location_on</span>
@@ -288,7 +353,10 @@ const Markerbar = ({ map }: { map: any }) => {
                 className="material-symbols-outlined"
                 data-bs-toggle="modal"
                 data-bs-target="#viewGallery"
-                onClick={() => getMarkerImgs(marker)}
+                onClick={() => {
+                  getMarkerImgs(marker);
+                  setSelectMarker(marker);
+                }}
               >
                 gallery_thumbnail
               </span>
@@ -321,7 +389,7 @@ const Markerbar = ({ map }: { map: any }) => {
             <form action="/submit">
               <div className="mb-3">
                 <br />
-                <label className="form-label">Marker Name</label>
+                <label className="form-label">Name</label>
                 <input
                   type="input"
                   className="form-control"
@@ -329,6 +397,9 @@ const Markerbar = ({ map }: { map: any }) => {
                   onChange={(e) => setMarkerName(e.target.value)}
                   value={updatedName}
                 />
+                <p id="formNote">
+                  <FontAwesomeIcon icon={faInfoCircle} /> 30 characters max
+                </p>
               </div>
               <div className="mb-3">
                 <label className="form-label">Color</label>
@@ -374,7 +445,11 @@ const Markerbar = ({ map }: { map: any }) => {
               <div className="mb-3">
                 <label className="form-label">Upload Photos</label>
                 <div {...getRootProps({ className: "drag-drop-img" })}>
-                  <input {...getInputProps()} />
+                  <input
+                    {...getInputProps({
+                      accept: "image/jpeg, image/png",
+                    })}
+                  />
                   {isDragActive ? (
                     <p> Drop the files here...</p>
                   ) : (
@@ -384,6 +459,9 @@ const Markerbar = ({ map }: { map: any }) => {
                     </p>
                   )}
                 </div>
+                <p id="formNote">
+                  <FontAwesomeIcon icon={faInfoCircle} /> 10 images max
+                </p>
                 <ul className="image-preview-list">
                   {true &&
                     files.map((file) => (
@@ -392,8 +470,9 @@ const Markerbar = ({ map }: { map: any }) => {
                           src={file.preview}
                           alt="Preview"
                           style={{
-                            maxWidth: "120px",
-                            maxHeight: "120px",
+                            display: "flex",
+                            maxWidth: "150px",
+                            maxHeight: "150px",
                             marginTop: "10px",
                           }}
                         />
@@ -452,7 +531,7 @@ const Markerbar = ({ map }: { map: any }) => {
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
-            {slides[0] && (
+            {slides.length > 0 ? (
               <div className="modal-body">
                 <div id="carouselExampleIndicators" className="carousel slide">
                   <div className="carousel-indicators">
@@ -469,14 +548,24 @@ const Markerbar = ({ map }: { map: any }) => {
                   </div>
                   <div className="carousel-inner">
                     {slides.map((url) => (
-                      <div className="carousel-item active">
-                        <img
-                          src={url}
-                          className="d-block w-100"
-                          style={{ width: "200px", height: "400px" }}
-                          alt="..."
-                        />
-                      </div>
+                      <React.Fragment>
+                        {" "}
+                        <span
+                          className="material-symbols-outlined"
+                          id="removeMarkerImage"
+                          onClick={(e) => deleteMarkerImg(selectMarker, url)}
+                        >
+                          close
+                        </span>
+                        <div className="carousel-item active">
+                          <img
+                            src={url}
+                            className="d-block w-100"
+                            style={{ width: "200px", height: "400px" }}
+                            alt="..."
+                          />
+                        </div>
+                      </React.Fragment>
                     ))}
                   </div>
                   <button
@@ -505,6 +594,20 @@ const Markerbar = ({ map }: { map: any }) => {
                   </button>
                 </div>
               </div>
+            ) : (
+              <h6
+                className="display-6"
+                style={{
+                  display: "flex",
+                  color: "#f9920c",
+                  textAlign: "center",
+                  justifyContent: "center",
+                  fontSize: "30px",
+                  marginTop: "150px",
+                }}
+              >
+                Upload Some Photos!
+              </h6>
             )}
           </div>
         </div>

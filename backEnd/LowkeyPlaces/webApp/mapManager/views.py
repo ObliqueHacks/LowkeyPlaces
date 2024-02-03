@@ -26,7 +26,7 @@ def makeMap(request: Response) -> Response:
     #make sure its a valid map request
     mapObject = mapSerializer(data=request.data)
     if mapObject.is_valid() is False:
-        return Response(status=500)
+        return Response(status=413)
     mapObject = mapObject.save()
     
     #make map user with map number
@@ -44,7 +44,7 @@ def makeMap(request: Response) -> Response:
     except OSError as e:
         mapObject.delete()
         mapUserInstance.delete()
-        return Response(status=500)
+        return Response(status=415)
   
     #make marker directory
     directory_path = os.path.join(directory_path, "markers")

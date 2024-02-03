@@ -10,6 +10,7 @@ import axios from "../../api/axios";
 
 const AllFriends = () => {
   const [friends, setFriends] = useState([]);
+ 
   // const [showSpectatorPopup, setShowSpectatorPopup] = useState(false);
   // const [showCollaboratorPopup, setShowCollaboratorPopup] = useState(false);
 

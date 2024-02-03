@@ -15,6 +15,7 @@ import { Fade } from "react-awesome-reveal";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { AspectRatio } from "react-aspect-ratio";
+import { ToastContainer, toast } from "react-toastify";
 
 import Skeleton from "react-loading-skeleton";
 
@@ -22,6 +23,8 @@ import Skeleton from "react-loading-skeleton";
 import NatureOne from "../../assets/nature-1.jpg";
 import Markerbar from "../../components/map/Markerbar.tsx";
 import "react-loading-skeleton/dist/skeleton.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 const CREATE_MAP_URL = "api-auth/map/make-map/";
 const GET_MAP_IDS_URL = "api-auth/map/get-user-maps/";
@@ -179,11 +182,49 @@ const Dashboard = () => {
     } catch (err: any) {
       console.log(err.response);
       if (err.response?.status === 400) {
-        console.log("Something went wrong");
+        toast.error("Something went wrong!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else if (err.response?.status === 408) {
-        console.log("You timed out. Please relogin");
-      } else if (err.response?.status === 500) {
-        console.log("Your have provided an invalid title or invalid file");
+        toast.error("You timed out! Please Relogin.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      } else if (err.response?.status === 413) {
+        toast.error("Your title is too long! Please use a shorter name.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      } else if (err.response?.status === 413) {
+        toast.error("Invalid Image Format! Please use JPG or PNG.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } else {
         console.log("No server response");
       }
@@ -223,6 +264,18 @@ const Dashboard = () => {
   return (
     <div className="container">
       <Sidebar editMap={editMap} map={selectedMap}></Sidebar>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       {!editMap && (
         <Fade>
           <div className="maps">
@@ -292,7 +345,7 @@ const Dashboard = () => {
                         <div className="card">
                           <AspectRatio
                             ratio="3/4"
-                            style={{ maxHeight: "170px" }}
+                            style={{ maxHeight: "175px" }}
                           >
                             {" "}
                             <img
@@ -308,30 +361,29 @@ const Dashboard = () => {
                               setEditMap(true);
                             }}
                           >
-                            <h4>
-                              {displayMap.mapName || <Skeleton />}
-                              <div className="buttons">
-                                {displayMap.status === 0 ? (
-                                  <span
-                                    className="material-symbols-outlined"
-                                    onClick={(e) => deleteMap(displayMap, e)}
-                                  >
-                                    delete
-                                  </span>
-                                ) : (
-                                  <span
-                                    className="material-symbols-outlined"
-                                    onClick={(e) => deleteMap(displayMap, e)}
-                                  >
-                                    move_item
-                                  </span>
-                                )}
-                                <span className="material-symbols-outlined">
-                                  more_vert
+                            <h4>{displayMap.mapName} </h4>
+
+                            <div className="info">
+                              <p>{status[displayMap.status]}</p>
+                              {displayMap.status === 0 ? (
+                                <span
+                                  className="material-symbols-outlined"
+                                  onClick={(e) => deleteMap(displayMap, e)}
+                                >
+                                  delete
                                 </span>
-                              </div>
-                            </h4>
-                            <p>{status[displayMap.status]}</p>
+                              ) : (
+                                <span
+                                  className="material-symbols-outlined"
+                                  onClick={(e) => deleteMap(displayMap, e)}
+                                >
+                                  move_item
+                                </span>
+                              )}
+                              {/* <span className="material-symbols-outlined">
+                                  more_vert
+                                </span> */}
+                            </div>
                           </div>
                         </div>
                       </li>
@@ -343,7 +395,7 @@ const Dashboard = () => {
                             <div className="card">
                               <AspectRatio
                                 ratio="3/4"
-                                style={{ maxHeight: "170px" }}
+                                style={{ maxHeight: "200px" }}
                               >
                                 <img
                                   src={displayMap.mapImage.preview}
@@ -422,11 +474,19 @@ const Dashboard = () => {
                         value={mapName}
                         required
                       />
+                      <p id="formNote">
+                        <FontAwesomeIcon icon={faInfoCircle} /> 30 characters
+                        max
+                      </p>
                     </div>
                     <div className="mb-3">
                       <label className="form-label">Upload Map Photo</label>
                       <div {...getRootProps({ className: "drag-drop-img" })}>
-                        <input {...getInputProps()} />
+                        <input
+                          {...getInputProps({
+                            accept: "image/jpeg, image/png",
+                          })}
+                        />
                         {isDragActive ? (
                           <p> Drop the files here...</p>
                         ) : (
@@ -437,6 +497,9 @@ const Dashboard = () => {
                           </p>
                         )}
                       </div>
+                      <p id="formNote">
+                        <FontAwesomeIcon icon={faInfoCircle} /> JPG/PNG
+                      </p>
                       {mapImg.file && (
                         <div>
                           <img

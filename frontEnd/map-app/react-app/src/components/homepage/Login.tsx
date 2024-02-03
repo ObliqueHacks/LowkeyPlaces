@@ -16,7 +16,6 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const { auth, setAuth }: any = useContext(AuthContext);
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -40,10 +39,6 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
       );
       const accessToken = response?.data?.genToken;
       Cookies.set("genToken", accessToken, { expires: 7 });
-      console.log(response);
-      console.log(accessToken);
-      console.log(auth);
-      setAuth({ user, pwd, accessToken });
       setUser("");
       setPwd("");
       setSuccess(true);
