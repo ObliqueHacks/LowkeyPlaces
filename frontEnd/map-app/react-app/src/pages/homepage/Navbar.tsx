@@ -1,7 +1,7 @@
 // LIBRARIES
 import React from "react";
 import { Link as LinkScroll } from "react-scroll";
-import { Outlet} from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 // IMAGES
 import Menu from "../../assets/Menu.png";
@@ -14,7 +14,7 @@ export const Navbar = ({ toggleModal }: { toggleModal: () => void }) => {
         <div className="container">
           <img className="navbar-logo" src={Logo} alt="" />
           <a className="navbar-brand" href="#">
-            Lowkey Spots
+            LowkeySpots
           </a>
           <button
             className="navbar-toggler"

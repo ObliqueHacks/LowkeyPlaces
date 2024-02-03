@@ -26,12 +26,14 @@ const Markerbar = ({ map }: { map: any }) => {
   const [files, setFiles] = useState<FileState[]>([]);
   const [mapFolder, setMapFolder] = useState("");
   const [slides, setSlides] = useState([]);
+  const [color, setColor] = useState("Default");
   const { markers, setMarkers } = useMapContext();
 
   const resetForm = () => {
     setMarkerName("");
     setDescription("");
     setFiles([]);
+    setColor("Default");
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -81,15 +83,16 @@ const Markerbar = ({ map }: { map: any }) => {
   const updateMarker = async (
     marker: any,
     updatedName: string = "",
-    updateDesc: string = ""
+    updateDesc: string = "",
+    color: string = ""
   ) => {
-    console.log("update marker is being called");
     try {
       interface UpdateRequest {
         mapId: number;
         markerId: any;
         name?: string;
         desc?: string;
+        color?: string;
       }
 
       let request: UpdateRequest = {
@@ -105,6 +108,10 @@ const Markerbar = ({ map }: { map: any }) => {
         request.desc = updateDesc;
       }
 
+      if (color !== "") {
+        request.color = color;
+      }
+
       const response = await axios.post(
         UPDATE_MARKER_URL,
         JSON.stringify(request),
@@ -114,7 +121,6 @@ const Markerbar = ({ map }: { map: any }) => {
         }
       );
 
-      console.log(response);
       if (files.length >= 1) {
         addMarkerImgs(marker);
       }
@@ -155,6 +161,7 @@ const Markerbar = ({ map }: { map: any }) => {
           long: response.data[key].long,
           address: response.data[key].address,
           folderName: response.data[key].folderPath,
+          color: response.data[key].color,
         });
       }
       setMarkers(newMarkers);
@@ -198,7 +205,6 @@ const Markerbar = ({ map }: { map: any }) => {
   }, []);
 
   const getMarkerImgs = async (marker: any) => {
-    console.log(marker);
     try {
       let urls: any = [];
       const response = await axios.post(
@@ -217,7 +223,6 @@ const Markerbar = ({ map }: { map: any }) => {
           "src/maps/" + mapFolder + "/markers/" + folder + "/" + img + ".jpg";
         urls.push(path);
       }
-      console.log(urls);
       setSlides(urls);
     } catch (err: any) {
       console.log(err.response);
@@ -239,7 +244,6 @@ const Markerbar = ({ map }: { map: any }) => {
           withCredentials: true,
         }
       );
-      console.log(response);
       getMarkers();
     } catch (err: any) {
       console.log(err.response);
@@ -327,6 +331,29 @@ const Markerbar = ({ map }: { map: any }) => {
                 />
               </div>
               <div className="mb-3">
+                <label className="form-label">Color</label>
+                <select
+                  className="form-select"
+                  aria-label="Default select example"
+                  style={{
+                    width: "50%",
+                    textDecoration: "none",
+                    outline: "none",
+                  }}
+                  onChange={(e) => setColor(e.target.value)}
+                  value={color}
+                >
+                  <option value="Defualt">Default</option>
+                  <option value="Red">Red</option>
+                  <option value="Green">Green</option>
+                  <option value="Blue">Blue</option>
+                  <option value="Yellow">Yellow</option>
+                  <option value="Purple">Purple</option>
+                  <option value="Cyan">Cyan</option>
+                  <option value="Magenta">Magenta</option>
+                </select>
+              </div>
+              <div className="mb-3">
                 <label className="form-label">Description</label>
                 <textarea
                   className="form-control"
@@ -385,7 +412,12 @@ const Markerbar = ({ map }: { map: any }) => {
                 data-bs-dismiss="modal"
                 onClick={(e) => {
                   e.preventDefault();
-                  updateMarker(selectMarker, updatedName, updatedDescription);
+                  updateMarker(
+                    selectMarker,
+                    updatedName,
+                    updatedDescription,
+                    color
+                  );
                   resetForm();
                 }}
               >
@@ -436,7 +468,7 @@ const Markerbar = ({ map }: { map: any }) => {
                     ))}
                   </div>
                   <div className="carousel-inner">
-                    {slides.map((url, index) => (
+                    {slides.map((url) => (
                       <div className="carousel-item active">
                         <img
                           src={url}

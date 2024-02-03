@@ -10,8 +10,15 @@ import {
 } from "react-leaflet";
 import AuthContext from "../../context/AuthProvider.tsx";
 import { useMapContext } from "../../context/MapProvider.tsx";
-import { Icon } from "leaflet";
-import markerMapIcon from "../../assets/Visit.png";
+import { Icon, icon } from "leaflet";
+import Red from "../../assets/MarkerColors/red.png";
+import Green from "../../assets/MarkerColors/green.png";
+import Yellow from "../../assets/MarkerColors/yellow.png";
+import Blue from "../../assets/MarkerColors/blue.png";
+import Cyan from "../../assets/MarkerColors/cyan.png";
+import Purple from "../../assets/MarkerColors/purple.png";
+import Magenta from "../../assets/MarkerColors/magenta.png";
+import Default from "../../assets/MarkerColors/default.png";
 
 const PLACE_MARKER_URL = "api-auth/markers/place-marker/";
 const MARKER_LIST_URL = "api-auth/markers/marker-list/";
@@ -19,12 +26,56 @@ const MARKER_LIST_URL = "api-auth/markers/marker-list/";
 function LocationMarkers({ mapId }: { mapId: number }) {
   const { markers, setMarkers }: any = useMapContext();
 
-  const customIcon = new Icon({
-    iconUrl: markerMapIcon,
-    iconSize: [45, 45], // Adjust the size of the icon
-    iconAnchor: [16, 32], // Adjust the anchor point if needed
-    popupAnchor: [0, -32], /// point from which the popup should open relative to the iconAnchor
-  });
+  const icons: any = {
+    Red: new Icon({
+      iconUrl: Red,
+      iconSize: [45, 45], // Adjust the size of the icon
+      iconAnchor: [16, 32], // Adjust the anchor point if needed
+      popupAnchor: [0, -32], /// point from which the popup should open relative to the iconAnchor
+    }),
+    Green: new Icon({
+      iconUrl: Green,
+      iconSize: [45, 45], // Adjust the size of the icon
+      iconAnchor: [16, 32], // Adjust the anchor point if needed
+      popupAnchor: [0, -32], /// point from which the popup should open relative to the iconAnchor
+    }),
+    Yellow: new Icon({
+      iconUrl: Yellow,
+      iconSize: [45, 45], // Adjust the size of the icon
+      iconAnchor: [16, 32], // Adjust the anchor point if needed
+      popupAnchor: [0, -32], /// point from which the popup should open relative to the iconAnchor
+    }),
+    Blue: new Icon({
+      iconUrl: Blue,
+      iconSize: [45, 45], // Adjust the size of the icon
+      iconAnchor: [16, 32], // Adjust the anchor point if needed
+      popupAnchor: [0, -32], /// point from which the popup should open relative to the iconAnchor
+    }),
+    Cyan: new Icon({
+      iconUrl: Cyan,
+      iconSize: [45, 45], // Adjust the size of the icon
+      iconAnchor: [16, 32], // Adjust the anchor point if needed
+      popupAnchor: [0, -32], /// point from which the popup should open relative to the iconAnchor
+    }),
+    Purple: new Icon({
+      iconUrl: Purple,
+      iconSize: [45, 45], // Adjust the size of the icon
+      iconAnchor: [16, 32], // Adjust the anchor point if needed
+      popupAnchor: [0, -32], /// point from which the popup should open relative to the iconAnchor
+    }),
+    Magenta: new Icon({
+      iconUrl: Magenta,
+      iconSize: [45, 45], // Adjust the size of the icon
+      iconAnchor: [16, 32], // Adjust the anchor point if needed
+      popupAnchor: [0, -32], /// point from which the popup should open relative to the iconAnchor
+    }),
+    Default: new Icon({
+      iconUrl: Default,
+      iconSize: [45, 45], // Adjust the size of the icon
+      iconAnchor: [16, 32], // Adjust the anchor point if needed
+      popupAnchor: [0, -32], /// point from which the popup should open relative to the iconAnchor
+    }),
+  };
 
   const getMarkers = async () => {
     let newMarkers = [];
@@ -49,6 +100,7 @@ function LocationMarkers({ mapId }: { mapId: number }) {
           long: response.data[key].long,
           address: response.data[key].address,
           folderName: response.data[key].folderPath,
+          color: response.data[key].color,
         });
       }
       setMarkers(newMarkers);
@@ -140,7 +192,11 @@ function LocationMarkers({ mapId }: { mapId: number }) {
   });
 
   const markerList = markers.map((marker: any, index: number) => (
-    <Marker key={index} position={[marker.lat, marker.long]} icon={customIcon}>
+    <Marker
+      key={index}
+      position={[marker.lat, marker.long]}
+      icon={icons[marker.color]}
+    >
       {marker.desc === "" ? (
         <Popup className="popup-style"> Add a description!</Popup>
       ) : (

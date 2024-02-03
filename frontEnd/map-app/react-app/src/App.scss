@@ -710,6 +710,16 @@ h4 {
               border: 0.5px solid $color-secondary;
             }
           }
+
+          select {
+            color: $color-primary;
+            border: 0.5px solid $color-primary;
+            transition: all 0.3s ease;
+            &:focus {
+              border: 0.5px solid $color-secondary;
+            }
+          }
+
           button {
             position: relative;
             margin: 10px;
