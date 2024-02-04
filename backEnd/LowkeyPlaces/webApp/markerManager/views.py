@@ -57,6 +57,9 @@ def authTemplate2(request, result_function):
 @api_view(['POST'])
 def placeMarker(request: Response) -> Response:
     def discrete(mapId, user, request):
+        if mapId.markerCount == 25:
+            return Response(status=497)
+        
         marker = markerSerializer(data=request.data)
         if marker.is_valid() is False:
             return Response(status=419)
@@ -93,6 +96,8 @@ def placeMarker(request: Response) -> Response:
         except OSError as e:
             markerInstance.delete()
             return Response(status=500)
+        mapId.markerCount+=1
+        mapId.save()
         return Response(status=201)
     return authTemplate2(request, discrete)
 
@@ -119,10 +124,7 @@ def getMarkerList(request: Response) -> Response:
 #authTemplate
 @api_view(['POST'])
 def addMarkerImg(request: Response) -> Response:
-    print("reaching this point")
-    
     def discrete(mapId, user, request):
-        print("reaching addMarkerImg")
         image=imageSerializer(data=request.data)
         markerId=markerIdSerializer(data=request.data)
         if image.is_valid() is False or markerId.is_valid() is False:
@@ -130,6 +132,9 @@ def addMarkerImg(request: Response) -> Response:
         try:
             #ensure there is a valid marker for this map
             markerId = MARKER.objects.get(id=markerId.validated_data['markerId'], mapId=mapId)
+            if markerId.imageCount == 10:
+                return Response(status=497)
+            
             #save image in a variable
             image=image.validated_data['image']
             
@@ -138,7 +143,6 @@ def addMarkerImg(request: Response) -> Response:
             
             #save the image to file
             markerPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", mapId.mapFolder, "markers/", markerId.folderPath,imageInstance.folderPath+".jpg")
-            print(markerPath)
             markerId.imageCount+=1
             markerId.save()
             try:
@@ -223,6 +227,7 @@ def deleteMarkerImage(request):
                        
             img = MARKER_IMG.objects.get(folderPath = img.validated_data['folderPath'])
             img.delete()
+            markerId.imageCount-=1
             markerId.save()
             return Response(status=201)
             
@@ -243,6 +248,8 @@ def deleteMarker(request):
             #ensure there is a valid marker for this map
             markerId = MARKER.objects.get(id=markerId.validated_data['markerId'], mapId=mapId)
             markerId.delete()
+            mapId.markerCount-=1
+            mapId.save()
             return Response(status=201)
         except ObjectDoesNotExist:
                 return Response(status=500)

@@ -19,5 +19,5 @@ class markerIdSerializer(serializers.Serializer):
 class updateMarkerActionSerializer(serializers.Serializer):
     action=serializers.IntegerField()
     
-class imageIdSerializer():
+class imageIdSerializer(serializers.Serializer):
     folderPath=serializers.CharField(max_length=300)
