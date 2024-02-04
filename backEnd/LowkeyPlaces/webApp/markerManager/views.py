@@ -208,7 +208,8 @@ def updateMarker(request: Response) -> Response:
 @api_view(['POST'])
 def deleteMarkerImage(request):
     def discrete(mapId, user, request):
-        markerId=markerIdSerializer(request.data)
+        print(request.data)
+        markerId=markerIdSerializer(data=request.data)
         if markerId.is_valid() is False:
             return Response(status=440)
         try:

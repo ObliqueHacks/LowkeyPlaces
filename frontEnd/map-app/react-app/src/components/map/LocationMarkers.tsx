@@ -25,6 +25,20 @@ const MARKER_LIST_URL = "api-auth/markers/marker-list/";
 
 function LocationMarkers({ mapId }: { mapId: number }) {
   const { markers, setMarkers }: any = useMapContext();
+  const { fly, setFly }: any = useMapContext();
+  const mapFly = useMap();
+
+  const flyToMarker = () => {
+    if (fly.length > 1) {
+      console.log(fly);
+      mapFly.flyTo(fly, mapFly.getZoom());
+      setFly([]);
+    }
+  };
+
+  useEffect(() => {
+    flyToMarker();
+  }, [fly]);
 
   const icons: any = {
     Red: new Icon({
