@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link as LinkScroll } from "react-scroll";
 import { Fade } from "react-awesome-reveal";
+import Cookies from "js-cookie";
 
 // IMAGES
 import MarkerImage from "../../assets/hiking.jpg";
@@ -20,16 +21,16 @@ import LowkeyIcon from "../../assets/Secret.png";
 // PAGES
 import Modal from "./LoginModal.tsx";
 import Navbar from "./Navbar.tsx";
-
 // COMPONENTS
 import LinkBar from "../../components/homepage/LinkBar.tsx";
 
 function HomePage() {
   const [modalActive, setModal] = useState(false);
-
   const [tabOneActive, setTabOne] = useState(true);
   const [tabTwoActive, setTabTwo] = useState(false);
   const [tabThreeActive, setTabThree] = useState(false);
+
+  Cookies.remove("genToken");
 
   const toggleModal = () => {
     setModal(!modalActive);

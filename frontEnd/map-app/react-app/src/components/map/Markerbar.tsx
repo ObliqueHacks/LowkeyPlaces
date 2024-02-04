@@ -9,6 +9,7 @@ import { useMapContext } from "../../context/MapProvider.tsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
+import { useMap } from "react-leaflet";
 
 const MARKER_LIST_URL = "api-auth/markers/marker-list/";
 const ADD_MARKER_IMG_URL = "api-auth/markers/add-marker-img/";
@@ -32,6 +33,7 @@ const Markerbar = ({ map }: { map: any }) => {
   const [slides, setSlides] = useState([]);
   const [color, setColor] = useState("Default");
   const { markers, setMarkers } = useMapContext();
+  const { setFly } = useMapContext();
 
   const resetForm = () => {
     setMarkerName("");
@@ -77,10 +79,31 @@ const Markerbar = ({ map }: { map: any }) => {
         console.log(response);
       }
     } catch (err: any) {
-      if (err.response?.status === 500) {
-        console.log("Something went wrong");
-      } else {
-        console.log("No response. Server Error");
+      if (err.response?.status === 497) {
+        toast.error(
+          "You've reached the limit. Please remove some images to add more.",
+          {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          }
+        );
+      } else if (err.response?.status === 500) {
+        toast.error("Something went wrong! Please Relogin.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
     }
   };
@@ -291,13 +314,18 @@ const Markerbar = ({ map }: { map: any }) => {
     try {
       const response = await axios.post(
         DELETE_MARKER_IMG_URL,
-        JSON.stringify({ mapId: map.mapId, markerId: marker.id, img: url }),
+        JSON.stringify({
+          mapId: map.mapId,
+          markerId: marker.id,
+          folderPath: url,
+        }),
         {
           headers: { "Content-type": "application/json" },
           withCredentials: true,
         }
       );
       getMarkers();
+      getMarkerImgs(marker);
     } catch (err: any) {
       console.log(err.response);
       if (err.response?.state == 440) {
@@ -330,7 +358,12 @@ const Markerbar = ({ map }: { map: any }) => {
           {markers.map((marker: any, index: number) => (
             <li className="marker" key={index}>
               <input type="checkbox" />
-              <label className="marker-name">{marker.name}</label>{" "}
+              <label
+                className="marker-name"
+                onClick={() => setFly([marker.lat, marker.long])}
+              >
+                {marker.name}
+              </label>{" "}
               {map.status !== 2 && (
                 <span
                   className="material-symbols-outlined"
@@ -543,29 +576,39 @@ const Markerbar = ({ map }: { map: any }) => {
                         className="active"
                         aria-current="true"
                         aria-label="Slide"
+                        key={index}
                       ></button>
                     ))}
                   </div>
                   <div className="carousel-inner">
-                    {slides.map((url) => (
-                      <React.Fragment>
-                        {" "}
+                    {slides.map((url: any, index) => (
+                      <div className="carousel-item active" key={index}>
                         <span
                           className="material-symbols-outlined"
                           id="removeMarkerImage"
-                          onClick={(e) => deleteMarkerImg(selectMarker, url)}
+                          style={{
+                            display: "flex",
+                            marginLeft: "270px",
+                            width: "25px",
+                          }}
+                          onClick={() => {
+                            const uuid = url
+                              .split("/")
+                              .pop()
+                              .replace(".jpg", "");
+
+                            deleteMarkerImg(selectMarker, uuid);
+                          }}
                         >
-                          close
+                          delete
                         </span>
-                        <div className="carousel-item active">
-                          <img
-                            src={url}
-                            className="d-block w-100"
-                            style={{ width: "200px", height: "400px" }}
-                            alt="..."
-                          />
-                        </div>
-                      </React.Fragment>
+                        <img
+                          src={url}
+                          className="d-block w-100"
+                          style={{ width: "200px", height: "400px" }}
+                          alt="..."
+                        />
+                      </div>
                     ))}
                   </div>
                   <button

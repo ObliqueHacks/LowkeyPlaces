@@ -37,6 +37,7 @@ const Dashboard = () => {
   const [mapName, setMapName] = useState("");
   const [mapIds, setMapIds] = useState([]);
   const [member, setMember] = useState(false);
+  const [addFriend, setAddFriend] = useState(false);
 
   const [mapImg, setMapImg] = useState<{ preview: string; file: File | null }>({
     preview: "",
@@ -566,6 +567,7 @@ const Dashboard = () => {
                     className="add-friend-map"
                     data-bs-toggle="modal"
                     data-bs-target="#addFriendToMap"
+                    onClick={() => setAddFriend(true)}
                   >
                     <span className="material-symbols-outlined">
                       person_add
@@ -587,8 +589,12 @@ const Dashboard = () => {
               id="addFriendToMap"
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
+              onClick={() => setAddFriend(false)}
             >
-              <div className="modal-dialog">
+              <div
+                className="modal-dialog"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className="modal-content">
                   <div className="modal-header">
                     <h1 className="modal-title fs-5" id="exampleModalLabel">
@@ -596,14 +602,21 @@ const Dashboard = () => {
                     </h1>
                     <button type="button" data-bs-dismiss="modal">
                       {" "}
-                      <span className="material-symbols-outlined">close</span>
+                      <span
+                        className="material-symbols-outlined"
+                        onClick={() => setAddFriend(false)}
+                      >
+                        close
+                      </span>
                     </button>
                   </div>
                   <div className="modal-body">
-                    <MapFriends
-                      mapId={selectedMap?.mapId ?? 0}
-                      addFriend={true}
-                    ></MapFriends>
+                    {addFriend && (
+                      <MapFriends
+                        mapId={selectedMap?.mapId ?? 0}
+                        addFriend={true}
+                      ></MapFriends>
+                    )}
                   </div>
                   <div className="modal-footer"></div>
                 </div>

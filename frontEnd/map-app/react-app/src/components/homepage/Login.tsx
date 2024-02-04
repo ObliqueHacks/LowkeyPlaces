@@ -15,6 +15,7 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
+  const { setAuth }: any = useContext(AuthContext);
 
   let navigate = useNavigate();
 
@@ -41,6 +42,7 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
       Cookies.set("genToken", accessToken, { expires: 7 });
       setUser("");
       setPwd("");
+      setAuth(user);
       setSuccess(true);
       navigate("/dashboard");
     } catch (err: any) {
