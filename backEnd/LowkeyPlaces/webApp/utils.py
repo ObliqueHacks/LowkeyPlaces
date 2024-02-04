@@ -9,6 +9,43 @@ from dotenv import load_dotenv
 import os
 import bcrypt
 from jwt.exceptions import PyJWTError
+from google.cloud import storage
+
+from google.cloud import storage
+from io import BytesIO
+
+def upload_image_to_bucket(bucket_name, source_file, destination_blob_name):
+    """Uploads an opened file to the Google Cloud Storage bucket."""
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+    
+    # Read the contents of the opened file
+    content = source_file.read()
+
+    # Upload the contents to the blob
+    blob.upload_from_file(BytesIO(content), content_type='image/jpeg')  # You may need to adjust the content type
+
+    print(f"File uploaded to {destination_blob_name} in {bucket_name} bucket.")
+
+
+def generate_download_signed_url_v4(bucket_name, blob_name):
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+
+    url = blob.generate_signed_url(
+        version="v4",
+        expiration=timedelta(minutes=60),
+        method="GET",
+    )
+
+    print("Generated GET signed URL:")
+    print(url)
+    print("You can use this URL with any user agent, for example:")
+    print(f"curl '{url}'")
+    return url
+
 
 def hash_password(password) -> str:
     salt = bcrypt.gensalt()

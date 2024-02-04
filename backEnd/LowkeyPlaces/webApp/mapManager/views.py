@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from .serializers import mapRequest, mapSerializer, getMap, recSerializer
 from .models import USER, USER_RELATION
 from rest_framework import status
-from utils import create_token, hash_password, verify_password
+from utils import create_token, hash_password, verify_password, upload_image_to_bucket, generate_download_signed_url_v4
 from friendManager.serializers import getUser
 from utils import token_to_user, error_returner
 from .models import MAP_USER, MAP
@@ -36,44 +36,15 @@ def makeMap(request: Response) -> Response:
     mapUserInstance = MAP_USER(mapId=mapObject, userId=user, status=0)
     mapUserInstance.save()
     
-    #show a 3 level higher
-    
-    #join the path to correct path from lowkeySpots/
-    directory_path = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps", mapObject.mapFolder)
-    
-    #make map directory
-    try:
-        os.makedirs(directory_path)
-    except OSError as e:
-        mapObject.delete()
-        mapUserInstance.delete()
-        return Response(status=415)
-  
-    #make marker directory
-    directory_path = os.path.join(directory_path, "markers")
-    
-    try:
-        os.makedirs(directory_path)
-    except OSError as e:
-        mapObject.delete()
-        mapUserInstance.delete()
-        return Response(status=500)
     
     #serializer map image:
     mapImage = imageSerializer(data=request.data)
-    mapDestinationPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", mapObject.mapFolder, "MAP_IMAGE.jpg")
     if mapImage.is_valid() is False:
-        mapImagePath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", "MAP_IMAGE.jpg")
-        shutil.copy(mapImagePath, mapDestinationPath)
-        
-    #check this
+        mapImage = open("MAP_IMAGE.jpg", "rb+")
     else:
         mapImage = mapImage.validated_data['image']
-        try:
-            with open(mapDestinationPath, 'wb+') as new_image_file:
-                new_image_file.write(mapImage.read())
-        except Exception as e:
-            return Response(status=500)
+    upload_image_to_bucket('lowkey-spots-bucket', mapImage, os.path.join(mapObject.mapFolder, "MAP_IMAGE.jpg"))
+    
     user.mapCount+=1
     user.save()
     return Response(status=201, data={'mapId': mapObject.id})
@@ -185,7 +156,7 @@ def getMapFromId(request) -> Response:
         response_data = {
             'mapData': mapData.data,
             'status': status,
-            'folderName': mapId.mapFolder,
+            'folderName': generate_download_signed_url_v4('lowkey-spots-bucket', os.path.join(mapId.mapFolder, 'MAP_IMAGE.jpg')),
         }
         return Response(status=201, data=response_data)
     return authTemplate(request=request, func1=discrete)
@@ -222,7 +193,6 @@ def deleteMap(request) -> Response:
             curr_map_user.delete()
         return Response(status=201)
     return authTemplate(request=request, func1=discrete)
-
 
 
 #ability for owner to remove a member or make them a spectator (fill in after implementing markers -- should destroy all user markers)
