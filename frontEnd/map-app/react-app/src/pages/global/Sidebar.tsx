@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Logo from "../../assets/NinjaHead.png";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Markerbar from "../../components/map/Markerbar.tsx";
 
 import AuthContext from "../../context/AuthProvider.tsx";
@@ -18,7 +18,7 @@ const Sidebar = ({
   status?: number;
 }) => {
   const location = useLocation();
-  const { setAuth }: any = useContext(AuthContext);
+  let navigate = useNavigate();
 
   const [mapActive, setMapActive] = useState(
     location.pathname === "/dashboard"
@@ -102,16 +102,18 @@ const Sidebar = ({
           </h4>
           <span className="friend-requests">{nbRequest}</span>
         </Link>
-        <Link to="/" className="sidebar-item">
+        <li className="sidebar-item">
           <span className="material-symbols-outlined">logout</span>
           <h4
             className="display-6"
             id="dashboard-display"
-            onClick={() => Cookies.remove("genToken")}
+            onClick={() => {
+              Cookies.remove("genToken");
+            }}
           >
             Logout
           </h4>
-        </Link>
+        </li>
       </div>
       {editMap && <Markerbar map={map}></Markerbar>}
     </aside>

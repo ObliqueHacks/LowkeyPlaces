@@ -221,7 +221,7 @@ def deleteMarkerImage(request):
             markerId = MARKER.objects.get(id=markerId.validated_data['markerId'], mapId=mapId)
             
             #delete image
-            img = imageIdSerializer(request.data)
+            img = imageIdSerializer(data=request.data)
             if img.is_valid() is False:
                 return Response(status=440)
                        

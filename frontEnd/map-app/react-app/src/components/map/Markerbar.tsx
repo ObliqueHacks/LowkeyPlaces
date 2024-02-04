@@ -79,10 +79,31 @@ const Markerbar = ({ map }: { map: any }) => {
         console.log(response);
       }
     } catch (err: any) {
-      if (err.response?.status === 500) {
-        console.log("Something went wrong");
-      } else {
-        console.log("No response. Server Error");
+      if (err.response?.status === 497) {
+        toast.error(
+          "You've reached the limit. Please remove some images to add more.",
+          {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          }
+        );
+      } else if (err.response?.status === 500) {
+        toast.error("Something went wrong! Please Relogin.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
     }
   };
@@ -293,13 +314,18 @@ const Markerbar = ({ map }: { map: any }) => {
     try {
       const response = await axios.post(
         DELETE_MARKER_IMG_URL,
-        JSON.stringify({ mapId: map.mapId, markerId: marker.id, img: url }),
+        JSON.stringify({
+          mapId: map.mapId,
+          markerId: marker.id,
+          folderPath: url,
+        }),
         {
           headers: { "Content-type": "application/json" },
           withCredentials: true,
         }
       );
       getMarkers();
+      getMarkerImgs(marker);
     } catch (err: any) {
       console.log(err.response);
       if (err.response?.state == 440) {
