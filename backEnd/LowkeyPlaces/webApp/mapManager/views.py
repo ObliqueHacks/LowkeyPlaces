@@ -23,6 +23,9 @@ def makeMap(request: Response) -> Response:
     user=userEquals(request)
     if user is None: return Response(status=408)
     
+    if user.mapCount == 20:
+        return Response(status=497)
+    
     #make sure its a valid map request
     mapObject = mapSerializer(data=request.data)
     if mapObject.is_valid() is False:
@@ -71,6 +74,8 @@ def makeMap(request: Response) -> Response:
                 new_image_file.write(mapImage.read())
         except Exception as e:
             return Response(status=500)
+    user.mapCount+=1
+    user.save()
     return Response(status=201, data={'mapId': mapObject.id})
  
  
@@ -211,6 +216,8 @@ def deleteMap(request) -> Response:
         curr_map_user = MAP_USER.objects.get(mapId=mapId, userId=user)
         if curr_map_user.status == 0:
             mapId.delete()
+            user.mapCount-=1
+            user.save()
         else:
             curr_map_user.delete()
         return Response(status=201)
