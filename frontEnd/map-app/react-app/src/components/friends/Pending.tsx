@@ -9,7 +9,7 @@ import axios from "../../api/axios";
 const FRIENDS_INFO_URL = "api-auth/dashboard/user-info/"; // Getting User Info
 const ACTION_FRIENDS_URL = "api-auth/dashboard/make-request/"; // Accepting/Rejecting
 
-const Pending = () => {
+const Pending = ({ search }: { search: any }) => {
   const [incomingRequests, setIncomingRequests] = useState([]);
 
   useEffect(() => {
@@ -28,7 +28,6 @@ const Pending = () => {
 
         const { incomingRequests } = parsedResponse;
         setIncomingRequests(incomingRequests);
-        console.log(incomingRequests);
       } catch (err: any) {
         console.log(err.response);
         if (err.response?.status === 400) {
@@ -157,9 +156,19 @@ const Pending = () => {
     }
   };
 
+  let searchRequests;
+
+  if (search.length >= 1) {
+    searchRequests = incomingRequests.filter((friend: any) =>
+      friend.toLowerCase().startsWith(search.toLowerCase())
+    );
+  } else {
+    searchRequests = incomingRequests;
+  }
+
   return (
     <ul className="friend-list">
-      {incomingRequests.map((request, index) => (
+      {searchRequests.map((request, index) => (
         <li key={index}>
           <img className="profile-pic" src={Profile} alt="" />
           <span className="friend-name">

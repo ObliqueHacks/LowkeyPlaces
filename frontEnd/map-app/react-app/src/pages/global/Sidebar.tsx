@@ -109,6 +109,7 @@ const Sidebar = ({
             id="dashboard-display"
             onClick={() => {
               Cookies.remove("genToken");
+              navigate("/");
             }}
           >
             Logout

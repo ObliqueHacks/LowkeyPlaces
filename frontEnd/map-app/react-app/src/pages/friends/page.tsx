@@ -2,7 +2,7 @@ import React, { useContext, useRef, useState } from "react";
 import Sidebar from "../global/Sidebar";
 import AllFriends from "../../components/friends/AllFriends.tsx";
 import Pending from "../../components/friends/Pending.tsx";
-import AddFriends from "../../components/friends/AddFriends.tsx";
+// import AddFriends from "../../components/friends/AddFriends.tsx";
 import Topbar from "../global/Topbar.tsx";
 import { ToastContainer, toast } from "react-toastify";
 import { Fade } from "react-awesome-reveal";
@@ -14,14 +14,11 @@ import axios from "../../api/axios";
 const ADD_FRIENDS_URL = "api-auth/dashboard/make-request/";
 
 const Friends = () => {
-  const recieverRef: any = useRef();
-
+  const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
 
   const resetFields = () => {
-    if (recieverRef.current) {
-      recieverRef.current.value = "";
-    }
+    setSearch("");
   };
 
   const handleCatgeory = (cat: string) => {
@@ -48,14 +45,14 @@ const Friends = () => {
   //   resetFields();
   // };
 
-  const handleFriendRequest = async (e: any) => {
+  const handleFriendRequest = async (e: any, search: string) => {
     e.preventDefault();
     const action = 0; // Sending a friend request
     try {
       const response: any = await axios.post(
         ADD_FRIENDS_URL,
         JSON.stringify({
-          name: recieverRef.current.value,
+          name: search,
           action,
         }),
         {
@@ -188,6 +185,8 @@ const Friends = () => {
                   type="search"
                   name="search"
                   placeholder=" Search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   autoFocus
                 />
                 <span className="material-symbols-outlined">search</span>
@@ -198,13 +197,14 @@ const Friends = () => {
                   type="search"
                   name="search"
                   placeholder=" Search"
-                  ref={recieverRef}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   autoFocus
                 />
                 <button
                   type="button"
                   className="send-friend-request"
-                  onClick={handleFriendRequest}
+                  onClick={(e) => handleFriendRequest(e, search)}
                 >
                   Send Friend Request
                 </button>
@@ -223,9 +223,9 @@ const Friends = () => {
               </div>
             )}
             <p>{`${category}`}</p>
-            {category === "All" && <AllFriends></AllFriends>}
-            {category === "Pending" && <Pending></Pending>}
-            {category === "Add Friend" && <AddFriends></AddFriends>}
+            {category === "All" && <AllFriends search={search}></AllFriends>}
+            {category === "Pending" && <Pending search={search}></Pending>}
+            {/* {category === "Add Friend" && <AddFriends></AddFriends>} */}
           </div>
         </div>
       </Fade>

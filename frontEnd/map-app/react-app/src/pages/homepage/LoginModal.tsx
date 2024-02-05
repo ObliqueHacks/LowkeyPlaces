@@ -14,7 +14,6 @@ export const Modal = ({
 
   const toggleLogin = () => {
     setLogin(!loginActive);
-    console.log(loginActive);
   };
 
   return (

@@ -8,9 +8,9 @@ import AuthContext from "../../context/AuthProvider.tsx";
 
 import axios from "../../api/axios";
 
-const AllFriends = () => {
+const AllFriends = ({ search }: { search: string }) => {
   const [friends, setFriends] = useState([]);
- 
+
   // const [showSpectatorPopup, setShowSpectatorPopup] = useState(false);
   // const [showCollaboratorPopup, setShowCollaboratorPopup] = useState(false);
 
@@ -69,9 +69,19 @@ const AllFriends = () => {
     }
   };
 
+  let searchFriends;
+
+  if (search.length >= 1) {
+    searchFriends = friends.filter((friend: any) =>
+      friend.toLowerCase().startsWith(search.toLowerCase())
+    );
+  } else {
+    searchFriends = friends;
+  }
+
   return (
     <ul className="friend-list">
-      {friends.map((friend, index) => (
+      {searchFriends.map((friend, index) => (
         <li key={index}>
           <img className="profile-pic" src={Profile} alt="" />
           <span className="friend-name">{friend}</span>
