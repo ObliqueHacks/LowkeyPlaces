@@ -270,12 +270,9 @@ const Markerbar = ({ map }: { map: any }) => {
         }
       );
       const { image_ids } = response.data;
-      const folder = marker.folderName;
       for (const key in image_ids) {
-        const img = image_ids[key];
-        const path =
-          "src/maps/" + mapFolder + "/markers/" + folder + "/" + img + ".jpg";
-        urls.push(path);
+        const url = image_ids[key];
+        urls.push(url);
       }
       setSlides(urls);
     } catch (err: any) {

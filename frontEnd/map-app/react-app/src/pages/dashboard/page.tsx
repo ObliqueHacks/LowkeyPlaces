@@ -109,8 +109,7 @@ const Dashboard = () => {
           }
         );
 
-        const folder = response.data?.folderName;
-        const path = "src/maps/" + folder + "/MAP_IMAGE.jpg";
+        const path = response.data?.folderName;
         const file = new File([response.data], "MAP_IMAGE.jpg", {
           type: "image/jpeg",
         });
