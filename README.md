@@ -1,7 +1,6 @@
 # LowkeyPlaces
 The project aims to create a map for people to upload paths and locations of places less commonly known.
-<<<<<<< HEAD
-=======
+
 
 ## Functionalities (* - Something we could add) 
 1. **User Registration and Authentication:**
@@ -39,4 +38,4 @@ The project aims to create a map for people to upload paths and locations of pla
 
 ## Website Demos
 https://drive.google.com/drive/folders/1gS8rGF8E800ZelistKDFH2fldJ0onFzv?usp=drive_link
->>>>>>> b762e876e2b9d03f12a93d49f2ccea08f3622026
+
