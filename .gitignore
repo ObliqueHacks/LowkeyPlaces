@@ -30,3 +30,6 @@ __pycache__/
 *.sw?
 .env
 .gitignore
+
+#google shit
+lowkeyspots-3812f4edc734.json

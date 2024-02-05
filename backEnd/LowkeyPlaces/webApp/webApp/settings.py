@@ -14,6 +14,7 @@ from pathlib import Path
 
 import os
 ROOT_FOLDER = os.path.abspath(os.path.join(os.getcwd(), "..", "..", ".."))
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "lowkeyspots-3812f4edc734.json"
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

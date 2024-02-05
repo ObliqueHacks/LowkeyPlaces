@@ -11,6 +11,7 @@ from .serializers import markerSerializer, imageSerializer, markerIdSerializer, 
 from .models import MARKER, MARKER_IMG
 from mapManager.views import authTemplate
 from django.conf import settings 
+from utils import upload_image_to_bucket, generate_download_signed_url_v4
 import os
 
 def authTemplate2(request, result_function):
@@ -82,22 +83,7 @@ def placeMarker(request: Response) -> Response:
           
         if 'address' in marker:      
             markerInstance.address=marker['address']
-        markerInstance.save()
-        
-        #make directory for marker
-        markerPath = os.path.join(
-            settings.ROOT_FOLDER,
-            "frontEnd/map-app/react-app/src/maps",
-            mapId.mapFolder,
-            "markers",
-            markerInstance.folderPath)
-        try:
-            os.makedirs(markerPath)
-        except OSError as e:
-            markerInstance.delete()
-            return Response(status=500)
-        mapId.markerCount+=1
-        mapId.save()
+        markerInstance.save()        
         return Response(status=201)
     return authTemplate2(request, discrete)
 
@@ -116,7 +102,6 @@ def getMarkerList(request: Response) -> Response:
              'address': i.address,
              'imageCount': i.imageCount,
              'timeCreated': i.timeCreated,
-             'folderPath':i.folderPath,
              'color': i.color} for i in markerList})
     return authTemplate(request, discrete)
 
@@ -142,15 +127,12 @@ def addMarkerImg(request: Response) -> Response:
             imageInstance.save()  
             
             #save the image to file
-            markerPath = os.path.join(settings.ROOT_FOLDER, "frontEnd/map-app/react-app/src/maps/", mapId.mapFolder, "markers/", markerId.folderPath,imageInstance.folderPath+".jpg")
+            markerPath = os.path.join(mapId.mapFolder, "markers", markerId.folderPath, imageInstance.folderPath + '.jpg')
+            upload_image_to_bucket('lowkey-spots-bucket',image, markerPath)
             markerId.imageCount+=1
             markerId.save()
-            try:
-                with open(markerPath, 'wb+') as new_image_file:
-                    new_image_file.write(image.read())
-                    return Response(status=201)
-            except Exception as e:
-                return Response(status=500)
+            return Response(status = 200)
+            
         except ObjectDoesNotExist:
             return Response(status=497)    
     return authTemplate2(request, discrete)
@@ -167,7 +149,8 @@ def getMarkerImg(request):
             markerId = MARKER.objects.get(id=markerId.validated_data['markerId'], mapId=mapId)
             img = MARKER_IMG.objects.filter(markerId=markerId)
             
-            return Response({"image_ids":[i.folderPath for i in img]}, status=201)
+            gamma = os.path.join(mapId.mapFolder, 'markers', markerId.folderPath)
+            return Response({"image_ids":[generate_download_signed_url_v4('lowkey-spots-bucket', os.path.join(gamma, i.folderPath+ '.jpg')) for i in img]}, status=201)
         except ObjectDoesNotExist:
                 return Response(status=500)
     return authTemplate(request, discrete)
@@ -219,7 +202,6 @@ def deleteMarkerImage(request):
         try:
             #ensure there is a valid marker for this map
             markerId = MARKER.objects.get(id=markerId.validated_data['markerId'], mapId=mapId)
-            
             #delete image
             img = imageIdSerializer(data=request.data)
             if img.is_valid() is False:
@@ -229,11 +211,9 @@ def deleteMarkerImage(request):
             img.delete()
             markerId.imageCount-=1
             markerId.save()
-            return Response(status=201)
-            
+            return Response(status=201)     
         except ObjectDoesNotExist:
                 return Response(status=500)
-            
     return authTemplate2(request, discrete)
         
         
