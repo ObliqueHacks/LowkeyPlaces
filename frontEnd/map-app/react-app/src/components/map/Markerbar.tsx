@@ -9,7 +9,6 @@ import { useMapContext } from "../../context/MapProvider.tsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
-import { useMap } from "react-leaflet";
 
 const MARKER_LIST_URL = "api-auth/markers/marker-list/";
 const ADD_MARKER_IMG_URL = "api-auth/markers/add-marker-img/";

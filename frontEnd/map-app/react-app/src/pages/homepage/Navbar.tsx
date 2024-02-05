@@ -1,7 +1,6 @@
 // LIBRARIES
 import React from "react";
 import { Link as LinkScroll } from "react-scroll";
-import { Outlet } from "react-router-dom";
 
 // IMAGES
 import Menu from "../../assets/Menu.png";

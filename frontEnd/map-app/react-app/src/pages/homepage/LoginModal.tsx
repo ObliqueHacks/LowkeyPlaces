@@ -1,5 +1,8 @@
+// LIBRARIES
 import React from "react";
 import { useState } from "react";
+
+// COMPONENTS
 import Register from "../../components/homepage/Register.tsx";
 import Login from "../../components/homepage/Login.tsx";
 

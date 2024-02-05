@@ -1,10 +1,12 @@
-import { Link, useLocation } from "react-router-dom";
+// LIBRARIES
+import axios from "../../api/axios";
+import { useContext, useEffect } from "react";
+
+// ASSETS
 import Profile from "../../assets/profile.jpg";
 
+// COMPONENTS
 import AuthContext from "../../context/AuthProvider.tsx";
-import axios from "../../api/axios";
-import React, { useContext, useEffect } from "react";
-
 const GET_USER_URL = "api-auth/dashboard/user-info/";
 
 const Topbar = () => {

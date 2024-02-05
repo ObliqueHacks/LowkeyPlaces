@@ -5,9 +5,7 @@ import Sidebar from "../global/Sidebar";
 import Topbar from "../global/Topbar.tsx";
 import MapDisplay from "../../components/map/MapDisplay.tsx";
 import MapFriends from "../../components/friends/MapFriends.tsx";
-import AllFriends from "../../components/friends/AllFriends.tsx";
 import axios from "../../api/axios";
-import AuthContext from "../../context/AuthProvider.tsx";
 import CardSkeleton from "../../components/CardSkeleton.tsx";
 
 /* LIRBARIES */
@@ -17,19 +15,15 @@ import { useDropzone } from "react-dropzone";
 import { AspectRatio } from "react-aspect-ratio";
 import { ToastContainer, toast } from "react-toastify";
 
-import Skeleton from "react-loading-skeleton";
-
 /* OTHER */
-import NatureOne from "../../assets/nature-1.jpg";
-import Markerbar from "../../components/map/Markerbar.tsx";
 import "react-loading-skeleton/dist/skeleton.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
+/* API URLS */
 const CREATE_MAP_URL = "api-auth/map/make-map/";
 const GET_MAP_IDS_URL = "api-auth/map/get-user-maps/";
 const GET_MAP_URL = "api-auth/map/get-map/";
-const ADD_FRIEND_TO_MAP_URL = "api-auth/map/add-friend/";
 const DELETE_MAP_URL = "api-auth/map/delete-map/";
 
 const Dashboard = () => {

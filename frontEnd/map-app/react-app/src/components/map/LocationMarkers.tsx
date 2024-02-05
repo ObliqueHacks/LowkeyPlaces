@@ -1,13 +1,7 @@
 import axios from "../../api/axios";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import {
-  useMapEvents,
-  Marker,
-  useMapEvent,
-  useMap,
-  Popup,
-} from "react-leaflet";
+import { useMapEvents, Marker, useMap, Popup } from "react-leaflet";
 import AuthContext from "../../context/AuthProvider.tsx";
 import { useMapContext } from "../../context/MapProvider.tsx";
 import { Icon, icon } from "leaflet";

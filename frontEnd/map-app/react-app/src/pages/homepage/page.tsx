@@ -1,19 +1,16 @@
 // LIBRARIES
-import React, { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
 import { Link as LinkScroll } from "react-scroll";
 import { Fade } from "react-awesome-reveal";
 import Cookies from "js-cookie";
 
 // IMAGES
-import MarkerImage from "../../assets/hiking.jpg";
 import MapIcon from "../../assets/Map.png";
 import FriendsIcon from "../../assets/friends.png";
 import PhotoIcon from "../../assets/Gallery.png";
 import MapImg from "../../assets/interactivemap.jpg";
 import FriendImg from "../../assets/friendsimg.jpg";
 import GalleryImg from "../../assets/Galleryimg.png";
-import HeaderImg from "../../assets/headerimg.jpg";
 import DistractionsIcon from "../../assets/Broom.png";
 import EasyIcon from "../../assets/Easy.png";
 import LowkeyIcon from "../../assets/Secret.png";
@@ -21,6 +18,7 @@ import LowkeyIcon from "../../assets/Secret.png";
 // PAGES
 import Modal from "./LoginModal.tsx";
 import Navbar from "./Navbar.tsx";
+
 // COMPONENTS
 import LinkBar from "../../components/homepage/LinkBar.tsx";
 
@@ -298,7 +296,12 @@ function HomePage() {
               ></LinkBar>
             </div>
             <div className="hamza">
-              <LinkBar Email="" Insta="" Linkdn="" Github=""></LinkBar>
+              <LinkBar
+                Email="hamza88mehmood@hotmail.com "
+                Insta=""
+                Linkdn="https://www.linkedin.com/in/muhammad-hamza-mehmood-744a51215/"
+                Github="https://github.com/ObliqueHacks"
+              ></LinkBar>
             </div>
           </div>
         </Fade>

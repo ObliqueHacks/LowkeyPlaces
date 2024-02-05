@@ -1,19 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Profile from "../../assets/profile.jpg";
 
 const FRIENDS_INFO_URL = "api-auth/dashboard/user-info/";
 const ACTION_FRIENDS_URL = "api-auth/dashboard/make-request/";
 
-import AuthContext from "../../context/AuthProvider.tsx";
 
 import axios from "../../api/axios";
 
 const AllFriends = ({ search }: { search: string }) => {
   const [friends, setFriends] = useState([]);
 
-  // const [showSpectatorPopup, setShowSpectatorPopup] = useState(false);
-  // const [showCollaboratorPopup, setShowCollaboratorPopup] = useState(false);
-
+  // Getting friends
   const processFriends = async () => {
     try {
       const response: any = await axios.post(
@@ -69,6 +66,8 @@ const AllFriends = ({ search }: { search: string }) => {
     }
   };
 
+
+  // Searching friend 
   let searchFriends;
 
   if (search.length >= 1) {

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Profile from "../../assets/profile.jpg";
 
-import AuthContext from "../../context/AuthProvider.tsx";
 import { ToastContainer, toast } from "react-toastify";
 
 import axios from "../../api/axios";

@@ -1,16 +1,17 @@
-import React, { useContext, useRef, useState } from "react";
+import { useState } from "react";
+
+/* COMPONENTS */
 import Sidebar from "../global/Sidebar";
 import AllFriends from "../../components/friends/AllFriends.tsx";
 import Pending from "../../components/friends/Pending.tsx";
-// import AddFriends from "../../components/friends/AddFriends.tsx";
 import Topbar from "../global/Topbar.tsx";
+import axios from "../../api/axios";
+
+/* LIBRARIES */
 import { ToastContainer, toast } from "react-toastify";
 import { Fade } from "react-awesome-reveal";
 
-import AuthContext from "../../context/AuthProvider.tsx";
-
-import axios from "../../api/axios";
-
+/* API URLS */
 const ADD_FRIENDS_URL = "api-auth/dashboard/make-request/";
 
 const Friends = () => {
@@ -38,12 +39,6 @@ const Friends = () => {
     }
     resetFields();
   };
-
-  // const handleTest = (e: any) => {
-  //   e.preventDefault();
-  //   console.log(recieverRef.current.value);
-  //   resetFields();
-  // };
 
   const handleFriendRequest = async (e: any, search: string) => {
     e.preventDefault();
@@ -225,7 +220,6 @@ const Friends = () => {
             <p>{`${category}`}</p>
             {category === "All" && <AllFriends search={search}></AllFriends>}
             {category === "Pending" && <Pending search={search}></Pending>}
-            {/* {category === "Add Friend" && <AddFriends></AddFriends>} */}
           </div>
         </div>
       </Fade>

@@ -1,11 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
-import Logo from "../../assets/NinjaHead.png";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import Markerbar from "../../components/map/Markerbar.tsx";
+/* LIBRARIES */
 
-import AuthContext from "../../context/AuthProvider.tsx";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "../../api/axios.ts";
 import Cookies from "js-cookie";
+
+// IMAGES
+import Logo from "../../assets/NinjaHead.png";
+
+// COMPONENTS
+import Markerbar from "../../components/map/Markerbar.tsx";
+
+// API URLS
 const FRIENDS_INFO_URL = "api-auth/dashboard/user-info/"; // Getting User Info
 
 const Sidebar = ({
