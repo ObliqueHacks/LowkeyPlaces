@@ -31,9 +31,10 @@ __pycache__/
 .env
 .gitignore
 Dockerfile
-README.Dockermd
+README.Docker.md
 requirements.txt
 .dockerignore
+compose.yaml
 
 #google shit
 lowkeyspots-3812f4edc734.json
