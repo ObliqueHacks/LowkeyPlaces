@@ -220,7 +220,6 @@ def editPermission(request) -> Response:
             return Response(status=400)
     return authTemplate(request=request, func1=discrete)
 
-
 #do this at the end
 @api_view(['POST'])
 def getMapLink(request) -> Response:

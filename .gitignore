@@ -30,6 +30,10 @@ __pycache__/
 *.sw?
 .env
 .gitignore
+Dockerfile
+README.Dockermd
+requirements.txt
+.dockerignore
 
 #google shit
 lowkeyspots-3812f4edc734.json
