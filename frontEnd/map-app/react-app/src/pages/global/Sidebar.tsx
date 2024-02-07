@@ -17,11 +17,9 @@ const FRIENDS_INFO_URL = "api-auth/dashboard/user-info/"; // Getting User Info
 const Sidebar = ({
   editMap = false,
   map,
-  status,
 }: {
   editMap?: boolean;
   map?: any;
-  status?: number;
 }) => {
   const location = useLocation();
   let navigate = useNavigate();
@@ -33,7 +31,6 @@ const Sidebar = ({
     location.pathname === "/friends"
   );
 
-  const [incomingRequests, setIncomingRequests] = useState([]);
   const [nbRequest, setNbRequest] = useState();
 
   useEffect(() => {
@@ -51,7 +48,7 @@ const Sidebar = ({
         const parsedResponse = JSON.parse(response.request.response);
 
         const { incomingRequests } = parsedResponse;
-        setIncomingRequests(incomingRequests);
+
         setNbRequest(incomingRequests.length);
       } catch (err: any) {
         console.log(err.response);

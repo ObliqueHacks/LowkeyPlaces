@@ -13,7 +13,6 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
   const [user, setUser] = useState("");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  const [success, setSuccess] = useState(false);
   const { setAuth }: any = useContext(AuthContext);
 
   let navigate = useNavigate();
@@ -42,7 +41,6 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
       setUser("");
       setPwd("");
       setAuth(user);
-      setSuccess(true);
       navigate("/dashboard");
     } catch (err: any) {
       console.log(err.response);
@@ -55,7 +53,6 @@ export const Login = ({ toggleLogin }: { toggleLogin: () => void }) => {
       } else {
         setErrMsg("Login Failed");
       }
-      setSuccess(false);
       errRef.current.focus();
     }
   };

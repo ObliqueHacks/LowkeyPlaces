@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Profile from "../../assets/profile.jpg";
 
 import { ToastContainer, toast } from "react-toastify";
@@ -37,19 +37,6 @@ const Pending = ({ search }: { search: any }) => {
 
     processFriendRequests();
   }, []);
-
-  const handleTest = () => {
-    toast.info("Friend Request Was Accepted!", {
-      position: "bottom-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
-  };
 
   const acceptFriendRequest = async (requestName: string) => {
     try {

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Profile from "../../assets/profile.jpg";
 
 const MAP_USERS_URL = "api-auth/map/get-users/";
@@ -6,7 +6,6 @@ const ADD_FRIEND_TO_MAP_URL = "api-auth/map/add-friend/";
 const EDIT_PERMS_URL = "api-auth/map/edit-perms/";
 const FRIENDS_INFO_URL = "api-auth/dashboard/user-info/";
 
-import AuthContext from "../../context/AuthProvider.tsx";
 import axios from "../../api/axios";
 
 const MapFriends = ({
@@ -89,6 +88,8 @@ const MapFriends = ({
       );
 
       processMapFriends(mapId);
+      console.log(response);
+      
     } catch (err: any) {
       console.log(err.response);
       if (err.response?.status === 400) {

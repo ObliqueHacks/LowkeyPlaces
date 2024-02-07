@@ -1,10 +1,14 @@
-import axios from "../../api/axios";
+// LIBRARIES
 import React, { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { useMapEvents, Marker, useMap, Popup } from "react-leaflet";
-import AuthContext from "../../context/AuthProvider.tsx";
+import { Icon } from "leaflet";
+
+// COMPONENTS
 import { useMapContext } from "../../context/MapProvider.tsx";
-import { Icon, icon } from "leaflet";
+import axios from "../../api/axios";
+
+// ICONS
 import Red from "../../assets/MarkerColors/red.png";
 import Green from "../../assets/MarkerColors/green.png";
 import Yellow from "../../assets/MarkerColors/yellow.png";
@@ -160,7 +164,8 @@ function LocationMarkers({ mapId }: { mapId: number }) {
           withCredentials: true,
         }
       );
-
+      console.log(response);
+        
       getMarkers();
     } catch (err: any) {
       if (err.response?.status === 500) {

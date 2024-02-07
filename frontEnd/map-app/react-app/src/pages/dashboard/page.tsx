@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 /* COMPONENTS */
 import Sidebar from "../global/Sidebar";
@@ -170,6 +170,7 @@ const Dashboard = () => {
         headers: { "Content-type": "multipart/form-data" },
         withCredentials: true,
       });
+      console.log(response);
 
       getMapIds();
       getMaps();

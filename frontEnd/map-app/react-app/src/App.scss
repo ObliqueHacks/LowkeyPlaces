@@ -73,11 +73,12 @@ ol {
 
 .navbar-logo {
   max-width: 40px; // Set the maximum width for the logo
-  margin-right: 10px; // Adjust margin as needed
+  margin-right: auto; // Adjust margin as needed
 }
 
 .navbar .navbar-brand {
   font-size: 1.5rem; // Set the font size for the brand
+  margin-right: auto;
   color: $color-primary; // Set the color for the brand
 }
 .navbar .navbar-brand:hover {
