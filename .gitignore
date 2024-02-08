@@ -1,5 +1,4 @@
 backend/venv
-backend/db.sqlite3
 backend/__pycache__
 backend/LowkeyPlaces/webApp/mapManager/migrations
 reference.txt
@@ -10,7 +9,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-db.sqlite3
 node_modules
 dist
 dist-ssr
@@ -30,6 +28,4 @@ __pycache__/
 *.sw?
 .env
 .gitignore
-
-
 #google shit
