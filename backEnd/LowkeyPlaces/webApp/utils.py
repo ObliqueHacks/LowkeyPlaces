@@ -26,8 +26,6 @@ def upload_image_to_bucket(bucket_name, source_file, destination_blob_name):
     # Upload the contents to the blob
     blob.upload_from_file(BytesIO(content), content_type='image/jpeg')  # You may need to adjust the content type
 
-    print(f"File uploaded to {destination_blob_name} in {bucket_name} bucket.")
-
 
 def generate_download_signed_url_v4(bucket_name, blob_name):
     storage_client = storage.Client()
@@ -39,11 +37,6 @@ def generate_download_signed_url_v4(bucket_name, blob_name):
         expiration=timedelta(minutes=60),
         method="GET",
     )
-
-    print("Generated GET signed URL:")
-    print(url)
-    print("You can use this URL with any user agent, for example:")
-    print(f"curl '{url}'")
     return url
 
 
