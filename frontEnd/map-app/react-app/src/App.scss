@@ -1587,3 +1587,7 @@ h4 {
   z-index: 100;
   transition: all 0.5s;
 }
+
+.modal-backdrop {
+  z-index: -1 !important;
+}
