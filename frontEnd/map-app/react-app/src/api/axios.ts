@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "http://127.0.0.1:8333/",
+  baseURL: "https://lowkeyspots7-772i7y6ueq-uc.a.run.app",
 });
