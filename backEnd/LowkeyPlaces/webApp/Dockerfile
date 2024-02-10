@@ -50,6 +50,7 @@ COPY . .
 
 # Expose the port that the application listens on.
 EXPOSE $PORT
-
+USER root
+RUN chmod 777 . MAP_IMAGE.jpg webApp
 # Run the application.
 CMD gunicorn 'webApp.wsgi' --bind=0.0.0.0:$PORT
