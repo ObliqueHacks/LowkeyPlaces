@@ -158,6 +158,7 @@ def getMapFromId(request) -> Response:
             'status': status,
             'folderName': generate_download_signed_url_v4('lowkey-spots-bucket', os.path.join(mapId.mapFolder, 'MAP_IMAGE.jpg')),
         }
+        
         return Response(status=201, data=response_data)
     return authTemplate(request=request, func1=discrete)
 
