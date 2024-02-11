@@ -1,4 +1,3 @@
-
 import axios from "../../api/axios";
 
 import React, { useContext, useEffect, useState } from "react";
@@ -544,7 +543,7 @@ const Markerbar = ({ map }: { map: any }) => {
         <div className="modal-dialog">
           <div
             className="modal-content"
-            style={{ width: "600px", height: "500px" }}
+            style={{ width: "600px", height: "550px" }}
           >
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="exampleModalLabel">
@@ -586,6 +585,7 @@ const Markerbar = ({ map }: { map: any }) => {
                             display: "flex",
                             marginLeft: "270px",
                             width: "25px",
+                            height: "30px",
                           }}
                           onClick={() => {
                             const uuid = url

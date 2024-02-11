@@ -405,31 +405,28 @@ const Dashboard = () => {
                                   setEditMap(true);
                                 }}
                               >
-                                <h4>
-                                  {displayMap.mapName}
-                                  <div className="buttons">
-                                    {displayMap.status === 0 ? (
-                                      <span
-                                        className="material-symbols-outlined"
-                                        onClick={(e) =>
-                                          deleteMap(displayMap, e)
-                                        }
-                                      >
-                                        delete
-                                      </span>
-                                    ) : (
-                                      <span
-                                        className="material-symbols-outlined"
-                                        onClick={(e) =>
-                                          deleteMap(displayMap, e)
-                                        }
-                                      >
-                                        move_item
-                                      </span>
-                                    )}
-                                  </div>
-                                </h4>
-                                <p>{status[displayMap.status]}</p>
+                                <h4>{displayMap.mapName}</h4>
+                                <div className="info">
+                                  <p>{status[displayMap.status]}</p>
+                                  {displayMap.status === 0 ? (
+                                    <span
+                                      className="material-symbols-outlined"
+                                      onClick={(e) => deleteMap(displayMap, e)}
+                                    >
+                                      delete
+                                    </span>
+                                  ) : (
+                                    <span
+                                      className="material-symbols-outlined"
+                                      onClick={(e) => deleteMap(displayMap, e)}
+                                    >
+                                      move_item
+                                    </span>
+                                  )}
+                                  {/* <span className="material-symbols-outlined">
+                                  more_vert
+                                </span> */}
+                                </div>
                               </div>
                             </div>
                           </li>
