@@ -77,9 +77,9 @@ This is your map dashboard. Here you will be able to see all the maps you have c
 
 ![image](https://github.com/ObliqueHacks/LowkeyPlaces/assets/73759561/e9d7a89d-9e18-47ab-a410-720fcaa4b956)
 
-In LowkeySpots, there are three different roles : **Admin**, **Collaborator**, and **Spectator**. These roles will be explain in further detail but for know all you need to know is that if you are an Admin then you can delete maps, which essentially removes all users who were part of the map. However, if you are a Collaborator or Spectator, you will have the option to leave the map. At the top you can see there is a filteration system for these roles 
+In LowkeySpots, there are three different roles : **Admin**, **Collaborator**, and **Spectator**. These roles will be explained in further detail but for know all you need to know is that if you are an Admin then you can delete maps, which essentially removes all users who were part of the map. However, if you are a Collaborator or Spectator, you will have the option to leave the map. At the top you can see there is a filteration system for these roles 
 
-To create a new map simply press the New Map button. You will then be promted this window
+To create a new map simply press the New Map button. You will then be prompted this window
 ![image](https://github.com/ObliqueHacks/LowkeyPlaces/assets/73759561/fa78fd15-5b65-4f51-b5fe-2c81b0b7bf47)
 
 Once created, your map will be in your dashboard!
@@ -93,7 +93,7 @@ On the left is the **Marker Bar**, where you **Edit**, **View Photos**,  or **De
 
 ![image](https://github.com/ObliqueHacks/LowkeyPlaces/assets/73759561/1dadf607-0745-4109-ac65-a809edeee788)
 
-When editing a spot you will be promoted this window. As you can see, you can change **Name, Description, Color,** and **Upload Photos**
+When editing a spot you will be prompted this window. As you can see, you can change **Name, Description, Color,** and **Upload Photos**
 
 
 ![image](https://github.com/ObliqueHacks/LowkeyPlaces/assets/73759561/a9bc9894-edd8-4e34-a1b3-e40f6b6b0500)
