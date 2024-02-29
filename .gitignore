@@ -28,4 +28,5 @@ __pycache__/
 *.sw?
 .env
 .gitignore
+.lowkeyspots-38
 #google shit
