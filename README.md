@@ -1,3 +1,4 @@
+The app can be found at https://lowkey-spots-public.vercel.app/
 # LowkeySpots
 
 ## 👋 Introduction
